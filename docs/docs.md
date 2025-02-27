@@ -6,14 +6,14 @@
   * [Микросервисы](docs.md#микросервисы)
   * [Взаимодействие](docs.md#взаимодействие)
   * [API Gateway](docs.md#api-gateway)
-  * [Хранилище](docs.md#хранилише)
+  * [Хранилище](docs.md#хранилище)
 * [UserService](docs.md#userservice)
   * [Функционал](docs.md#функционал)
   * [База данных](docs.md#база-данных)
   * [Архитектура приложения](docs.md#архитектура-приложения)
 * [WishService](docs.md#wishservice)
   * [Функционал](docs.md#функционал-1)
-  * [База данных](docs.md#база_данных-1)
+  * [База данных](docs.md#база-данных-1)
   * [Архитектура приложения](docs.md#архитектура-приложения-1)
 
 # Техническое задание
@@ -191,7 +191,7 @@
 
 <img src="/docs/MakeWish.Common.DB.Schema.png" />
 
-# Архитектура приложения
+# Архитектура системы
 
 <img src="/docs/MakeWish.Architecture.png" />
 
@@ -231,7 +231,7 @@
 В качестве базы данных подходит простая реляционная модель.
 Будет использоваться Postgresql.
 
-<img src="/docs/MakeWish.UserService.Postgres.png" />
+<img src="/docs/MakeWish.UserService.Postgresql.png" />
 
 ## Архитектура приложения
 
