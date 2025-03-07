@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Models", "src\MakeWish.UserService.Models\MakeWish.UserService.Models.csproj", "{04F4A7BF-BB7B-4A4D-B553-9B675D0B074C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.UseCases", "src\MakeWish.UserService.UseCases\MakeWish.UserService.UseCases.csproj", "{D8D2779B-5673-4DEC-BB11-C522BC09A00A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Interfaces.DataAccess", "src\MakeWish.UserService.Interfaces.DataAccess\MakeWish.UserService.Interfaces.DataAccess.csproj", "{EF3E1160-B7EF-4780-BBE5-05F17D3958BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Utils", "src\MakeWish.UserService.Utils\MakeWish.UserService.Utils.csproj", "{E3E0FF45-5169-410C-BC6C-CA226FC19628}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04F4A7BF-BB7B-4A4D-B553-9B675D0B074C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04F4A7BF-BB7B-4A4D-B553-9B675D0B074C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04F4A7BF-BB7B-4A4D-B553-9B675D0B074C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04F4A7BF-BB7B-4A4D-B553-9B675D0B074C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D2779B-5673-4DEC-BB11-C522BC09A00A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D2779B-5673-4DEC-BB11-C522BC09A00A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D2779B-5673-4DEC-BB11-C522BC09A00A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D2779B-5673-4DEC-BB11-C522BC09A00A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF3E1160-B7EF-4780-BBE5-05F17D3958BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF3E1160-B7EF-4780-BBE5-05F17D3958BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF3E1160-B7EF-4780-BBE5-05F17D3958BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF3E1160-B7EF-4780-BBE5-05F17D3958BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
