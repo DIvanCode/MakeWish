@@ -4,7 +4,7 @@ namespace MakeWish.UserService.Models;
 
 public sealed class User
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     public string Email { get; init; }
 
@@ -14,8 +14,9 @@ public sealed class User
 
     public string Surname { get; private set; }
 
-    private User(string email, string passwordHash, string name, string surname)
+    private User(Guid id, string email, string passwordHash, string name, string surname)
     {
+        Id = id;
         Email = email;
         PasswordHash = passwordHash;
         Name = name;
@@ -27,6 +28,7 @@ public sealed class User
         EnsureArg.IsNotNullOrWhiteSpace(email);
         EnsureArg.IsNotNullOrWhiteSpace(passwordHash);
         
-        return new User(email, passwordHash, name, surname);
+        var id = Guid.NewGuid();
+        return new User(id, email, passwordHash, name, surname);
     }
 }

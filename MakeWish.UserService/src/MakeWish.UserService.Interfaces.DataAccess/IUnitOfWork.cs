@@ -2,7 +2,7 @@
 
 public interface IUnitOfWork
 {
-    IUserRepository Users { get; }
+    IUsersRepository Users { get; }
     IFriendshipsRepository Friendships { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

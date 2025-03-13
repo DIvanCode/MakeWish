@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.UserService.UseCases.Features.Friendships.GetPendingFriendshipsFromUser;
 
-public sealed record GetPendingFriendshipsFromUserCommand(int UserId) : IRequest<Result<List<FriendshipDto>>>;
+public sealed record GetPendingFriendshipsFromUserCommand(Guid UserId) : IRequest<Result<List<FriendshipDto>>>;

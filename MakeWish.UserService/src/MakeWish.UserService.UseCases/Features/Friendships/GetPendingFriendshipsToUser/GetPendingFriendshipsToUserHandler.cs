@@ -25,7 +25,7 @@ public sealed class GetPendingFriendshipsToUserHandler(IUnitOfWork unitOfWork, I
             return new ForbiddenError(
                 nameof(Friendship), 
                 "get pending to user", 
-                nameof(Friendship.SecondUser), 
+                nameof(User.Id), 
                 request.UserId);
         }
         

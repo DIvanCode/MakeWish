@@ -21,13 +21,13 @@ public sealed class RemoveFriendshipHandler(IUnitOfWork unitOfWork, IUserContext
             return new AuthenticationError();
         }
 
-        if (request.SecondUserId != userContext.UserId)
+        if (request.FirstUserId != userContext.UserId && request.SecondUserId != userContext.UserId)
         {
             return new ForbiddenError(
                 nameof(Friendship), 
                 "remove", 
-                nameof(Friendship.SecondUser), 
-                request.SecondUserId);
+                "users", 
+                $"{request.FirstUserId} and {request.SecondUserId}");
         }
         
         var firstUser = await unitOfWork.Users.GetByIdAsync(request.FirstUserId, cancellationToken);

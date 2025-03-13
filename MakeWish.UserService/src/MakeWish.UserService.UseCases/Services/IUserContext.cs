@@ -3,5 +3,5 @@
 public interface IUserContext
 {
     bool IsAuthenticated { get; }
-    int UserId { get; }
+    Guid UserId { get; }
 }

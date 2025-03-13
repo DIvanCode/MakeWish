@@ -3,4 +3,4 @@ using MediatR;
 
 namespace MakeWish.UserService.UseCases.Features.Users.Delete;
 
-public sealed record DeleteCommand(int UserId) : IRequest<Result>;
+public sealed record DeleteCommand(Guid UserId) : IRequest<Result>;

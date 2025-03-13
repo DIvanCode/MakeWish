@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.UserService.UseCases.Features.Friendships.GetConfirmedFriendships;
 
-public sealed record GetConfirmedFriendshipsCommand(int UserId) : IRequest<Result<List<FriendshipDto>>>;
+public sealed record GetConfirmedFriendshipsCommand(Guid UserId) : IRequest<Result<List<FriendshipDto>>>;

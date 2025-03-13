@@ -23,7 +23,7 @@ public sealed class GetConfirmedFriendshipsHandler(IUnitOfWork unitOfWork, IUser
             return new ForbiddenError(
                 nameof(Friendship), 
                 "get confirmed", 
-                nameof(Friendship.FirstUser), 
+                nameof(User.Id), 
                 request.UserId);
         }
         

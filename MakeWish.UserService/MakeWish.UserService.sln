@@ -8,6 +8,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Interf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Utils", "src\MakeWish.UserService.Utils\MakeWish.UserService.Utils.csproj", "{E3E0FF45-5169-410C-BC6C-CA226FC19628}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.UnitTests.Models", "tests\MakeWish.UserService.UnitTests.Models\MakeWish.UserService.UnitTests.Models.csproj", "{394E299C-6859-4BF7-A3D2-CD762E66FE45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.UnitTests.Common", "tests\MakeWish.UserService.UnitTests.Common\MakeWish.UserService.UnitTests.Common.csproj", "{85377B00-1D4A-49D8-89E4-4D9B17262761}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.UnitTests.UseCases", "tests\MakeWish.UserService.UnitTests.UseCases\MakeWish.UserService.UnitTests.UseCases.csproj", "{5FD32914-98EB-41C5-85AB-A15186985E6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +36,17 @@ Global
 		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3E0FF45-5169-410C-BC6C-CA226FC19628}.Release|Any CPU.Build.0 = Release|Any CPU
+		{394E299C-6859-4BF7-A3D2-CD762E66FE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{394E299C-6859-4BF7-A3D2-CD762E66FE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{394E299C-6859-4BF7-A3D2-CD762E66FE45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{394E299C-6859-4BF7-A3D2-CD762E66FE45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85377B00-1D4A-49D8-89E4-4D9B17262761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85377B00-1D4A-49D8-89E4-4D9B17262761}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85377B00-1D4A-49D8-89E4-4D9B17262761}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85377B00-1D4A-49D8-89E4-4D9B17262761}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

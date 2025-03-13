@@ -4,4 +4,5 @@ using MediatR;
 
 namespace MakeWish.UserService.UseCases.Features.Friendships.ConfirmFriendship;
 
-public sealed record ConfirmFriendshipCommand(int FirstUserId, int SecondUserId) : IRequest<Result<FriendshipDto>>;
+public sealed record ConfirmFriendshipCommand(Guid FirstUserId, Guid SecondUserId)
+    : IRequest<Result<FriendshipDto>>;

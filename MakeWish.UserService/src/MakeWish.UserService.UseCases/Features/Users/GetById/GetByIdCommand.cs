@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.UserService.UseCases.Features.Users.GetById;
 
-public sealed record GetByIdCommand(int Id) : IRequest<Result<UserDto>>;
+public sealed record GetByIdCommand(Guid Id) : IRequest<Result<UserDto>>;

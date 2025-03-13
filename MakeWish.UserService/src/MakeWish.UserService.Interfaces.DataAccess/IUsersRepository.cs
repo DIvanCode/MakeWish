@@ -2,9 +2,9 @@
 
 namespace MakeWish.UserService.Interfaces.DataAccess;
 
-public interface IUserRepository : IBaseRepository<User>
+public interface IUsersRepository : IBaseRepository<User>
 {
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
-    Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<bool> HasWithEmailAsync(string email, CancellationToken cancellationToken);
 }

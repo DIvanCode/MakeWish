@@ -25,8 +25,8 @@ public sealed class CreateFriendshipHandler(IUnitOfWork unitOfWork, IUserContext
             return new ForbiddenError(
                 nameof(Friendship), 
                 "create", 
-                nameof(Friendship.FirstUser), 
-                request.SecondUserId);
+                nameof(User.Id), 
+                request.FirstUserId);
         }
         
         var firstUser = await unitOfWork.Users.GetByIdAsync(request.FirstUserId, cancellationToken);
