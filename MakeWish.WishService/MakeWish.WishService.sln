@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Models", "src\MakeWish.WishService.Models\MakeWish.WishService.Models.csproj", "{4D650A3A-41BF-4C2B-B97D-5CAD5ED2F564}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.UseCases", "src\MakeWish.WishService.UseCases\MakeWish.WishService.UseCases.csproj", "{BFAB165D-CBF1-45C8-A99B-FB20E7582DA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Interfaces.DataAccess", "src\MakeWish.WishService.Interfaces.DataAccess\MakeWish.WishService.Interfaces.DataAccess.csproj", "{516EAEC8-CCF3-4209-A40D-727BB020DC26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Utils", "src\MakeWish.WishService.Utils\MakeWish.WishService.Utils.csproj", "{239F851D-B7B7-4621-AB4B-7E92EA40FCA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.UnitTests.Models", "tests\MakeWish.WishService.UnitTests.Models\MakeWish.WishService.UnitTests.Models.csproj", "{3B3CBA88-F55D-4B9E-888D-5B8C51F6AE8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.UnitTests.Common", "tests\MakeWish.WishService.UnitTests.Common\MakeWish.WishService.UnitTests.Common.csproj", "{5EB5AB9C-E193-4DED-B296-943AB2CD0846}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.UnitTests.UseCases", "tests\MakeWish.WishService.UnitTests.UseCases\MakeWish.WishService.UnitTests.UseCases.csproj", "{ECE25760-570E-4A4E-8EDE-7DB9155FB348}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D650A3A-41BF-4C2B-B97D-5CAD5ED2F564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D650A3A-41BF-4C2B-B97D-5CAD5ED2F564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D650A3A-41BF-4C2B-B97D-5CAD5ED2F564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D650A3A-41BF-4C2B-B97D-5CAD5ED2F564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFAB165D-CBF1-45C8-A99B-FB20E7582DA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFAB165D-CBF1-45C8-A99B-FB20E7582DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFAB165D-CBF1-45C8-A99B-FB20E7582DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFAB165D-CBF1-45C8-A99B-FB20E7582DA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{516EAEC8-CCF3-4209-A40D-727BB020DC26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{516EAEC8-CCF3-4209-A40D-727BB020DC26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{516EAEC8-CCF3-4209-A40D-727BB020DC26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{516EAEC8-CCF3-4209-A40D-727BB020DC26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239F851D-B7B7-4621-AB4B-7E92EA40FCA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239F851D-B7B7-4621-AB4B-7E92EA40FCA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239F851D-B7B7-4621-AB4B-7E92EA40FCA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239F851D-B7B7-4621-AB4B-7E92EA40FCA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B3CBA88-F55D-4B9E-888D-5B8C51F6AE8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B3CBA88-F55D-4B9E-888D-5B8C51F6AE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B3CBA88-F55D-4B9E-888D-5B8C51F6AE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B3CBA88-F55D-4B9E-888D-5B8C51F6AE8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EB5AB9C-E193-4DED-B296-943AB2CD0846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EB5AB9C-E193-4DED-B296-943AB2CD0846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EB5AB9C-E193-4DED-B296-943AB2CD0846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EB5AB9C-E193-4DED-B296-943AB2CD0846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECE25760-570E-4A4E-8EDE-7DB9155FB348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECE25760-570E-4A4E-8EDE-7DB9155FB348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECE25760-570E-4A4E-8EDE-7DB9155FB348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECE25760-570E-4A4E-8EDE-7DB9155FB348}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

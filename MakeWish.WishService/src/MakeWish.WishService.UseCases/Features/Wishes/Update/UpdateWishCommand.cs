@@ -1,0 +1,8 @@
+﻿using FluentResults;
+using MakeWish.WishService.UseCases.Dto;
+using MediatR;
+
+namespace MakeWish.WishService.UseCases.Features.Wishes.Update;
+
+public sealed record UpdateWishCommand(Guid WishId, string Title, string? Description)
+    : IRequest<Result<WishDto>>;

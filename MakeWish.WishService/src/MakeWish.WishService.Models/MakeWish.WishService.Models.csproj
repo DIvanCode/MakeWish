@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Ensure.That" Version="10.1.0" />
+      <PackageReference Include="FluentResults" Version="3.16.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MakeWish.WishService.Utils\MakeWish.WishService.Utils.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="WishList.cs" />
+    </ItemGroup>
+
+</Project>
