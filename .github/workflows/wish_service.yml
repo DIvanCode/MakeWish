@@ -1,0 +1,15 @@
+name: wishes
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - MakeWish.WishService/**
+      - .github/**
+
+jobs:
+  dotnet:
+    uses: ./.github/workflows/dotnet.yml
+    with:
+      solution: MakeWish.WishService/MakeWish.WishService.sln
