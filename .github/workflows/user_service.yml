@@ -6,11 +6,7 @@ on:
       - master
     paths:
       - MakeWish.UserService/**
-  push:
-    branches:
-      - master
-    paths:
-      - MakeWish.UserService/**
+      - .github/**
 
 jobs:
   MakeWish.UserService - Build and Test:

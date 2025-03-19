@@ -6,14 +6,10 @@ on:
       - master
     paths:
       - MakeWish.WishService/**
-  push:
-    branches:
-      - master
-    paths:
-      - MakeWish.WishService/**
+      - .github/**
 
 jobs:
-  MakeWish.UserService - Build and Test:
+  MakeWish.WishService - Build and Test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
