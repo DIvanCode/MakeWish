@@ -1,0 +1,34 @@
+name: .NET
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - MakeWish.WishService/**
+  push:
+    branches:
+      - master
+    paths:
+      - MakeWish.WishService/**
+
+jobs:
+  MakeWish.UserService - Build and Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore MakeWish.WishService/src
+
+      - name: Build
+        run: dotnet build MakeWish.WishService/src --no-restore
+      
+      - name: Test
+        run: dotnet test .MakeWish.WishService/tests
