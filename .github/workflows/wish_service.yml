@@ -1,4 +1,4 @@
-name: .NET
+name: WishService - Build and Test
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  MakeWish.WishService - Build and Test:
+  wish-service-build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -1,4 +1,4 @@
-name: .NET
+name: UserService - Build and Test
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  MakeWish.UserService - Build and Test:
+  user-service-build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
