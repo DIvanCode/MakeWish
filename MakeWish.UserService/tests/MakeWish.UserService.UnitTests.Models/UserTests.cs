@@ -1,5 +1,6 @@
 ﻿using MakeWish.UserService.Models;
 using MakeWish.UserService.UnitTests.Common;
+using MakeWish.UserService.UnitTests.Common.Models;
 
 namespace MakeWish.UserService.UnitTests.Models;
 

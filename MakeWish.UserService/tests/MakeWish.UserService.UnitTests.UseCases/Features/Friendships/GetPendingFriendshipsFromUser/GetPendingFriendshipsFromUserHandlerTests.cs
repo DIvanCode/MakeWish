@@ -1,7 +1,8 @@
-﻿using MakeWish.UserService.Interfaces.DataAccess;
+﻿using MakeWish.UserService.Adapters.DataAccess.InMemory;
+using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
 using MakeWish.UserService.UnitTests.Common;
-using MakeWish.UserService.UnitTests.Common.DataAccess;
+using MakeWish.UserService.UnitTests.Common.Models;
 using MakeWish.UserService.UseCases.Features.Friendships.GetPendingFriendshipsFromUser;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
@@ -107,8 +108,15 @@ public class GetPendingFriendshipsFromUserHandlerTests
         _unitOfWork.Users.Add(secondUser);
         _unitOfWork.Users.Add(thirdUser);
 
-        var friendship1 = Friendship.Create(user, secondUser);
-        var friendship2 = Friendship.Create(user, thirdUser);
+        var friendship1 = new FriendshipBuilder()
+            .WithFirstUser(user)
+            .WithSecondUser(thirdUser)
+            .Build();
+        
+        var friendship2 = new FriendshipBuilder()
+            .WithFirstUser(user)
+            .WithSecondUser(thirdUser)
+            .Build();
         
         _unitOfWork.Friendships.Add(friendship1);
         _unitOfWork.Friendships.Add(friendship2);
@@ -141,11 +149,21 @@ public class GetPendingFriendshipsFromUserHandlerTests
         _unitOfWork.Users.Add(thirdUser);
         _unitOfWork.Users.Add(fourthUser);
 
-        var friendship1 = Friendship.Create(secondUser, user);
-        var friendship2 = Friendship.Create(user, thirdUser);
-        var friendship3 = Friendship.Create(user, fourthUser);
+        var friendship1 = new FriendshipBuilder()
+            .WithFirstUser(secondUser)
+            .WithSecondUser(user)
+            .Build();
         
-        friendship2.ConfirmBy(thirdUser);
+        var friendship2 = new FriendshipBuilder()
+            .WithFirstUser(user)
+            .WithSecondUser(thirdUser)
+            .Build()
+            .ConfirmedBy(thirdUser);
+        
+        var friendship3 = new FriendshipBuilder()
+            .WithFirstUser(user)
+            .WithSecondUser(fourthUser)
+            .Build();
         
         _unitOfWork.Friendships.Add(friendship1);
         _unitOfWork.Friendships.Add(friendship2);

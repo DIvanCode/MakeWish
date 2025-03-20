@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\MakeWish.UserService.Adapters.DataAccess.InMemory\MakeWish.UserService.Adapters.DataAccess.InMemory.csproj" />
       <ProjectReference Include="..\..\src\MakeWish.UserService.UseCases\MakeWish.UserService.UseCases.csproj" />
       <ProjectReference Include="..\MakeWish.UserService.UnitTests.Common\MakeWish.UserService.UnitTests.Common.csproj" />
     </ItemGroup>

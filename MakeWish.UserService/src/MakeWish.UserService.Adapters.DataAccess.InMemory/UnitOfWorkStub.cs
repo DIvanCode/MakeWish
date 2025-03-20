@@ -1,6 +1,6 @@
 ﻿using MakeWish.UserService.Interfaces.DataAccess;
 
-namespace MakeWish.UserService.UnitTests.Common.DataAccess;
+namespace MakeWish.UserService.Adapters.DataAccess.InMemory;
 
 public sealed class UnitOfWorkStub : IUnitOfWork
 {

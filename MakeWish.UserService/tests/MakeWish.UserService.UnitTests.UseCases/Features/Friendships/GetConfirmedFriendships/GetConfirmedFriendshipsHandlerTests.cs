@@ -1,7 +1,8 @@
-﻿using MakeWish.UserService.Interfaces.DataAccess;
+﻿using MakeWish.UserService.Adapters.DataAccess.InMemory;
+using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
 using MakeWish.UserService.UnitTests.Common;
-using MakeWish.UserService.UnitTests.Common.DataAccess;
+using MakeWish.UserService.UnitTests.Common.Models;
 using MakeWish.UserService.UseCases.Features.Friendships.GetConfirmedFriendships;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
@@ -84,8 +85,11 @@ public class GetConfirmedFriendshipsHandlerTests
         _unitOfWork.Users.Add(firstUser);
         _unitOfWork.Users.Add(secondUser);
 
-        var friendship = Friendship.Create(firstUser, secondUser);
-        friendship.ConfirmBy(secondUser);
+        var friendship = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(secondUser)
+            .Build()
+            .ConfirmedBy(secondUser);
         
         _unitOfWork.Friendships.Add(friendship);
 
@@ -118,11 +122,17 @@ public class GetConfirmedFriendshipsHandlerTests
         _unitOfWork.Users.Add(secondUser);
         _unitOfWork.Users.Add(thirdUser);
 
-        var friendship1 = Friendship.Create(firstUser, secondUser);
-        var friendship2 = Friendship.Create(thirdUser, firstUser);
+        var friendship1 = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(secondUser)
+            .Build()
+            .ConfirmedBy(secondUser);
         
-        friendship1.ConfirmBy(secondUser);
-        friendship2.ConfirmBy(firstUser);
+        var friendship2 = new FriendshipBuilder()
+            .WithFirstUser(thirdUser)
+            .WithSecondUser(firstUser)
+            .Build()
+            .ConfirmedBy(firstUser);
         
         _unitOfWork.Friendships.Add(friendship1);
         _unitOfWork.Friendships.Add(friendship2);
@@ -157,10 +167,16 @@ public class GetConfirmedFriendshipsHandlerTests
         _unitOfWork.Users.Add(secondUser);
         _unitOfWork.Users.Add(thirdUser);
 
-        var friendship1 = Friendship.Create(firstUser, secondUser);
-        var friendship2 = Friendship.Create(firstUser, thirdUser);
+        var friendship1 = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(secondUser)
+            .Build();
         
-        friendship2.ConfirmBy(thirdUser);
+        var friendship2 = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(thirdUser)
+            .Build()
+            .ConfirmedBy(thirdUser);
 
         _unitOfWork.Friendships.Add(friendship1);
         _unitOfWork.Friendships.Add(friendship2);

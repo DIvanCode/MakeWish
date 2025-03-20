@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\MakeWish.UserService.Interfaces.DataAccess\MakeWish.UserService.Interfaces.DataAccess.csproj" />
       <ProjectReference Include="..\..\src\MakeWish.UserService.Models\MakeWish.UserService.Models.csproj" />
     </ItemGroup>
 

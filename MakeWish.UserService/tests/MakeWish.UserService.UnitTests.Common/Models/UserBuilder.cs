@@ -1,6 +1,6 @@
 ﻿using MakeWish.UserService.Models;
 
-namespace MakeWish.UserService.UnitTests.Common;
+namespace MakeWish.UserService.UnitTests.Common.Models;
 
 public sealed class UserBuilder
 {

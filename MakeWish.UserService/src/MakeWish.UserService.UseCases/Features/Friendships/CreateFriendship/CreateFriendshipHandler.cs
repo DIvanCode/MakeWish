@@ -47,10 +47,16 @@ public sealed class CreateFriendshipHandler(IUnitOfWork unitOfWork, IUserContext
         {
             return new EntityAlreadyExistsError(nameof(Friendship), "such users");
         }
-
-        var friendInvitation = Friendship.Create(firstUser, secondUser);
+        
+        var createResult = Friendship.Create(firstUser, secondUser);
+        if (createResult.IsFailed)
+        {
+            return createResult.ToResult<FriendshipDto>();
+        }
+        
+        var friendInvitation = createResult.Value;
         unitOfWork.Friendships.Add(friendInvitation);
-
+        
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new FriendshipDto(
