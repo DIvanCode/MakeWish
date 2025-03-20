@@ -1,8 +1,7 @@
-﻿using System.Text.Json;
-using MakeWish.UserService.Interfaces.DataAccess;
+﻿using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
 
-namespace MakeWish.UserService.UnitTests.Common.DataAccess;
+namespace MakeWish.UserService.Adapters.DataAccess.InMemory;
 
 public sealed class UsersRepositoryStub : IUsersRepository
 {

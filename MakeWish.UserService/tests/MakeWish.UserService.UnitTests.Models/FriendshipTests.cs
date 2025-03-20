@@ -1,5 +1,7 @@
 ﻿using MakeWish.UserService.Models;
 using MakeWish.UserService.UnitTests.Common;
+using MakeWish.UserService.UnitTests.Common.Models;
+using MakeWish.UserService.Utils.Errors;
 
 namespace MakeWish.UserService.UnitTests.Models;
 
@@ -13,14 +15,15 @@ public class FriendshipTests
         var user2 = new UserBuilder().Build();
 
         // Act
-        var friendship = Friendship.Create(user1, user2);
+        var result = Friendship.Create(user1, user2);
 
         // Assert
-        Assert.NotNull(friendship);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
         Assert.NotEqual(user1, user2);
-        Assert.Equal(user1, friendship.FirstUser);
-        Assert.Equal(user2, friendship.SecondUser);
-        Assert.False(friendship.IsConfirmed);
+        Assert.Equal(user1, result.Value.FirstUser);
+        Assert.Equal(user2, result.Value.SecondUser);
+        Assert.False(result.Value.IsConfirmed);
     }
 
     [Fact]
@@ -29,8 +32,12 @@ public class FriendshipTests
         // Arrange
         var user = new UserBuilder().Build();
 
-        // Act & Assert
-        Assert.ThrowsAny<ArgumentException>(() => Friendship.Create(user, user));
+        // Act
+        var result = Friendship.Create(user, user);
+        
+        // Assert
+        Assert.True(result.IsFailed);
+        Assert.IsType<BadRequestError>(result.Errors.First());
     }
 
     [Fact]
@@ -39,12 +46,13 @@ public class FriendshipTests
         // Arrange
         var user1 = new UserBuilder().Build();
         var user2 = new UserBuilder().Build();
-        var friendship = Friendship.Create(user1, user2);
+        var friendship = Friendship.Create(user1, user2).Value;
 
         // Act
-        friendship.ConfirmBy(user2);
+        var result = friendship.ConfirmBy(user2);
 
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.True(friendship.IsConfirmed);
     }
 
@@ -55,9 +63,13 @@ public class FriendshipTests
         var user1 = new UserBuilder().Build();
         var user2 = new UserBuilder().Build();
         var invalidUser = new UserBuilder().Build();
-        var friendship = Friendship.Create(user1, user2);
+        var friendship = Friendship.Create(user1, user2).Value;
 
-        // Act & Assert
-        Assert.ThrowsAny<ArgumentException>(() => friendship.ConfirmBy(invalidUser));
+        // Act
+        var result = friendship.ConfirmBy(invalidUser);
+        
+        // Assert
+        Assert.True(result.IsFailed);
+        Assert.IsType<ForbiddenError>(result.Errors.First());
     }
 }

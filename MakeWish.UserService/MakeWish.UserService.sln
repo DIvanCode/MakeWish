@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.UnitTests.UseCases", "tests\MakeWish.UserService.UnitTests.UseCases\MakeWish.UserService.UnitTests.UseCases.csproj", "{5FD32914-98EB-41C5-85AB-A15186985E6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Web", "src\MakeWish.UserService.Web\MakeWish.UserService.Web.csproj", "{A8BB09B4-6578-417C-9729-4D41C7B4043D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.UserService.Adapters.DataAccess.InMemory", "src\MakeWish.UserService.Adapters.DataAccess.InMemory\MakeWish.UserService.Adapters.DataAccess.InMemory.csproj", "{4F80776A-F9E7-481F-8554-31BFE436827A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +52,13 @@ Global
 		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FD32914-98EB-41C5-85AB-A15186985E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8BB09B4-6578-417C-9729-4D41C7B4043D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8BB09B4-6578-417C-9729-4D41C7B4043D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8BB09B4-6578-417C-9729-4D41C7B4043D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8BB09B4-6578-417C-9729-4D41C7B4043D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F80776A-F9E7-481F-8554-31BFE436827A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F80776A-F9E7-481F-8554-31BFE436827A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F80776A-F9E7-481F-8554-31BFE436827A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F80776A-F9E7-481F-8554-31BFE436827A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

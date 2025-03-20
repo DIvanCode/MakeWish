@@ -46,10 +46,14 @@ public sealed class ConfirmFriendshipHandler(IUnitOfWork unitOfWork, IUserContex
         {
             return new EntityNotFoundError(nameof(Friendship), "such users");
         }
-        
-        friendship.ConfirmBy(secondUser);
-        unitOfWork.Friendships.Update(friendship);
 
+        var confirmResult = friendship.ConfirmBy(secondUser);
+        if (confirmResult.IsFailed)
+        {
+            return confirmResult;
+        }
+        
+        unitOfWork.Friendships.Update(friendship);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new FriendshipDto(

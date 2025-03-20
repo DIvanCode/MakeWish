@@ -1,7 +1,8 @@
-﻿using MakeWish.UserService.Interfaces.DataAccess;
+﻿using MakeWish.UserService.Adapters.DataAccess.InMemory;
+using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
 using MakeWish.UserService.UnitTests.Common;
-using MakeWish.UserService.UnitTests.Common.DataAccess;
+using MakeWish.UserService.UnitTests.Common.Models;
 using MakeWish.UserService.UseCases.Features.Friendships.ConfirmFriendship;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
@@ -65,7 +66,10 @@ public class ConfirmFriendshipHandlerTests
         _unitOfWork.Users.Add(firstUser);
         _unitOfWork.Users.Add(secondUser);
 
-        var friendship = Friendship.Create(firstUser, secondUser);
+        var friendship = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(secondUser)
+            .Build();
         
         _unitOfWork.Friendships.Add(friendship);
 
@@ -137,7 +141,10 @@ public class ConfirmFriendshipHandlerTests
         _unitOfWork.Users.Add(firstUser);
         _unitOfWork.Users.Add(secondUser);
 
-        var friendship = Friendship.Create(firstUser, secondUser);
+        var friendship = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(secondUser)
+            .Build();
         
         _unitOfWork.Friendships.Add(friendship);
 
