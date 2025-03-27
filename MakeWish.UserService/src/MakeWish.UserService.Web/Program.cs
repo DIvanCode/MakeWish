@@ -1,10 +1,12 @@
-using MakeWish.UserService.Web.DependencyInjection;
+using MakeWish.UserService.Adapters.DataAccess.EntityFramework;
+using MakeWish.UserService.UseCases;
+using MakeWish.UserService.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.SetupWeb(builder.Configuration);
+builder.Services.SetupDataAccessEntityFramework(builder.Configuration);
 builder.Services.SetupUseCases();
-builder.Services.SetupDataAccess();
 
 var app = builder.Build();
 
