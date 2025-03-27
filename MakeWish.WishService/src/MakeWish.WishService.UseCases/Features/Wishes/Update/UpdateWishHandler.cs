@@ -17,6 +17,12 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
         {
             return new AuthenticationError();
         }
+
+        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
+        if (user is null)
+        {
+            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
+        }
         
         var wish = await unitOfWork.Wishes.GetByIdAsync(request.WishId, cancellationToken);
         if (wish is null)
@@ -24,13 +30,7 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
         }
 
-        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
-        if (user is null)
-        {
-            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
-        }
-
-        var updateResult = wish.Update(request.Title, request.Description, user);
+        var updateResult = wish.Update(request.Title, request.Description, by: user);
         if (updateResult.IsFailed)
         {
             return updateResult;
@@ -39,6 +39,13 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
         unitOfWork.Wishes.Update(wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new WishDto(wish.Id, wish.Title, wish.Description, wish.Status.ToString(), wish.Owner.Id);
+        return new WishDto(
+            wish.Id,
+            wish.Title,
+            wish.Description,
+            Status: wish.GetStatusFor(user),
+            wish.Owner.Id,
+            wish.GetPromiserFor(user)?.Id,
+            wish.GetCompleter()?.Id);
     }
 }

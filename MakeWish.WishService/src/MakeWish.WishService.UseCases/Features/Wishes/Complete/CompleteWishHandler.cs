@@ -17,6 +17,12 @@ public sealed class CompleteWishHandler(IUserContext userContext, IUnitOfWork un
         {
             return new AuthenticationError();
         }
+
+        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
+        if (user is null)
+        {
+            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
+        }
         
         var wish = await unitOfWork.Wishes.GetByIdAsync(request.WishId, cancellationToken);
         if (wish is null)
@@ -24,13 +30,7 @@ public sealed class CompleteWishHandler(IUserContext userContext, IUnitOfWork un
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
         }
 
-        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
-        if (user is null)
-        {
-            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
-        }
-
-        var completeResult = wish.CompleteBy(user);
+        var completeResult = wish.Complete(by: user);
         if (completeResult.IsFailed)
         {
             return completeResult;
@@ -43,9 +43,9 @@ public sealed class CompleteWishHandler(IUserContext userContext, IUnitOfWork un
             wish.Id,
             wish.Title,
             wish.Description,
-            wish.Status.ToString(),
+            Status: wish.GetStatusFor(user),
             wish.Owner.Id,
-            wish.Promiser?.Id,
-            wish.Completer?.Id);
+            wish.GetPromiserFor(user)?.Id,
+            wish.GetCompleter()?.Id);
     }
 }

@@ -16,6 +16,12 @@ public sealed class DeleteWishHandler(IUserContext userContext, IUnitOfWork unit
         {
             return new AuthenticationError();
         }
+
+        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
+        if (user is null)
+        {
+            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
+        }
         
         var wish = await unitOfWork.Wishes.GetByIdAsync(request.WishId, cancellationToken);
         if (wish is null)
@@ -23,13 +29,7 @@ public sealed class DeleteWishHandler(IUserContext userContext, IUnitOfWork unit
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
         }
 
-        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
-        if (user is null)
-        {
-            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
-        }
-
-        var deleteResult = wish.DeleteBy(user);
+        var deleteResult = wish.Delete(by: user);
         if (deleteResult.IsFailed)
         {
             return deleteResult;

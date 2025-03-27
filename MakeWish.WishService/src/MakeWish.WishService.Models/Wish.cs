@@ -12,43 +12,76 @@ public sealed class Wish
     
     public string? Description { get; private set; }
 
-    public WishStatus Status { get; private set; }
-
     public User Owner { get; init; }
 
-    public User? Promiser { get; private set; }
+    private WishStatus _status;
 
-    public User? Completer { get; private set; }
+    private User? _promiser;
 
-    private Wish(Guid id, string title, string? description, WishStatus status, User owner)
+    private User? _completer;
+
+    private Wish(Guid id, string title, string? description, User owner, WishStatus status)
     {
         Id = id;
         Title = title;
         Description = description;
-        Status = status;
         Owner = owner;
+        _status = status;
+    }
+
+    public WishStatus GetStatusFor(User user)
+    {
+        EnsureArg.IsNotNull(user);
+
+        if (_status is not WishStatus.Promised || user.Id != Owner.Id)
+        {
+            return _status;
+        }
+        
+        EnsureArg.IsNotNull(_promiser);
+        return Owner.Id == _promiser.Id ? WishStatus.Promised : WishStatus.Created;
+    }
+    
+    public User? GetPromiserFor(User user)
+    {
+        EnsureArg.IsNotNull(user);
+
+        if (_status is not WishStatus.Promised || user.Id != Owner.Id)
+        {
+            return _promiser;
+        }
+
+        EnsureArg.IsNotNull(_promiser);
+        return Owner.Id == _promiser.Id ? _promiser : null;
+    }
+    
+    public User? GetCompleter()
+    {
+        return _completer;
     }
     
     public static Wish Create(string title, string? description, User owner)
     {
-        EnsureArg.IsNotEmptyOrWhiteSpace(title);
+        EnsureArg.IsNotEmptyOrWhiteSpace(title, nameof(title));
+        EnsureArg.IsNotNull(owner);
 
         var id = Guid.NewGuid();
-        return new Wish(id, title, description, WishStatus.Created, owner);
+        return new Wish(id, title, description, owner, WishStatus.Created);
     }
 
-    public Result Update(string title, string? description, User updateBy)
+    public Result Update(string title, string? description, User by)
     {
         EnsureArg.IsNotEmptyOrWhiteSpace(title);
+        EnsureArg.IsNotNull(by);
         
-        if (Owner.Id != updateBy.Id)
+        if (Owner.Id != by.Id)
         {
-            return new ForbiddenError(nameof(Wish), "update", nameof(Owner), updateBy.Id);
+            return new ForbiddenError(nameof(Wish), nameof(Update), nameof(Id), Id);
         }
         
-        if (Status != WishStatus.Created)
+        if (_status != WishStatus.Created)
         {
-            return new ForbiddenError(nameof(Wish), "update", nameof(Status), Status.ToString());
+            return new ForbiddenError(nameof(Wish), nameof(Update), nameof(_status), _status);
         }
 
         Title = title;
@@ -57,136 +90,152 @@ public sealed class Wish
         return Result.Ok();
     }
 
-    public Result PromiseBy(User user)
+    public Result Promise(User by)
     {
-        if (Status != WishStatus.Created)
+        EnsureArg.IsNotNull(by);
+        
+        if (_status != WishStatus.Created)
         {
-            return new ForbiddenError(nameof(Wish), "promise", nameof(Status), Status.ToString());
+            return new ForbiddenError(nameof(Wish), nameof(Promise), nameof(_status), _status);
         }
         
-        Promiser = user;
-        Status = WishStatus.Promised;
+        _promiser = by;
+        _status = WishStatus.Promised;
 
         return Result.Ok();
     }
     
-    public Result PromiseCancelBy(User user)
+    public Result PromiseCancel(User by)
     {
-        if (Status != WishStatus.Promised)
+        EnsureArg.IsNotNull(by);
+        
+        if (_status != WishStatus.Promised)
         {
-            return new ForbiddenError(nameof(Wish), "promise cancel", nameof(Status), Status.ToString());
+            return new ForbiddenError(nameof(Wish), nameof(PromiseCancel), nameof(_status), _status);
         }
         
-        EnsureArg.IsNotNull(Promiser, nameof(Promiser));
-        if (Promiser.Id != user.Id)
+        EnsureArg.IsNotNull(_promiser, nameof(_promiser));
+        if (_promiser.Id != by.Id)
         {
-            return new ForbiddenError(nameof(Wish), "promise cancel", nameof(Promiser), user.Id);
+            return new ForbiddenError(nameof(Wish), nameof(PromiseCancel), nameof(Id), Id);
         }
         
-        Promiser = null;
-        Status = WishStatus.Created;
+        _promiser = null;
+        _status = WishStatus.Created;
 
         return Result.Ok();
     }
     
-    public Result CompleteBy(User user)
+    public Result Complete(User by)
     {
-        if (user.Id == Owner.Id)
+        EnsureArg.IsNotNull(by);
+        
+        if (Owner.Id == by.Id)
         {
-            switch (Status)
+            switch (_status)
             {
                 case WishStatus.Completed or WishStatus.Approved or WishStatus.Deleted:
                 {
-                    return new ForbiddenError(nameof(Wish), "complete", nameof(Status), Status.ToString());
+                    return new ForbiddenError(nameof(Wish), nameof(Complete), nameof(_status), _status);
                 }
                 case WishStatus.Promised:
                 {
-                    EnsureArg.IsNotNull(Promiser, nameof(Promiser));
-                    if (Promiser.Id != user.Id)
+                    EnsureArg.IsNotNull(_promiser, nameof(_promiser));
+                    if (_promiser.Id != by.Id)
                     {
-                        return new ForbiddenError(nameof(Wish), "complete", nameof(Promiser), user.Id);
+                        return new ForbiddenError(nameof(Wish), nameof(Complete), nameof(Id), Id);
                     }
                     break;
                 }
             }
 
-            Completer = user;
-            Status = WishStatus.Completed;
+            _completer = by;
+            _status = WishStatus.Completed;
             
-            var result = CompleteApproveBy(user);
-            if (result.IsFailed)
-            {
-                return result;
-            }
+            var result = CompleteApprove(by);
+            EnsureArg.IsTrue(result.IsSuccess);
         }
         else
         {
-            if (Status != WishStatus.Promised)
+            if (_status != WishStatus.Promised)
             {
-                return new ForbiddenError(nameof(Wish), "complete", nameof(Status), Status.ToString());
+                return new ForbiddenError(nameof(Wish), nameof(Complete), nameof(_status), _status);
             }
             
-            EnsureArg.IsNotNull(Promiser, nameof(Promiser));
-            if (Promiser.Id != user.Id)
+            EnsureArg.IsNotNull(_promiser, nameof(_promiser));
+            if (_promiser.Id != by.Id)
             {
-                return new ForbiddenError(nameof(Wish), "complete", nameof(Promiser), user.Id);
+                return new ForbiddenError(nameof(Wish), nameof(Complete), nameof(Id), Id);
             }
 
-            Completer = user;
-            Status = WishStatus.Completed;
+            _completer = by;
+            _status = WishStatus.Completed;
         }
 
         return Result.Ok();
     }
 
-    public Result CompleteApproveBy(User user)
+    public Result CompleteApprove(User by)
     {
-        if (Status != WishStatus.Completed)
+        EnsureArg.IsNotNull(by);
+        
+        if (_status != WishStatus.Completed)
         {
-            return new ForbiddenError(nameof(Wish), "complete approve", nameof(Status), Status.ToString());
+            return new ForbiddenError(nameof(Wish), nameof(CompleteApprove), nameof(_status), _status);
         }
         
-        if (user.Id != Owner.Id)
+        if (Owner.Id != by.Id)
         {
-            return new ForbiddenError(nameof(Wish), "complete approve", nameof(Id), Owner.Id);
+            return new ForbiddenError(nameof(Wish), nameof(CompleteApprove), nameof(Id), Id);
         }
         
-        Status = WishStatus.Approved;
+        _status = WishStatus.Approved;
 
-        return Result.Ok();
-    }
-    
-    public Result DeleteBy(User user)
-    {
-        if (user.Id != Owner.Id)
-        {
-            return new ForbiddenError(nameof(Wish), "delete", nameof(Id), Owner.Id);
-        }
-
-        if (Status != WishStatus.Created)
-        {
-            return new ForbiddenError(nameof(Wish), "delete", nameof(Status), Status.ToString());
-        }
-        
-        Status = WishStatus.Deleted;
-        
         return Result.Ok();
     }
     
-    public Result RestoreBy(User user)
+    public Result Delete(User by)
     {
-        if (user.Id != Owner.Id)
+        EnsureArg.IsNotNull(by);
+        
+        if (Owner.Id != by.Id)
         {
-            return new ForbiddenError(nameof(Wish), "restore", nameof(Id), Owner.Id);
+            return new ForbiddenError(nameof(Wish), nameof(Delete), nameof(Id), Id);
         }
 
-        if (Status != WishStatus.Deleted)
+        if (_status != WishStatus.Created)
         {
-            return new ForbiddenError(nameof(Wish), "restore", nameof(Status), Status.ToString());
+            return new ForbiddenError(nameof(Wish), nameof(Delete), nameof(_status), _status);
         }
         
-        Status = WishStatus.Created;
+        _status = WishStatus.Deleted;
         
         return Result.Ok();
+    }
+    
+    public Result Restore(User by)
+    {
+        EnsureArg.IsNotNull(by);
+        
+        if (Owner.Id != by.Id)
+        {
+            return new ForbiddenError(nameof(Wish), nameof(Restore), nameof(Id), Id);
+        }
+
+        if (_status != WishStatus.Deleted)
+        {
+            return new ForbiddenError(nameof(Wish), nameof(Restore), nameof(_status), _status);
+        }
+        
+        _status = WishStatus.Created;
+        
+        return Result.Ok();
+    }
+
+    public bool IsAccessible(User to, bool existsWishListContainingWishWithUserAccess)
+    {
+        EnsureArg.IsNotNull(to);
+        
+        return Owner.Id == to.Id || existsWishListContainingWishWithUserAccess;
     }
 }

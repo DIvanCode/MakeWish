@@ -18,4 +18,9 @@ public sealed class EntityNotFoundError : Error
         : base($"'{type}' with '{field}' = '{value}' does not exist.")
     {
     }
+    
+    public EntityNotFoundError(string type, string entity, string field, object value)
+        : base($"'{entity}' with '{field}' = '{value}' does not exist in '{type}'.")
+    {
+    }
 }

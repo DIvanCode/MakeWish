@@ -17,6 +17,12 @@ public sealed class CompleteApproveWishHandler(IUserContext userContext, IUnitOf
         {
             return new AuthenticationError();
         }
+
+        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
+        if (user is null)
+        {
+            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
+        }
         
         var wish = await unitOfWork.Wishes.GetByIdAsync(request.WishId, cancellationToken);
         if (wish is null)
@@ -24,13 +30,7 @@ public sealed class CompleteApproveWishHandler(IUserContext userContext, IUnitOf
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
         }
 
-        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
-        if (user is null)
-        {
-            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
-        }
-
-        var completeApproveResult = wish.CompleteApproveBy(user);
+        var completeApproveResult = wish.CompleteApprove(by: user);
         if (completeApproveResult.IsFailed)
         {
             return completeApproveResult;
@@ -43,9 +43,9 @@ public sealed class CompleteApproveWishHandler(IUserContext userContext, IUnitOf
             wish.Id,
             wish.Title,
             wish.Description,
-            wish.Status.ToString(),
+            Status: wish.GetStatusFor(user),
             wish.Owner.Id,
-            wish.Promiser?.Id,
-            wish.Completer?.Id);
+            wish.GetPromiserFor(user)?.Id,
+            wish.GetCompleter()?.Id);
     }
 }
