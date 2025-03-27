@@ -8,11 +8,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace MakeWish.UserService.Web.DependencyInjection;
+namespace MakeWish.UserService.Web;
 
-internal static class WebDependencyInjection
+public static class ServiceCollectionExtensions
 {
-    internal static void SetupWeb(this IServiceCollection services, IConfiguration configuration)
+    public static void SetupWeb(this IServiceCollection services, IConfiguration configuration)
     {
         SetupAuthentication(services, configuration);
         SetupAuthorization(services, configuration);

@@ -11,4 +11,8 @@
       <ProjectReference Include="..\MakeWish.UserService.Interfaces.DataAccess\MakeWish.UserService.Interfaces.DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    </ItemGroup>
+
 </Project>

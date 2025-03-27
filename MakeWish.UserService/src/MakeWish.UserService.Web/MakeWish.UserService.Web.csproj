@@ -7,13 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MakeWish.UserService.Adapters.DataAccess.EntityFramework\MakeWish.UserService.Adapters.DataAccess.EntityFramework.csproj" />
       <ProjectReference Include="..\MakeWish.UserService.Adapters.DataAccess.InMemory\MakeWish.UserService.Adapters.DataAccess.InMemory.csproj" />
       <ProjectReference Include="..\MakeWish.UserService.UseCases\MakeWish.UserService.UseCases.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Ensure.That" Version="10.1.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" /><PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
       <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
     </ItemGroup>
 

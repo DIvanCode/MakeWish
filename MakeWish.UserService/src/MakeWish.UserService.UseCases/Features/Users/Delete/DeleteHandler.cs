@@ -1,7 +1,6 @@
 ﻿using FluentResults;
 using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
-using MakeWish.UserService.UseCases.Dto;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
 using MediatR;

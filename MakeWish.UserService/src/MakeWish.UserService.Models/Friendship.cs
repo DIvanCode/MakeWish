@@ -10,7 +10,13 @@ public sealed class Friendship
     public User SecondUser { get; init; }
     
     public bool IsConfirmed { get; private set; }
-
+    
+    // Do not call explicitly: only for EF
+    // ReSharper disable once UnusedMember.Local
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Friendship() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    
     private Friendship(User firstUser, User secondUser)
     {
         FirstUser = firstUser;
