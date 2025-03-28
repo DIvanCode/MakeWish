@@ -18,4 +18,9 @@ public sealed class EntityAlreadyExistsError : Error
         : base($"'{type}' with '{field}' = '{value}' already exists.")
     {
     }
+    
+    public EntityAlreadyExistsError(string type, string entity, string field, object value)
+        : base($"'{type}' already contains '{entity}' with '{field} = '{value}'.")
+    {
+    }
 }

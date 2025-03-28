@@ -43,7 +43,7 @@ public class DeleteWishHandlerTests
         
         // Assert
         result.IsSuccess.Should().BeTrue();
-        wish.Status.Should().Be(WishStatus.Deleted);
+        wish.GetStatusFor(owner).Should().Be(WishStatus.Deleted);
     }
 
     [Fact]

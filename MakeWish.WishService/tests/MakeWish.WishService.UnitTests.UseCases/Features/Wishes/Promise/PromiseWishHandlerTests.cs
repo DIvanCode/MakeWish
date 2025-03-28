@@ -27,14 +27,17 @@ public class PromiseWishHandlerTests
     public async Task Handle_ShouldPromiseWish_WhenUserIsAuthenticatedAndWishExists()
     {
         // Arrange
-        var user = new UserBuilder().Build();
-        _unitOfWork.Users.Add(user);
+        var owner = new UserBuilder().Build();
+        var promiser = new UserBuilder().Build();
         
-        var wish = new WishBuilder().WithOwner(user).Build();
+        _unitOfWork.Users.Add(owner);
+        _unitOfWork.Users.Add(promiser);
+        
+        var wish = new WishBuilder().WithOwner(owner).Build();
         
         _unitOfWork.Wishes.Add(wish);
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
-        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
+        _userContextMock.Setup(uc => uc.UserId).Returns(promiser.Id);
 
         var command = new PromiseWishCommand(wish.Id);
 
@@ -43,8 +46,34 @@ public class PromiseWishHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        wish.Promiser.Should().Be(user);
-        wish.Status.Should().Be(WishStatus.Promised);
+        wish.GetPromiserFor(promiser).Should().Be(promiser);
+        wish.GetStatusFor(promiser).Should().Be(WishStatus.Promised);
+        wish.GetPromiserFor(owner).Should().Be(null);
+        wish.GetStatusFor(owner).Should().Be(WishStatus.Created);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldPromiseWish_WhenUserIsOwner()
+    {
+        // Arrange
+        var owner = new UserBuilder().Build();
+        _unitOfWork.Users.Add(owner);
+        
+        var wish = new WishBuilder().WithOwner(owner).Build();
+        
+        _unitOfWork.Wishes.Add(wish);
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+
+        var command = new PromiseWishCommand(wish.Id);
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        wish.GetPromiserFor(owner).Should().Be(owner);
+        wish.GetStatusFor(owner).Should().Be(WishStatus.Promised);
     }
 
     [Fact]

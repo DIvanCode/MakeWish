@@ -16,8 +16,4 @@
       <ProjectReference Include="..\MakeWish.WishService.Utils\MakeWish.WishService.Utils.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="WishList.cs" />
-    </ItemGroup>
-
 </Project>

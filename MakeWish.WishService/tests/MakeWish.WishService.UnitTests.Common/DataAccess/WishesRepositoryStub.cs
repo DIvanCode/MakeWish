@@ -27,4 +27,14 @@ public sealed class WishesRepositoryStub : IWishesRepository
     {
         return Task.FromResult(_wishes.SingleOrDefault(e => e.Id == id));
     }
+
+    public Task<List<Wish>> GetWithStatusAndOwnerAsync(WishStatus status, User owner, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_wishes.Where(wish => wish.GetStatusFor(owner) == status && wish.Owner == owner).ToList());
+    }
+
+    public Task<List<Wish>> GetWithPromiserAsync(User promiser, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_wishes.Where(wish => wish.GetPromiserFor(promiser) == promiser).ToList());
+    }
 }

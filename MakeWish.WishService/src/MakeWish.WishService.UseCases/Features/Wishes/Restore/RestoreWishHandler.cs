@@ -17,6 +17,12 @@ public sealed class RestoreWishHandler(IUserContext userContext, IUnitOfWork uni
         {
             return new AuthenticationError();
         }
+
+        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
+        if (user is null)
+        {
+            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
+        }
         
         var wish = await unitOfWork.Wishes.GetByIdAsync(request.Id, cancellationToken);
         if (wish is null)
@@ -24,13 +30,7 @@ public sealed class RestoreWishHandler(IUserContext userContext, IUnitOfWork uni
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.Id);
         }
 
-        var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
-        if (user is null)
-        {
-            return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
-        }
-
-        var restoreResult = wish.RestoreBy(user);
+        var restoreResult = wish.Restore(by: user);
         if (restoreResult.IsFailed)
         {
             return restoreResult;
@@ -39,6 +39,13 @@ public sealed class RestoreWishHandler(IUserContext userContext, IUnitOfWork uni
         unitOfWork.Wishes.Update(wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new WishDto(wish.Id, wish.Title, wish.Description, wish.Status.ToString(), wish.Owner.Id);
+        return new WishDto(
+            wish.Id,
+            wish.Title,
+            wish.Description,
+            Status: wish.GetStatusFor(user),
+            wish.Owner.Id,
+            wish.GetPromiserFor(user)?.Id,
+            wish.GetCompleter()?.Id);
     }
 }

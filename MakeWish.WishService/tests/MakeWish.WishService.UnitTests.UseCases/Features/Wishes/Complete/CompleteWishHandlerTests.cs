@@ -46,7 +46,7 @@ public class CompleteWishHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Status.Should().Be(WishStatus.Completed.ToString());
+        result.Value.Status.Should().Be(WishStatus.Completed);
         result.Value.CompleterId.Should().Be(otherUser.Id);
     }
     
@@ -70,7 +70,7 @@ public class CompleteWishHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Status.Should().Be(WishStatus.Approved.ToString());
+        result.Value.Status.Should().Be(WishStatus.Approved);
         result.Value.CompleterId.Should().Be(user.Id);
     }
     
@@ -94,7 +94,7 @@ public class CompleteWishHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Status.Should().Be(WishStatus.Approved.ToString());
+        result.Value.Status.Should().Be(WishStatus.Approved);
         result.Value.CompleterId.Should().Be(user.Id);
     }
 

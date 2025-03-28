@@ -48,8 +48,36 @@ public class PromiseCancelWishHandlerTests
         result.IsSuccess.Should().BeTrue();
         
         var updatedWish = await _unitOfWork.Wishes.GetByIdAsync(wish.Id, CancellationToken.None);
-        updatedWish!.Status.Should().Be(WishStatus.Created);
-        updatedWish.Promiser.Should().BeNull();
+        updatedWish!.GetStatusFor(promiser).Should().Be(WishStatus.Created);
+        updatedWish.GetPromiserFor(promiser).Should().BeNull();
+        updatedWish!.GetStatusFor(owner).Should().Be(WishStatus.Created);
+        updatedWish.GetPromiserFor(owner).Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldCancelPromise_WhenPromiserIsOwner()
+    {
+        // Arrange
+        var owner = new UserBuilder().Build();
+        _unitOfWork.Users.Add(owner);
+        
+        var wish = new WishBuilder().WithOwner(owner).Build().PromisedBy(owner);
+        _unitOfWork.Wishes.Add(wish);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+        
+        var command = new PromiseCancelWishCommand(wish.Id);
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        
+        var updatedWish = await _unitOfWork.Wishes.GetByIdAsync(wish.Id, CancellationToken.None);
+        updatedWish!.GetStatusFor(owner).Should().Be(WishStatus.Created);
+        updatedWish.GetPromiserFor(owner).Should().BeNull();
     }
 
     [Fact]

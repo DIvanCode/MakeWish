@@ -42,7 +42,7 @@ public class RestoreWishHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        wish.Status.Should().Be(WishStatus.Created);
+        wish.GetStatusFor(user).Should().Be(WishStatus.Created);
     }
 
     [Fact]

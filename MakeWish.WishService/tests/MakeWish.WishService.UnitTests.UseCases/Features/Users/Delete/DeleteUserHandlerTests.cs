@@ -34,7 +34,7 @@ public class DeleteUserHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        var deletedUser = _unitOfWork.Users.GetByIdAsync(user.Id, CancellationToken.None).Result;
+        var deletedUser = await _unitOfWork.Users.GetByIdAsync(user.Id, CancellationToken.None);
         deletedUser.Should().BeNull();
     }
 
