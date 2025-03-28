@@ -6,12 +6,12 @@ using MakeWish.WishService.UseCases.Services;
 using MakeWish.WishService.Utils.Errors;
 using MediatR;
 
-namespace MakeWish.WishService.UseCases.Features.WishLists.AllowReadCancel;
+namespace MakeWish.WishService.UseCases.Features.WishLists.DenyAccess;
 
 public sealed class DenyUserAccessToWishListHandler(IUserContext userContext, IUnitOfWork unitOfWork)
-    : IRequestHandler<AllowUserAccessToWishListCommand, Result>
+    : IRequestHandler<DenyUserAccessToWishListCommand, Result>
 {
-    public async Task<Result> Handle(AllowUserAccessToWishListCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DenyUserAccessToWishListCommand request, CancellationToken cancellationToken)
     {
         if (!userContext.IsAuthenticated)
         {
