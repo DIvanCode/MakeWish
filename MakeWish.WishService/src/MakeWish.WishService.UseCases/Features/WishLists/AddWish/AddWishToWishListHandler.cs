@@ -42,7 +42,7 @@ public sealed class AddWishToWishListHandler(IUserContext userContext, IUnitOfWo
             return addResult;
         }
         
-        unitOfWork.WishLists.Update(wishList);
+        unitOfWork.WishLists.AddWish(wishList, wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new WishListDto(
@@ -52,7 +52,7 @@ public sealed class AddWishToWishListHandler(IUserContext userContext, IUnitOfWo
             wishList.Wishes.Select(w => new WishDto(
                 w.Id,
                 w.Title,
-                Description: null,
+                Description: w.Description,
                 Status: w.GetStatusFor(user),
                 w.Owner.Id)).ToList());
     }

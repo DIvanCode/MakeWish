@@ -42,7 +42,7 @@ public sealed class RemoveWishFromWishListHandler(IUserContext userContext, IUni
             return removeResult;
         }
         
-        unitOfWork.WishLists.Update(wishList);
+        unitOfWork.WishLists.RemoveWish(wishList, wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new WishListDto(
@@ -52,7 +52,7 @@ public sealed class RemoveWishFromWishListHandler(IUserContext userContext, IUni
             wishList.Wishes.Select(w => new WishDto(
                 w.Id,
                 w.Title,
-                Description: null,
+                Description: w.Description,
                 Status: w.GetStatusFor(user),
                 w.Owner.Id)).ToList());
     }

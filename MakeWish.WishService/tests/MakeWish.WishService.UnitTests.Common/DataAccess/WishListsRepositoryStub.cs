@@ -24,6 +24,16 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         Add(entity);
     }
 
+    public void AddWish(WishList entity, Wish wish)
+    {
+        // That's in memory storage, so entity already contains wish
+    }
+    
+    public void RemoveWish(WishList entity, Wish wish)
+    {
+        // That's in memory storage, so entity already does not contain wish
+    }
+
     public Task<WishList?> GetByIdAsync(Guid wishListId, CancellationToken cancellationToken)
     {
         return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));

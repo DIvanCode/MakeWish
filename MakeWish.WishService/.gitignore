@@ -1,4 +1,5 @@
 ﻿.idea
 *obj
 *bin
+neo4j_db
 MakeWish.WishService.sln.DotSettings.user

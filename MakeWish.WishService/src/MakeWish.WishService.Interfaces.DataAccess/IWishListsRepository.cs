@@ -4,6 +4,8 @@ namespace MakeWish.WishService.Interfaces.DataAccess;
 
 public interface IWishListsRepository : IBaseRepository<WishList>
 {
+    void AddWish(WishList wishList, Wish wish);
+    void RemoveWish(WishList wishList, Wish wish);
     Task<WishList?> GetByIdAsync(Guid wishListId, CancellationToken cancellationToken);
     Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken);
     Task<bool> ExistsContainingWishWithUserAccessAsync(Wish wish, User user, CancellationToken cancellationToken);
