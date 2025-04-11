@@ -1,6 +1,8 @@
-﻿namespace MakeWish.WishService.Interfaces.DataAccess;
+﻿using MakeWish.WishService.Models;
 
-public interface IBaseRepository<in TEntity> where TEntity : class
+namespace MakeWish.WishService.Interfaces.DataAccess;
+
+public interface IBaseRepository<in TEntity> where TEntity : Entity
 {
     void Add(TEntity entity);
     void Update(TEntity entity);

@@ -44,7 +44,7 @@ public sealed class GetWishListHandler(IUserContext userContext, IUnitOfWork uni
             wishList.Wishes.Select(w => new WishDto(
                 w.Id,
                 w.Title,
-                Description: null,
+                Description: w.Description,
                 Status: w.GetStatusFor(user),
                 w.Owner.Id)).ToList());
     }

@@ -4,21 +4,24 @@ using MakeWish.WishService.Utils.Errors;
 
 namespace MakeWish.WishService.Models;
 
-public sealed class WishList
+public sealed class WishList : Entity
 {
-    public Guid Id { get; init; }
-    public string Title { get; private set; }
-    public User Owner { get; init; }
+    public string Title { get; private set; } = default!;
+    public User Owner { get; init; } = default!;
     public IReadOnlyList<Wish> Wishes => _wishes.AsReadOnly();
     
-    private readonly List<Wish> _wishes;
+    private readonly List<Wish> _wishes = [];
+
+    // ReSharper disable once UnusedMember.Local
+    public WishList()
+    {
+    }
 
     private WishList(Guid id, string title, User owner)
     {
         Id = id;
         Title = title;
         Owner = owner;
-        _wishes = [];
     }
 
     public static WishList Create(string title, User owner)

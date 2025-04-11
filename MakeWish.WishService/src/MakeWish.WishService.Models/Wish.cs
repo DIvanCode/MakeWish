@@ -4,23 +4,22 @@ using MakeWish.WishService.Utils.Errors;
 
 namespace MakeWish.WishService.Models;
 
-public sealed class Wish
+public sealed class Wish : Entity
 {
-    public Guid Id { get; init; }
-
-    public string Title { get; private set; }
-    
-    public string? Description { get; private set; }
-
-    public User Owner { get; init; }
+    public string Title { get; private set; } = default!;
+    public string Description { get; private set; } = string.Empty;
+    public User Owner { get; } = default!;
 
     private WishStatus _status;
-
     private User? _promiser;
-
     private User? _completer;
+    
+    // ReSharper disable once UnusedMember.Local
+    public Wish()
+    {
+    }
 
-    private Wish(Guid id, string title, string? description, User owner, WishStatus status)
+    private Wish(Guid id, string title, string description, User owner, WishStatus status)
     {
         Id = id;
         Title = title;
@@ -31,27 +30,27 @@ public sealed class Wish
 
     public WishStatus GetStatusFor(User user)
     {
-        EnsureArg.IsNotNull(user);
+        EnsureArg.IsNotNull(user, nameof(user));
 
         if (_status is not WishStatus.Promised || user.Id != Owner.Id)
         {
             return _status;
         }
         
-        EnsureArg.IsNotNull(_promiser);
+        EnsureArg.IsNotNull(_promiser, nameof(_promiser));
         return Owner.Id == _promiser.Id ? WishStatus.Promised : WishStatus.Created;
     }
     
     public User? GetPromiserFor(User user)
     {
-        EnsureArg.IsNotNull(user);
+        EnsureArg.IsNotNull(user, nameof(user));
 
         if (_status is not WishStatus.Promised || user.Id != Owner.Id)
         {
             return _promiser;
         }
 
-        EnsureArg.IsNotNull(_promiser);
+        EnsureArg.IsNotNull(_promiser, nameof(_promiser));
         return Owner.Id == _promiser.Id ? _promiser : null;
     }
     
@@ -63,16 +62,16 @@ public sealed class Wish
     public static Wish Create(string title, string? description, User owner)
     {
         EnsureArg.IsNotEmptyOrWhiteSpace(title, nameof(title));
-        EnsureArg.IsNotNull(owner);
+        EnsureArg.IsNotNull(owner, nameof(owner));
 
         var id = Guid.NewGuid();
-        return new Wish(id, title, description, owner, WishStatus.Created);
+        return new Wish(id, title, description ?? string.Empty, owner, WishStatus.Created);
     }
 
     public Result Update(string title, string? description, User by)
     {
-        EnsureArg.IsNotEmptyOrWhiteSpace(title);
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotEmptyOrWhiteSpace(title, nameof(title));
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (Owner.Id != by.Id)
         {
@@ -85,14 +84,14 @@ public sealed class Wish
         }
 
         Title = title;
-        Description = description;
+        Description = description ?? string.Empty;
 
         return Result.Ok();
     }
 
     public Result Promise(User by)
     {
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (_status != WishStatus.Created)
         {
@@ -107,7 +106,7 @@ public sealed class Wish
     
     public Result PromiseCancel(User by)
     {
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (_status != WishStatus.Promised)
         {
@@ -128,7 +127,7 @@ public sealed class Wish
     
     public Result Complete(User by)
     {
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (Owner.Id == by.Id)
         {
@@ -177,7 +176,7 @@ public sealed class Wish
 
     public Result CompleteApprove(User by)
     {
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (_status != WishStatus.Completed)
         {
@@ -196,7 +195,7 @@ public sealed class Wish
     
     public Result Delete(User by)
     {
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (Owner.Id != by.Id)
         {
@@ -215,7 +214,7 @@ public sealed class Wish
     
     public Result Restore(User by)
     {
-        EnsureArg.IsNotNull(by);
+        EnsureArg.IsNotNull(by, nameof(by));
         
         if (Owner.Id != by.Id)
         {
@@ -234,7 +233,7 @@ public sealed class Wish
 
     public bool IsAccessible(User to, bool existsWishListContainingWishWithUserAccess)
     {
-        EnsureArg.IsNotNull(to);
+        EnsureArg.IsNotNull(to, nameof(to));
         
         return Owner.Id == to.Id || existsWishListContainingWishWithUserAccess;
     }
