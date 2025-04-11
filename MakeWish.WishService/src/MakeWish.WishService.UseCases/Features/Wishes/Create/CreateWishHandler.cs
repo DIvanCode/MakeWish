@@ -29,11 +29,6 @@ public sealed class CreateWishHandler(IUserContext userContext, IUnitOfWork unit
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
-        return new WishDto(
-            wish.Id,
-            wish.Title,
-            wish.Description,
-            Status: wish.GetStatusFor(owner),
-            wish.Owner.Id);
+        return WishDto.FromWish(wish, currUser: owner);
     }
 }

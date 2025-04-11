@@ -30,10 +30,8 @@ public sealed class GetAllWishListsHandler(IUserContext userContext, IUnitOfWork
             wishLists.AddRange(await unitOfWork.WishLists.GetWishListsWithUserAccessAsync(user, cancellationToken));
         }
 
-        return wishLists.Select(wl => new WishListDto(
-            wl.Id,
-            wl.Title,
-            wl.Owner.Id,
-            Wishes: [])).ToList();
+        return wishLists
+            .Select(wishList => WishListDto.FromWishList(wishList, currUser: user, excludeWishes: true))
+            .ToList();
     }
 }

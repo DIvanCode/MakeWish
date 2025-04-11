@@ -29,13 +29,6 @@ public sealed class GetWaitingApproveWishesHandler(IUserContext userContext, IUn
         var wishes = await unitOfWork.Wishes
             .GetWithStatusAndOwnerAsync(WishStatus.Completed, user, cancellationToken);
         
-        return wishes.Select(wish => new WishDto(
-            wish.Id,
-            wish.Title,
-            wish.Description,
-            Status: wish.GetStatusFor(user),
-            wish.Owner.Id,
-            wish.GetPromiserFor(user)?.Id,
-            wish.GetCompleter()?.Id)).ToList();
+        return wishes.Select(wish => WishDto.FromWish(wish, currUser: user)).ToList();
     }
 }

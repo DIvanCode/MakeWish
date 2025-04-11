@@ -45,15 +45,6 @@ public sealed class RemoveWishFromWishListHandler(IUserContext userContext, IUni
         unitOfWork.WishLists.RemoveWish(wishList, wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new WishListDto(
-            wishList.Id,
-            wishList.Title,
-            wishList.Owner.Id,
-            wishList.Wishes.Select(w => new WishDto(
-                w.Id,
-                w.Title,
-                Description: w.Description,
-                Status: w.GetStatusFor(user),
-                w.Owner.Id)).ToList());
+        return WishListDto.FromWishList(wishList, currUser: user);
     }
 }

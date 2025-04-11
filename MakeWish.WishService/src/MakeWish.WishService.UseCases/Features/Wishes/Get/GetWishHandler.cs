@@ -39,13 +39,6 @@ public sealed class GetWishHandler(IUserContext userContext, IUnitOfWork unitOfW
             return new ForbiddenError(nameof(Wish), "get", nameof(Wish.Id), request.WishId);
         }
 
-        return new WishDto(
-            wish.Id,
-            wish.Title,
-            wish.Description,
-            Status: wish.GetStatusFor(user),
-            wish.Owner.Id,
-            wish.GetPromiserFor(user)?.Id,
-            wish.GetCompleter()?.Id);
+        return WishDto.FromWish(wish, currUser: user);
     }
 }

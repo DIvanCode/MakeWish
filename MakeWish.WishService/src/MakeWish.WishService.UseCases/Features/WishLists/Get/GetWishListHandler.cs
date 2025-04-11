@@ -37,15 +37,6 @@ public sealed class GetWishListHandler(IUserContext userContext, IUnitOfWork uni
             return new ForbiddenError(nameof(WishList), "get", nameof(WishList.Id), request.WishListId);
         }
 
-        return new WishListDto(
-            wishList.Id,
-            wishList.Title,
-            wishList.Owner.Id,
-            wishList.Wishes.Select(w => new WishDto(
-                w.Id,
-                w.Title,
-                Description: w.Description,
-                Status: w.GetStatusFor(user),
-                w.Owner.Id)).ToList());
+        return WishListDto.FromWishList(wishList, currUser: user);
     }
 }

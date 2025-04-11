@@ -30,7 +30,7 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
         }
 
-        var updateResult = wish.Update(request.Title, request.Description, by: user);
+        var updateResult = wish.Update(request.Title, request.Description, request.ImageUrl, by: user);
         if (updateResult.IsFailed)
         {
             return updateResult;
@@ -39,13 +39,6 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
         unitOfWork.Wishes.Update(wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new WishDto(
-            wish.Id,
-            wish.Title,
-            wish.Description,
-            Status: wish.GetStatusFor(user),
-            wish.Owner.Id,
-            wish.GetPromiserFor(user)?.Id,
-            wish.GetCompleter()?.Id);
+        return WishDto.FromWish(wish, currUser: user);
     }
 }
