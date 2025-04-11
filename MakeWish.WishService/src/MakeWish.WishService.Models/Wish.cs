@@ -8,6 +8,7 @@ public sealed class Wish : Entity
 {
     public string Title { get; private set; } = default!;
     public string Description { get; private set; } = string.Empty;
+    public string? ImageUrl { get; private set; }
     public User Owner { get; } = default!;
 
     private WishStatus _status;
@@ -68,7 +69,7 @@ public sealed class Wish : Entity
         return new Wish(id, title, description ?? string.Empty, owner, WishStatus.Created);
     }
 
-    public Result Update(string title, string? description, User by)
+    public Result Update(string title, string description, string? imageUrl, User by)
     {
         EnsureArg.IsNotEmptyOrWhiteSpace(title, nameof(title));
         EnsureArg.IsNotNull(by, nameof(by));
@@ -84,7 +85,8 @@ public sealed class Wish : Entity
         }
 
         Title = title;
-        Description = description ?? string.Empty;
+        Description = description;
+        ImageUrl = imageUrl;
 
         return Result.Ok();
     }

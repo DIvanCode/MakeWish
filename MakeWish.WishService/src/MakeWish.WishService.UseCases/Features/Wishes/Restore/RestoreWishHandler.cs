@@ -39,13 +39,6 @@ public sealed class RestoreWishHandler(IUserContext userContext, IUnitOfWork uni
         unitOfWork.Wishes.Update(wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new WishDto(
-            wish.Id,
-            wish.Title,
-            wish.Description,
-            Status: wish.GetStatusFor(user),
-            wish.Owner.Id,
-            wish.GetPromiserFor(user)?.Id,
-            wish.GetCompleter()?.Id);
+        return WishDto.FromWish(wish, currUser: user);
     }
 }

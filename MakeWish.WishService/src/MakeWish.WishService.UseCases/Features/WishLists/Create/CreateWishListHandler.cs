@@ -29,6 +29,6 @@ public sealed class CreateWishListHandler(IUserContext userContext, IUnitOfWork 
         unitOfWork.WishLists.Add(wishList);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new WishListDto(wishList.Id, wishList.Title, wishList.Owner.Id, Wishes:[]);
+        return WishListDto.FromWishList(wishList, currUser: owner);
     }
 }
