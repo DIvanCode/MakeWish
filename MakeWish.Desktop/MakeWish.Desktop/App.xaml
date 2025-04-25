@@ -1,0 +1,49 @@
+﻿<Application x:Class="MakeWish.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:MakeWish.Desktop.Views"
+             xmlns:viewModels="clr-namespace:MakeWish.Desktop.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="{x:Type Window}" x:Key="MaterialWindowStyle">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                <Setter Property="TextElement.FontWeight" Value="Regular"/>
+                <Setter Property="TextElement.FontSize" Value="13"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+                <Setter Property="FontFamily" Value="{materialDesign:MaterialDesignFont}"/>
+            </Style>
+
+            <DataTemplate DataType="{x:Type viewModels:LoginViewModel}">
+                <views:LoginView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewModels:RegisterViewModel}">
+                <views:RegisterView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewModels:UserViewModel}">
+                <views:UserView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewModels:FriendsViewModel}">
+                <views:FriendsView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewModels:FriendsPendingFromUserViewModel}">
+                <views:FriendsPendingFromUserView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type viewModels:FriendsPendingToUserViewModel}">
+                <views:FriendsPendingToUserView/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
