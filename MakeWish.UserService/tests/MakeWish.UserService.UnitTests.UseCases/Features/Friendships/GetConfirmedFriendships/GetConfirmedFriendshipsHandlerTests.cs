@@ -105,8 +105,8 @@ public class GetConfirmedFriendshipsHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Single(result.Value);
         var friendshipDto = result.Value.First();
-        Assert.Equal(firstUser.Id, friendshipDto.FirstUserId);
-        Assert.Equal(secondUser.Id, friendshipDto.SecondUserId);
+        Assert.Equal(firstUser.Id, friendshipDto.FirstUser.Id);
+        Assert.Equal(secondUser.Id, friendshipDto.SecondUser.Id);
         Assert.True(friendshipDto.IsConfirmed);
     }
     
@@ -150,8 +150,8 @@ public class GetConfirmedFriendshipsHandlerTests
         Assert.Equal(2, result.Value.Count);
         var friendshipDtos = result.Value.ToList();
 
-        Assert.Contains(friendshipDtos, dto => dto.FirstUserId == firstUser.Id && dto.SecondUserId == secondUser.Id);
-        Assert.Contains(friendshipDtos, dto => dto.FirstUserId == thirdUser.Id && dto.SecondUserId == firstUser.Id);
+        Assert.Contains(friendshipDtos, dto => dto.FirstUser.Id == firstUser.Id && dto.SecondUser.Id == secondUser.Id);
+        Assert.Contains(friendshipDtos, dto => dto.FirstUser.Id == thirdUser.Id && dto.SecondUser.Id == firstUser.Id);
         Assert.All(friendshipDtos, dto => Assert.True(dto.IsConfirmed));
     }
     
@@ -194,8 +194,8 @@ public class GetConfirmedFriendshipsHandlerTests
         Assert.Single(result.Value);
         var friendshipDto = result.Value.Single();
     
-        Assert.Equal(firstUser.Id, friendshipDto.FirstUserId);
-        Assert.Equal(thirdUser.Id, friendshipDto.SecondUserId);
+        Assert.Equal(firstUser.Id, friendshipDto.FirstUser.Id);
+        Assert.Equal(thirdUser.Id, friendshipDto.SecondUser.Id);
         Assert.True(friendshipDto.IsConfirmed);
     }
 

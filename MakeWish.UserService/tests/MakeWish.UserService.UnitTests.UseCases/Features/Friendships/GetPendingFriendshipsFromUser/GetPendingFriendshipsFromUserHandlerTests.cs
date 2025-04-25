@@ -181,6 +181,6 @@ public class GetPendingFriendshipsFromUserHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Single(result.Value);
         Assert.All(result.Value, x => Assert.False(x.IsConfirmed));
-        Assert.All(result.Value, x => Assert.Equal(x.FirstUserId, user.Id));
+        Assert.All(result.Value, x => Assert.Equal(x.FirstUser.Id, user.Id));
     }
 }

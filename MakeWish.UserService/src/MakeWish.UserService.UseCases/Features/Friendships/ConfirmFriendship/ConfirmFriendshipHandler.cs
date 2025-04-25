@@ -56,9 +56,6 @@ public sealed class ConfirmFriendshipHandler(IUnitOfWork unitOfWork, IUserContex
         unitOfWork.Friendships.Update(friendship);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new FriendshipDto(
-            friendship.FirstUser.Id,
-            friendship.SecondUser.Id,
-            friendship.IsConfirmed);
+        return FriendshipDto.FromFriendship(friendship);
     }
 }

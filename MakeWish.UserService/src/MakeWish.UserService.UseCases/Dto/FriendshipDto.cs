@@ -1,9 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using MakeWish.UserService.Models;
 
 namespace MakeWish.UserService.UseCases.Dto;
 
-public record FriendshipDto(
-    [property: JsonPropertyName("firstUser"), Required] Guid FirstUserId,
-    [property: JsonPropertyName("secondUser"), Required] Guid SecondUserId,
-    [property: JsonPropertyName("isConfirmed"), Required] bool IsConfirmed);
+public sealed record FriendshipDto
+{
+    [JsonPropertyName("firstUser"), Required]
+    public required UserDto FirstUser { get; init; }
+    
+    [JsonPropertyName("secondUser"), Required]
+    public required UserDto SecondUser { get; init; }
+    
+    [JsonPropertyName("isConfirmed"), Required]
+    public required bool IsConfirmed { get; init; }
+
+    private FriendshipDto()
+    {
+    }
+
+    public static FriendshipDto FromFriendship(Friendship friendship) => new()
+    {
+        FirstUser = UserDto.FromUser(friendship.FirstUser),
+        SecondUser = UserDto.FromUser(friendship.SecondUser),
+        IsConfirmed = friendship.IsConfirmed,
+    };
+}

@@ -54,14 +54,11 @@ public sealed class CreateFriendshipHandler(IUnitOfWork unitOfWork, IUserContext
             return createResult.ToResult<FriendshipDto>();
         }
         
-        var friendInvitation = createResult.Value;
-        unitOfWork.Friendships.Add(friendInvitation);
+        var friendship = createResult.Value;
+        unitOfWork.Friendships.Add(friendship);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new FriendshipDto(
-            friendInvitation.FirstUser.Id,
-            friendInvitation.SecondUser.Id,
-            friendInvitation.IsConfirmed);
+        return FriendshipDto.FromFriendship(friendship);
     }
 }

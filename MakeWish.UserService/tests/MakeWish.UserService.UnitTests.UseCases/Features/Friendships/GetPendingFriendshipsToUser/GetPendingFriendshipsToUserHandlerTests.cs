@@ -159,6 +159,6 @@ public class GetPendingFriendshipsToUserHandlerTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Single(result.Value);
-        Assert.Contains(result.Value, x => x.FirstUserId == fourthUser.Id && x.SecondUserId == user.Id && !x.IsConfirmed);
+        Assert.Contains(result.Value, x => x.FirstUser.Id == fourthUser.Id && x.SecondUser.Id == user.Id && !x.IsConfirmed);
     }
 }

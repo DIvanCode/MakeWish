@@ -37,11 +37,6 @@ public sealed class GetPendingFriendshipsFromUserHandler(IUnitOfWork unitOfWork,
 
         var friendships = await unitOfWork.Friendships.GetPendingFromUserAsync(user, cancellationToken);
 
-        return friendships
-            .Select(x => new FriendshipDto(
-                x.FirstUser.Id,
-                x.SecondUser.Id,
-                x.IsConfirmed))
-            .ToList();
+        return friendships.Select(FriendshipDto.FromFriendship) .ToList();
     }
 }
