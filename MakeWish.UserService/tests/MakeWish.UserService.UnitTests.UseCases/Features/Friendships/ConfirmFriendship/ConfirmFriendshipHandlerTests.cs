@@ -158,8 +158,8 @@ public class ConfirmFriendshipHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(firstUser.Id, result.Value.FirstUserId);
-        Assert.Equal(secondUser.Id, result.Value.SecondUserId);
+        Assert.Equivalent(firstUser, result.Value.FirstUser);
+        Assert.Equivalent(secondUser, result.Value.SecondUser);
         Assert.True(result.Value.IsConfirmed);
     }
 }

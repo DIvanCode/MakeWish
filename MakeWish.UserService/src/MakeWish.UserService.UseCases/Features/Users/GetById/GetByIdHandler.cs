@@ -24,6 +24,6 @@ public sealed class GetByIdHandler(IUnitOfWork unitOfWork, IUserContext userCont
             return new EntityNotFoundError(nameof(User), nameof(User.Id), request.Id);
         }
 
-        return new UserDto(user.Id, user.Email, user.Name, user.Surname);
+        return UserDto.FromUser(user);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MakeWish.UserService.UseCases.Dto;
 using MakeWish.UserService.UseCases.Features.Users.Delete;
 using MakeWish.UserService.UseCases.Features.Users.GetById;
+using MakeWish.UserService.UseCases.Features.Users.GetCurrent;
 using MakeWish.UserService.Web.Controllers.Requests.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,18 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<string>> AuthenticateAsync(AuthenticateRequest request, CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
+        var result = await mediator.Send(command, cancellationToken);
+        return this.HandleResult(result);
+    }
+    
+    [HttpGet(":current")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserDto>> GetCurrentAsync(CancellationToken cancellationToken)
+    {
+        var command = new GetCurrentCommand();
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

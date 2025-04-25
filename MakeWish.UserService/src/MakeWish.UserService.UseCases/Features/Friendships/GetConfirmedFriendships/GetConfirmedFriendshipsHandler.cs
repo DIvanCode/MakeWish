@@ -35,11 +35,6 @@ public sealed class GetConfirmedFriendshipsHandler(IUnitOfWork unitOfWork, IUser
 
         var friendships = await unitOfWork.Friendships.GetConfirmedForUserAsync(user, cancellationToken);
 
-        return friendships
-            .Select(x => new FriendshipDto(
-                x.FirstUser.Id,
-                x.SecondUser.Id,
-                x.IsConfirmed))
-            .ToList();
+        return friendships.Select(FriendshipDto.FromFriendship).ToList();
     }
 }

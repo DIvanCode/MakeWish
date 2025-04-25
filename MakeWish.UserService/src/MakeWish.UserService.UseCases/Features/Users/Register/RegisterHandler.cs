@@ -25,6 +25,6 @@ public sealed class RegisterHandler(IUnitOfWork unitOfWork, IPasswordService pas
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
-        return new UserDto(user.Id, user.Email, user.Name, user.Surname);
+        return UserDto.FromUser(user);
     }
 }
