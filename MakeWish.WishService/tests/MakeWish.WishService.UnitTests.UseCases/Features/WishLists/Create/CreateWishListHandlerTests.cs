@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
 using MakeWish.WishService.UseCases.Features.WishLists.Create;
@@ -46,7 +45,7 @@ public class CreateWishListHandlerTests
         
         var wishList = await _unitOfWork.WishLists.GetByIdAsync(result.Value.Id, CancellationToken.None);
         wishList.Should().NotBeNull();
-        wishList!.Title.Should().Be("Test Wish List");
+        wishList.Title.Should().Be("Test Wish List");
         wishList.Owner.Id.Should().Be(user.Id);
     }
 

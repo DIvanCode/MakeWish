@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.Wishes.PromiseCancel;
 
-public sealed record PromiseCancelWishCommand(Guid WishId): IRequest<Result<WishDto>>;
+public sealed record PromiseCancelWishCommand(Guid Id): IRequest<Result<WishDto>>;

@@ -25,13 +25,9 @@ public sealed class GetAllWishListsHandler(IUserContext userContext, IUnitOfWork
         }
 
         var wishLists = await unitOfWork.WishLists.GetWishListsWithOwnerAsync(user, cancellationToken);
-        if (!request.OnlyMy)
-        {
-            wishLists.AddRange(await unitOfWork.WishLists.GetWishListsWithUserAccessAsync(user, cancellationToken));
-        }
 
         return wishLists
-            .Select(wishList => WishListDto.FromWishList(wishList, currUser: user, excludeWishes: true))
+            .Select(wishList => WishListDto.FromWishList(wishList, currUser: user))
             .ToList();
     }
 }

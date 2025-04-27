@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.Wishes.Get;
 
-public sealed record GetWishCommand(Guid WishId) : IRequest<Result<WishDto>>;
+public sealed record GetWishCommand(Guid Id) : IRequest<Result<WishDto>>;

@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.WishLists.AddWish;
 
-public sealed record AddWishToWishListCommand(Guid WishListId, Guid WishId) : IRequest<Result<WishListDto>>;
+public sealed record AddWishToWishListCommand(Guid Id, Guid WishId) : IRequest<Result<WishListDto>>;

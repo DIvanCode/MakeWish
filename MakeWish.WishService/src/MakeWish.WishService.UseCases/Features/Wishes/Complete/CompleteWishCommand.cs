@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.Wishes.Complete;
 
-public sealed record CompleteWishCommand(Guid WishId) : IRequest<Result<WishDto>>;
+public sealed record CompleteWishCommand(Guid Id) : IRequest<Result<WishDto>>;

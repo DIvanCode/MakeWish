@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
 using MakeWish.WishService.UseCases.Features.WishLists.GetAll;
@@ -21,48 +20,6 @@ public class GetAllWishListsHandlerTests
         _userContextMock = new Mock<IUserContext>();
         _unitOfWork = new UnitOfWorkStub();
         _handler = new GetAllWishListsHandler(_userContextMock.Object, _unitOfWork);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldReturnAllWishLists_WhenOnlyMyIsFalse()
-    {
-        // Arrange
-        var owner = new UserBuilder().Build();
-        var user = new UserBuilder().Build();
-        var wish = new WishBuilder()
-            .WithOwner(owner)
-            .Build();
-        var ownerWishList = new WishListBuilder()
-            .WithOwner(owner)
-            .WithWishes(new[] { wish })
-            .Build();
-        var userWishList = new WishListBuilder()
-            .WithOwner(user)
-            .WithWishes(new[] { wish })
-            .Build();
-        
-        _unitOfWork.Users.Add(owner);
-        _unitOfWork.Users.Add(user);
-        _unitOfWork.Wishes.Add(wish);
-        _unitOfWork.WishLists.Add(ownerWishList);
-        _unitOfWork.WishLists.Add(userWishList);
-        
-        // Настраиваем доступ пользователя к списку желаний владельца
-        _unitOfWork.WishLists.AllowUserAccess(ownerWishList, user, CancellationToken.None);
-        
-        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
-        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
-        
-        var command = new GetAllWishListsCommand(OnlyMy: false);
-        
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-        
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Should().HaveCount(2);
-        result.Value.Should().Contain(wl => wl.Id == ownerWishList.Id);
-        result.Value.Should().Contain(wl => wl.Id == userWishList.Id);
     }
 
     [Fact]
@@ -95,7 +52,7 @@ public class GetAllWishListsHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new GetAllWishListsCommand(OnlyMy: true);
+        var command = new GetAllWishListsCommand();
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -112,7 +69,7 @@ public class GetAllWishListsHandlerTests
         // Arrange
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(false);
         
-        var command = new GetAllWishListsCommand(OnlyMy: false);
+        var command = new GetAllWishListsCommand();
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -131,7 +88,7 @@ public class GetAllWishListsHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(userId);
         
-        var command = new GetAllWishListsCommand(OnlyMy: false);
+        var command = new GetAllWishListsCommand();
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

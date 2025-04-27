@@ -1,7 +1,6 @@
 ﻿using FluentResults;
 using MakeWish.WishService.Interfaces.DataAccess;
 using MakeWish.WishService.Models;
-using MakeWish.WishService.UseCases.Features.WishLists.AllowAccess;
 using MakeWish.WishService.UseCases.Services;
 using MakeWish.WishService.Utils.Errors;
 using MediatR;
@@ -24,15 +23,15 @@ public sealed class DenyUserAccessToWishListHandler(IUserContext userContext, IU
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
         
-        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.WishListId, cancellationToken);
+        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.Id, cancellationToken);
         if (wishList is null)
         {
-            return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.WishListId);
+            return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.Id);
         }
         
         if (!wishList.CanUserManageAccess(currentUser))
         {
-            return new ForbiddenError(nameof(WishList), "cancel allow to read", nameof(WishList.Id), request.WishListId);
+            return new ForbiddenError(nameof(WishList), "deny access", nameof(WishList.Id), request.Id);
         }
         
         var targetUser = await unitOfWork.Users.GetByIdAsync(request.UserId, cancellationToken);

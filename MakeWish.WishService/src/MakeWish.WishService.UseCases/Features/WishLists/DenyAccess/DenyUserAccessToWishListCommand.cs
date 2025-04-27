@@ -3,4 +3,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.WishLists.DenyAccess;
 
-public sealed record DenyUserAccessToWishListCommand(Guid WishListId, Guid UserId) : IRequest<Result>;
+public sealed record DenyUserAccessToWishListCommand(Guid Id, Guid UserId) : IRequest<Result>;

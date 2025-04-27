@@ -12,5 +12,4 @@ public interface IWishListsRepository : IBaseRepository<WishList>
     void AllowUserAccess(WishList wishList, User user, CancellationToken cancellationToken);
     void DenyUserAccess(WishList wishList, User user, CancellationToken cancellationToken);
     Task<List<WishList>> GetWishListsWithOwnerAsync(User owner, CancellationToken cancellationToken);
-    Task<List<WishList>> GetWishListsWithUserAccessAsync(User user, CancellationToken cancellationToken);
 }

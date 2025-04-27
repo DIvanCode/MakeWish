@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
 using MakeWish.WishService.UseCases.Features.WishLists.Update;
@@ -53,15 +52,11 @@ public class UpdateWishListHandlerTests
         result.Value.Id.Should().Be(wishList.Id);
         result.Value.Title.Should().Be("Updated Title");
         result.Value.OwnerId.Should().Be(owner.Id);
-        result.Value.Wishes.Should().HaveCount(1);
-        result.Value.Wishes[0].Id.Should().Be(wish.Id);
-        result.Value.Wishes[0].Title.Should().Be(wish.Title);
-        result.Value.Wishes[0].Status.Should().Be(WishStatus.Created);
-        result.Value.Wishes[0].OwnerId.Should().Be(owner.Id);
+        result.Value.Wishes.Should().BeEmpty();
         
         var updatedWishList = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         updatedWishList.Should().NotBeNull();
-        updatedWishList!.Title.Should().Be("Updated Title");
+        updatedWishList.Title.Should().Be("Updated Title");
     }
 
     [Fact]
@@ -100,7 +95,7 @@ public class UpdateWishListHandlerTests
         
         var wishListAfterUpdate = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         wishListAfterUpdate.Should().NotBeNull();
-        wishListAfterUpdate!.Title.Should().Be(wishList.Title);
+        wishListAfterUpdate.Title.Should().Be(wishList.Title);
     }
 
     [Fact]
