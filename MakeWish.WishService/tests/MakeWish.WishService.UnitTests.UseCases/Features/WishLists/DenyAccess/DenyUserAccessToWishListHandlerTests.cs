@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
 using MakeWish.WishService.UseCases.Features.WishLists.DenyAccess;

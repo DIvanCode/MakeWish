@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.WishLists.Update;
 
-public sealed record UpdateWishListCommand(Guid WishListId, string Title) : IRequest<Result<WishListDto>>;
+public sealed record UpdateWishListCommand(Guid Id, string Title) : IRequest<Result<WishListDto>>;

@@ -25,10 +25,10 @@ public sealed class PromiseWishHandler(IUserContext userContext, IUnitOfWork uni
         }
 
         
-        var wish = await unitOfWork.Wishes.GetByIdAsync(request.WishId, cancellationToken);
+        var wish = await unitOfWork.Wishes.GetByIdAsync(request.Id, cancellationToken);
         if (wish is null)
         {
-            return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
+            return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.Id);
         }
         var promiseResult = wish.Promise(by: user);
         if (promiseResult.IsFailed)

@@ -61,7 +61,7 @@ public class UpdateWishListHandlerTests
         
         var updatedWishList = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         updatedWishList.Should().NotBeNull();
-        updatedWishList!.Title.Should().Be("Updated Title");
+        updatedWishList.Title.Should().Be("Updated Title");
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class UpdateWishListHandlerTests
         
         var wishListAfterUpdate = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         wishListAfterUpdate.Should().NotBeNull();
-        wishListAfterUpdate!.Title.Should().Be(wishList.Title);
+        wishListAfterUpdate.Title.Should().Be(wishList.Title);
     }
 
     [Fact]

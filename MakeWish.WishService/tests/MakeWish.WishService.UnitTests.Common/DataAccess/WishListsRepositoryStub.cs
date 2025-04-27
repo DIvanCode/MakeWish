@@ -79,9 +79,4 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         return Task.FromResult(_wishLists.Any(wishList =>
             wishList.Wishes.Contains(wish) && HasUserAccessAsync(wishList, user, cancellationToken).Result));
     }
-
-    public Task<List<WishList>> GetWishListsWithUserAccessAsync(User user, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(_wishLists.Where(wishList => HasUserAccessAsync(wishList, user, cancellationToken).Result).ToList());
-    }
 }

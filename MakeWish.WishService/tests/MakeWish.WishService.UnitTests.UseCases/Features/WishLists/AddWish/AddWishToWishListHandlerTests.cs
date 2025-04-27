@@ -60,7 +60,7 @@ public class AddWishToWishListHandlerTests
         
         var updatedWishList = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         updatedWishList.Should().NotBeNull();
-        updatedWishList!.Wishes.Should().HaveCount(1);
+        updatedWishList.Wishes.Should().HaveCount(1);
         updatedWishList.Wishes[0].Id.Should().Be(wish.Id);
     }
 
@@ -99,7 +99,7 @@ public class AddWishToWishListHandlerTests
         
         var wishListAfterUpdate = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         wishListAfterUpdate.Should().NotBeNull();
-        wishListAfterUpdate!.Wishes.Should().BeEmpty();
+        wishListAfterUpdate.Wishes.Should().BeEmpty();
     }
 
     [Fact]

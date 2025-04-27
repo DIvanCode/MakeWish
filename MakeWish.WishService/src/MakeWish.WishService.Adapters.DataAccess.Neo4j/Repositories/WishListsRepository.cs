@@ -98,16 +98,6 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         var result = await ExecuteAsync(query.Build(), cancellationToken);
         return result.ToList();
     }
-    
-    public async Task<List<WishList>> GetWishListsWithUserAccessAsync(User user, CancellationToken cancellationToken)
-    {
-        var query = NewQuery()
-            .MatchWishList()
-            .MatchUser(user)
-            .MatchUserAccessToWishList(user);
-        var result = await ExecuteAsync(query.Build(), cancellationToken);
-        return result.ToList();
-    }
 
     private static void AddWishToWishList(WishList wishList, Wish wish)
         => ReflectionHelper<WishList>.AddEntryToListPropertyValue(wishList, WishListsMapper.WishesProperty, wish, extractValue: false);

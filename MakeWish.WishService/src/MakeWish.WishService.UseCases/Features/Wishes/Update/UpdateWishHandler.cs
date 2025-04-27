@@ -24,10 +24,10 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
         
-        var wish = await unitOfWork.Wishes.GetByIdAsync(request.WishId, cancellationToken);
+        var wish = await unitOfWork.Wishes.GetByIdAsync(request.Id, cancellationToken);
         if (wish is null)
         {
-            return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.WishId);
+            return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.Id);
         }
 
         var updateResult = wish.Update(request.Title, request.Description, request.ImageUrl, by: user);

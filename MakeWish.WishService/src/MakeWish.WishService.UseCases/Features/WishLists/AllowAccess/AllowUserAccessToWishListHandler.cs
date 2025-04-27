@@ -23,16 +23,16 @@ public sealed class AllowUserAccessToWishListHandler(IUserContext userContext, I
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
         
-        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.WishListId, cancellationToken);
+        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.Id, cancellationToken);
         if (wishList is null)
         {
-            return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.WishListId);
+            return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.Id);
         }
 
         var canUserManageAccess = wishList.CanUserManageAccess(currentUser);
         if (!canUserManageAccess)
         {
-            return new ForbiddenError(nameof(WishList), "allow access", nameof(WishList.Id), request.WishListId);
+            return new ForbiddenError(nameof(WishList), "allow access", nameof(WishList.Id), request.Id);
         }
         
         var targetUser = await unitOfWork.Users.GetByIdAsync(request.UserId, cancellationToken);

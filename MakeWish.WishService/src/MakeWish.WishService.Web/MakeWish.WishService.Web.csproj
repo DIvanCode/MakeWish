@@ -20,4 +20,8 @@
       <ProjectReference Include="..\MakeWish.WishService.UseCases\MakeWish.WishService.UseCases.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
 </Project>

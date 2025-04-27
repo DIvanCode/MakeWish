@@ -24,17 +24,17 @@ public sealed class GetWishListHandler(IUserContext userContext, IUnitOfWork uni
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
         
-        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.WishListId, cancellationToken);
+        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.Id, cancellationToken);
         if (wishList is null)
         {
-            return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.WishListId);
+            return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.Id);
         }
 
         var hasAccess = wishList.Owner.Id == user.Id ||
                         await unitOfWork.WishLists.HasUserAccessAsync(wishList, user, cancellationToken);
         if (!hasAccess)
         {
-            return new ForbiddenError(nameof(WishList), "get", nameof(WishList.Id), request.WishListId);
+            return new ForbiddenError(nameof(WishList), "get", nameof(WishList.Id), request.Id);
         }
 
         return WishListDto.FromWishList(wishList, currUser: user);

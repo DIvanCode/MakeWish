@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
 using MakeWish.WishService.UseCases.Features.WishLists.AllowAccess;
@@ -40,7 +39,7 @@ public class AllowUserAccessToWishListHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
         
-        var command = new AllowUserAccessToWishListCommand(targetUser.Id, wishList.Id);
+        var command = new AllowUserAccessToWishListCommand(wishList.Id, targetUser.Id);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -72,7 +71,7 @@ public class AllowUserAccessToWishListHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
         
-        var command = new AllowUserAccessToWishListCommand(targetUser.Id, wishList.Id);
+        var command = new AllowUserAccessToWishListCommand(wishList.Id, targetUser.Id);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -106,7 +105,7 @@ public class AllowUserAccessToWishListHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new AllowUserAccessToWishListCommand(targetUser.Id, wishList.Id);
+        var command = new AllowUserAccessToWishListCommand(wishList.Id, targetUser.Id);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

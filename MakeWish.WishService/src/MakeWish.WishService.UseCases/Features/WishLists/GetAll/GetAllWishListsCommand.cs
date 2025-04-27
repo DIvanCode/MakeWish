@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.WishLists.GetAll;
 
-public sealed record GetAllWishListsCommand(bool OnlyMy): IRequest<Result<List<WishListDto>>>;
+public sealed record GetAllWishListsCommand: IRequest<Result<List<WishListDto>>>;

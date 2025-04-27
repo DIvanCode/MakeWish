@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
 using MakeWish.WishService.UseCases.Features.WishLists.RemoveWish;
@@ -57,7 +56,7 @@ public class RemoveWishFromWishListHandlerTests
         
         var updatedWishList = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         updatedWishList.Should().NotBeNull();
-        updatedWishList!.Wishes.Should().BeEmpty();
+        updatedWishList.Wishes.Should().BeEmpty();
     }
 
     [Fact]
@@ -96,7 +95,7 @@ public class RemoveWishFromWishListHandlerTests
         
         var wishListAfterUpdate = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         wishListAfterUpdate.Should().NotBeNull();
-        wishListAfterUpdate!.Wishes.Should().HaveCount(1);
+        wishListAfterUpdate.Wishes.Should().HaveCount(1);
         wishListAfterUpdate.Wishes[0].Id.Should().Be(wish.Id);
     }
 
@@ -186,7 +185,7 @@ public class RemoveWishFromWishListHandlerTests
         
         var wishListAfterUpdate = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         wishListAfterUpdate.Should().NotBeNull();
-        wishListAfterUpdate!.Wishes.Should().HaveCount(1);
+        wishListAfterUpdate.Wishes.Should().HaveCount(1);
         wishListAfterUpdate.Wishes[0].Id.Should().Be(wish.Id);
     }
 } 
