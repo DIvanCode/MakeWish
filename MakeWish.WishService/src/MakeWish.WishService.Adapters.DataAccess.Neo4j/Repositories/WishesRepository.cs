@@ -15,19 +15,6 @@ public sealed class WishesRepository(IServiceProvider serviceProvider)
         var query = NewQuery()
             .MatchWish(wish)
             .LinkWishToOwner(wish.Owner);
-
-        var promiser = ExtractPromiser(wish);
-        if (promiser is not null)
-        {
-            query = query.LinkWishToPromiser(promiser);
-        }
-        
-        var completer = ExtractCompleter(wish);
-        if (completer is not null)
-        {
-            query = query.LinkWishToCompleter(completer);
-        }
-        
         AddWriteQuery(query.Build());
     }
     
@@ -35,15 +22,15 @@ public sealed class WishesRepository(IServiceProvider serviceProvider)
     {
         base.Update(wish);
 
-        var query = NewQuery().MatchWish(wish);
-        
+        var pQuery = NewQuery().MatchWish(wish);
         var promiser = ExtractPromiser(wish);
-        query = promiser is null ? query.UnlinkWishFromPromiser() : query.LinkWishToPromiser(promiser);
+        pQuery = promiser is null ? pQuery.UnlinkWishFromPromiser() : pQuery.LinkWishToPromiser(promiser);
+        AddWriteQuery(pQuery.Build());
         
+        var cQuery = NewQuery().MatchWish(wish);
         var completer = ExtractCompleter(wish);
-        query = completer is null ? query.UnlinkWishFromCompleter() : query.LinkWishToCompleter(completer);
-        
-        AddWriteQuery(query.Build());
+        cQuery = completer is null ? cQuery.UnlinkWishFromCompleter() : cQuery.LinkWishToCompleter(completer);
+        AddWriteQuery(cQuery.Build());
     }
     
     public async Task<Wish?> GetByIdAsync(Guid id, CancellationToken cancellationToken)

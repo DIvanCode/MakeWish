@@ -22,14 +22,20 @@ public sealed class WishListsMapper(IMapper<User> usersMapper, IMapper<Wish> wis
     public const string HasAccessLabelType = "HasAccess";
     
     public const string TitleProperty = "Title";
-    
     public const string OwnerProperty = "Owner";
+    public const string IsMainProperty = "IsMain";
     public const string WishesProperty = "_wishes";
     
     public override string EntityType => WishListType;
     public override string EntityNode => WishListNode;
 
-    protected override List<string> Properties => [IMapper<WishList>.IdProperty, TitleProperty];
+    protected override List<string> Properties => [IMapper<WishList>.IdProperty, TitleProperty, IsMainProperty];
+
+    public static string BuildIsMainProperty(bool value)
+    {
+        var stringValue = value ? "true" : "false";
+        return $"{IsMainProperty}:'{stringValue}'";
+    }
 
     public override List<string> GetReturningRecordProperties(string node, params string[] neighbours)
     {

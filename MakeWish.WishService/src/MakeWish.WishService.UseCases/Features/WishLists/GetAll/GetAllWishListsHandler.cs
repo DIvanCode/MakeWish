@@ -27,6 +27,7 @@ public sealed class GetAllWishListsHandler(IUserContext userContext, IUnitOfWork
         var wishLists = await unitOfWork.WishLists.GetWishListsWithOwnerAsync(user, cancellationToken);
 
         return wishLists
+            .Where(wishList => !wishList.IsMain)
             .Select(wishList => WishListDto.FromWishList(wishList, currUser: user))
             .ToList();
     }

@@ -56,6 +56,23 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         return wishList;
     }
 
+    public async Task<WishList> GetMainForUserAsync(User user, CancellationToken cancellationToken)
+    {
+        var wishListQuery = NewQuery()
+            .MatchMainWishList()
+            .MatchWishListOwner(user);
+        var wishListResult = await ExecuteAsync(wishListQuery.Build(), cancellationToken);
+        var wishList = wishListResult.SingleOrDefault()!;
+
+        var wishListWishesQuery = NewQuery()
+            .MatchWishList(wishList.Id)
+            .MatchWishListWishes();
+        var wishListWishesResult = await ExecuteAsync(wishListWishesQuery.Build(), cancellationToken);
+        wishListWishesResult.ForEach(wl => wl.Wishes.ToList().ForEach(w => AddWishToWishList(wishList, w)));
+        
+        return wishList;
+    }
+
     public async Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
     {
         var query = NewQuery()
@@ -95,8 +112,18 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         var query = NewQuery()
             .MatchWishList()
             .MatchWishListOwner(owner);
-        var result = await ExecuteAsync(query.Build(), cancellationToken);
-        return result.ToList();
+        var wishLists = await ExecuteAsync(query.Build(), cancellationToken);
+
+        foreach (var wishList in wishLists)
+        {
+            var wishListWishesQuery = NewQuery()
+                .MatchWishList(wishList.Id)
+                .MatchWishListWishes();
+            var wishListWishesResult = await ExecuteAsync(wishListWishesQuery.Build(), cancellationToken);
+            wishListWishesResult.ForEach(wl => wl.Wishes.ToList().ForEach(w => AddWishToWishList(wishList, w)));
+        }
+        
+        return wishLists;
     }
 
     private static void AddWishToWishList(WishList wishList, Wish wish)

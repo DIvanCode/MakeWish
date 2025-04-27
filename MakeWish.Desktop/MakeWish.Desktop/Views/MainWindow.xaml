@@ -52,6 +52,18 @@
                     <TextBlock Text="Друзья"/>
                 </StackPanel>
             </Button>
+            
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                    Command="{Binding NavigateToWishesCommand}"
+                    Margin="0,5">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Wish" 
+                                             Width="24" 
+                                             Height="24"
+                                             Margin="0,0,8,0"/>
+                    <TextBlock Text="Желания"/>
+                </StackPanel>
+            </Button>
 
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                     Command="{Binding LogoutCommand}"

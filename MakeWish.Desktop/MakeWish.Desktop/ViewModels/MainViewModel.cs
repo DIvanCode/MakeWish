@@ -1,7 +1,9 @@
 using MakeWish.Desktop.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
-using MakeWish.Desktop.Clients.UserContext;
 using CommunityToolkit.Mvvm.Input;
+using MakeWish.Desktop.Clients.Common.UserContext;
+using MakeWish.Desktop.ViewModels.Users;
+using MakeWish.Desktop.ViewModels.Wishes;
 
 namespace MakeWish.Desktop.ViewModels;
 
@@ -37,20 +39,23 @@ public partial class MainViewModel : ViewModelBase
         
         _navigationService.NavigateTo<LoginViewModel>();
     }
+
+    [RelayCommand]
+    private void NavigateToProfile()
+    {
+        _navigationService.NavigateTo<UserViewModel>(_userContext.UserId!.Value);
+    }
     
     [RelayCommand]
     private void NavigateToFriends()
     {
         _navigationService.NavigateTo<FriendsViewModel>();
     }
-
+    
     [RelayCommand]
-    private void NavigateToProfile()
+    private void NavigateToWishes()
     {
-        if (_userContext.UserId.HasValue)
-        {
-            _navigationService.NavigateTo<UserViewModel>(_userContext.UserId.Value);
-        }
+        _navigationService.NavigateTo<WishesViewModel>();
     }
 
     [RelayCommand]

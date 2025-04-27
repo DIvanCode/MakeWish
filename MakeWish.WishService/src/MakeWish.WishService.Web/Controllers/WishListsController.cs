@@ -4,6 +4,7 @@ using MakeWish.WishService.UseCases.Features.WishLists.AllowAccess;
 using MakeWish.WishService.UseCases.Features.WishLists.DenyAccess;
 using MakeWish.WishService.UseCases.Features.WishLists.Get;
 using MakeWish.WishService.UseCases.Features.WishLists.GetAll;
+using MakeWish.WishService.UseCases.Features.WishLists.GetMain;
 using MakeWish.WishService.UseCases.Features.WishLists.RemoveWish;
 using MakeWish.WishService.Web.Controllers.Requests.WishLists;
 using MediatR;
@@ -30,6 +31,18 @@ public sealed class WishListsController(IMediator mediator) : ControllerBase
         return this.HandleResult(result);
     }
 
+    [HttpGet("main")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<WishListDto>> GetMainForCurrentUserAsync(CancellationToken cancellationToken)
+    {
+        var command = new GetMainWishListForCurrentUserCommand();
+        var result = await mediator.Send(command, cancellationToken);
+        return this.HandleResult(result);
+    }
+    
     [HttpGet("{id:guid}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -91,7 +104,7 @@ public sealed class WishListsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<WishListDto>> RemoveWishFromWishListAsync(
+    public async Task<ActionResult<WishListDto>> RemoveWishAsync(
         Guid id,
         Guid wishId,
         CancellationToken cancellationToken)
@@ -107,7 +120,7 @@ public sealed class WishListsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<WishListDto>> AllowUserAccessToWishListAsync(
+    public async Task<ActionResult<WishListDto>> AllowUserAccessAsync(
         Guid id,
         Guid userId,
         CancellationToken cancellationToken)
@@ -123,7 +136,7 @@ public sealed class WishListsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<WishListDto>> DenyAccessAsync(
+    public async Task<ActionResult<WishListDto>> DenyUserAccessAsync(
         Guid id,
         Guid userId,
         CancellationToken cancellationToken)

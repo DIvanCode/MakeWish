@@ -6,6 +6,7 @@ public interface INavigationService
 {
     event Action<ViewModelBase>? CurrentViewModelChanged;
     void NavigateTo<T>(params object[] p) where T : ViewModelBase;
+    T GetViewModel<T>(params object[] p) where T : ViewModelBase;
     void GoBack();
     void GoForward();
     void ClearHistory();
