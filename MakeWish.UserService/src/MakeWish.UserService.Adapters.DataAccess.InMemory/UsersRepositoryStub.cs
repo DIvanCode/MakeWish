@@ -1,5 +1,6 @@
 ﻿using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 
 namespace MakeWish.UserService.Adapters.DataAccess.InMemory;
 

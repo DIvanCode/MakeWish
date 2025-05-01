@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\MakeWish.UserService.Adapters.DataAccess.EntityFramework\MakeWish.UserService.Adapters.DataAccess.EntityFramework.csproj" />
       <ProjectReference Include="..\MakeWish.UserService.Adapters.DataAccess.InMemory\MakeWish.UserService.Adapters.DataAccess.InMemory.csproj" />
+      <ProjectReference Include="..\MakeWish.UserService.Adapters.MessageBus.RabbitMQ\MakeWish.UserService.Adapters.MessageBus.RabbitMQ.csproj" />
       <ProjectReference Include="..\MakeWish.UserService.UseCases\MakeWish.UserService.UseCases.csproj" />
     </ItemGroup>
 

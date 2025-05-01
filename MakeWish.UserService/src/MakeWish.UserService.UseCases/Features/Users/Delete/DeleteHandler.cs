@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
 using MediatR;
@@ -32,6 +33,7 @@ public sealed class DeleteHandler(IUnitOfWork unitOfWork, IUserContext userConte
             return new EntityNotFoundError(nameof(User), nameof(User.Id), request.UserId);
         }
         
+        user.Delete();
         unitOfWork.Users.Remove(user);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

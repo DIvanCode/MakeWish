@@ -1,4 +1,5 @@
 ﻿using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 
 namespace MakeWish.UserService.Interfaces.DataAccess;
 

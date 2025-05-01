@@ -1,11 +1,11 @@
 ﻿using FluentResults;
 using MakeWish.UserService.Interfaces.DataAccess;
-using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
 using MediatR;
 
-namespace MakeWish.UserService.UseCases.Features.Friendships.RemoveFriendship;
+namespace MakeWish.UserService.UseCases.Features.Friendships.Remove;
 
 public sealed class RemoveFriendshipHandler(IUnitOfWork unitOfWork, IUserContext userContext)
     : IRequestHandler<RemoveFriendshipCommand, Result>
@@ -44,6 +44,12 @@ public sealed class RemoveFriendshipHandler(IUnitOfWork unitOfWork, IUserContext
         if (friendship is null)
         {
             return new EntityNotFoundError(nameof(Friendship), "such users");
+        }
+        
+        var removeResult = friendship.RemoveBy(by: userContext.UserId == firstUser.Id ? firstUser : secondUser);
+        if (removeResult.IsFailed)
+        {
+            return removeResult;
         }
         
         unitOfWork.Friendships.Remove(friendship);

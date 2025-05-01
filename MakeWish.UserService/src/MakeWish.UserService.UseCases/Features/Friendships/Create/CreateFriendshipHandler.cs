@@ -1,12 +1,12 @@
 ﻿using FluentResults;
 using MakeWish.UserService.Interfaces.DataAccess;
-using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UseCases.Dto;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
 using MediatR;
 
-namespace MakeWish.UserService.UseCases.Features.Friendships.CreateFriendship;
+namespace MakeWish.UserService.UseCases.Features.Friendships.Create;
 
 public sealed class CreateFriendshipHandler(IUnitOfWork unitOfWork, IUserContext userContext)
     : IRequestHandler<CreateFriendshipCommand, Result<FriendshipDto>>

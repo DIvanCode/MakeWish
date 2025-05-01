@@ -1,7 +1,7 @@
 ﻿using MakeWish.UserService.UseCases.Dto;
-using MakeWish.UserService.UseCases.Features.Friendships.GetConfirmedFriendships;
-using MakeWish.UserService.UseCases.Features.Friendships.GetPendingFriendshipsFromUser;
+using MakeWish.UserService.UseCases.Features.Friendships.GetConfirmed;
 using MakeWish.UserService.UseCases.Features.Friendships.GetPendingFriendshipsToUser;
+using MakeWish.UserService.UseCases.Features.Friendships.GetPendingFromUser;
 using MakeWish.UserService.UseCases.Features.Users.Delete;
 using MakeWish.UserService.UseCases.Features.Users.GetById;
 using MakeWish.UserService.Web.Controllers.Requests;

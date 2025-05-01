@@ -1,9 +1,10 @@
 ﻿using FluentResults;
+using MakeWish.UserService.Models.Events;
 using MakeWish.UserService.Utils.Errors;
 
-namespace MakeWish.UserService.Models;
+namespace MakeWish.UserService.Models.Entities;
 
-public sealed class Friendship
+public sealed class Friendship : DomainEntity
 {
     public User FirstUser { get; init; }
 
@@ -33,9 +34,9 @@ public sealed class Friendship
         return new Friendship(firstUser, secondUser);
     }
 
-    public Result ConfirmBy(User confirmUser)
+    public Result ConfirmBy(User by)
     {
-        if (confirmUser.Id != SecondUser.Id)
+        if (by.Id != SecondUser.Id)
         {
             return new ForbiddenError(
                 nameof(Friendship),
@@ -45,6 +46,24 @@ public sealed class Friendship
         }
         
         IsConfirmed = true;
+        
+        DomainEvents.Add(new FriendshipConfirmedEvent(this));
+        
+        return Result.Ok();
+    }
+
+    public Result RemoveBy(User by)
+    {
+        if (by.Id != FirstUser.Id && by.Id != SecondUser.Id)
+        {
+            return new ForbiddenError(nameof(Friendship), "remove");
+        }
+
+        if (IsConfirmed)
+        {
+            DomainEvents.Add(new FriendshipRemovedEvent(this));
+        }
+
         return Result.Ok();
     }
 }
