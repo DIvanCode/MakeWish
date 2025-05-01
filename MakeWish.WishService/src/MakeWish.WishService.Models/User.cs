@@ -4,8 +4,8 @@ namespace MakeWish.WishService.Models;
 
 public sealed class User : Entity
 {
-    public string Name { get; } =  default!;
-    public string Surname { get; } = default!;
+    public string Name { get; set; } =  default!;
+    public string Surname { get; set; } = default!;
     
     // ReSharper disable once UnusedMember.Local
     public User()

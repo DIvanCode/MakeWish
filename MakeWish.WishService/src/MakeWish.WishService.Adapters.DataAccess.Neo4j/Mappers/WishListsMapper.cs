@@ -34,7 +34,7 @@ public sealed class WishListsMapper(IMapper<User> usersMapper, IMapper<Wish> wis
 
     public static string BuildIsMainProperty(bool value)
     {
-        var stringValue = value ? "true" : "false";
+        var stringValue = value ? "True" : "False";
         return $"{IsMainProperty}:'{stringValue}'";
     }
 

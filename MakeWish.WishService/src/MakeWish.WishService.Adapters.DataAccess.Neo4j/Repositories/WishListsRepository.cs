@@ -62,7 +62,7 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
             .MatchMainWishList()
             .MatchWishListOwner(user);
         var wishListResult = await ExecuteAsync(wishListQuery.Build(), cancellationToken);
-        var wishList = wishListResult.SingleOrDefault()!;
+        var wishList = wishListResult.Single();
 
         var wishListWishesQuery = NewQuery()
             .MatchWishList(wishList.Id)

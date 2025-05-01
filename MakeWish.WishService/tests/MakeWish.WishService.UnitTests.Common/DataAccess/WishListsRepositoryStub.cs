@@ -39,9 +39,9 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
     }
 
-    public Task<WishList> GetMainForUserAsync(User user, CancellationToken cancellationToken)
+    public Task<WishList?> GetMainForUserAsync(User user, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_wishLists.Single(wishList => wishList.Owner == user && wishList.IsMain));
+        return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Owner == user && wishList.IsMain));
     }
 
     public Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
