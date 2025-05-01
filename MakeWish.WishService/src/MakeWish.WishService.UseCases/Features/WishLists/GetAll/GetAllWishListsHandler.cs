@@ -24,9 +24,10 @@ public sealed class GetAllWishListsHandler(IUserContext userContext, IUnitOfWork
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
 
-        var wishLists = await unitOfWork.WishLists.GetWishListsWithOwnerAsync(user, cancellationToken);
+        var wishLists = await unitOfWork.WishLists.GetWithOwnerAsync(user, cancellationToken);
 
         return wishLists
+            .Where(wishList => !wishList.IsMain)
             .Select(wishList => WishListDto.FromWishList(wishList, currUser: user))
             .ToList();
     }

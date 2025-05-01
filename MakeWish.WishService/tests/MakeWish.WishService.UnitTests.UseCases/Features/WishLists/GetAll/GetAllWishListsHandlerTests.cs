@@ -47,7 +47,7 @@ public class GetAllWishListsHandlerTests
         _unitOfWork.WishLists.Add(userWishList);
         
         // Настраиваем доступ пользователя к списку желаний владельца
-        _unitOfWork.WishLists.AllowUserAccess(ownerWishList, user, CancellationToken.None);
+        _unitOfWork.WishLists.AllowUserAccess(ownerWishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);

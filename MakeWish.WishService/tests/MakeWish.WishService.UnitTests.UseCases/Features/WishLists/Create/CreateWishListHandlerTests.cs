@@ -40,7 +40,7 @@ public class CreateWishListHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Title.Should().Be("Test Wish List");
-        result.Value.OwnerId.Should().Be(user.Id);
+        result.Value.Owner.Id.Should().Be(user.Id);
         result.Value.Wishes.Should().BeEmpty();
         
         var wishList = await _unitOfWork.WishLists.GetByIdAsync(result.Value.Id, CancellationToken.None);

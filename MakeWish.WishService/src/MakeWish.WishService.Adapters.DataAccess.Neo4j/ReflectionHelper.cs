@@ -29,6 +29,10 @@ public static class ReflectionHelper
         if (type == typeof(string))
         {
         }
+        else if (type == typeof(bool))
+        {
+            obj = bool.Parse(obj.ToString()!);
+        }
         else if (type.BaseType == typeof(Enum))
         {
             obj = Enum.Parse(type, obj.ToString()!);

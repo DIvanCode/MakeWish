@@ -1,10 +1,10 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using MakeWish.WishService.UseCases.Features.Users.Create;
+using MakeWish.WishService.UseCases.Events;
 
-namespace MakeWish.WishService.Web.Controllers.Requests.Users;
+namespace MakeWish.WishService.Adapters.MessageBus.RabbitMQ.Events;
 
-public sealed record CreateUserRequest
+public sealed record UserCreatedEvent
 {
     [JsonPropertyName("id"), Required]
     public required Guid Id { get; init; }
@@ -15,5 +15,5 @@ public sealed record CreateUserRequest
     [JsonPropertyName("surname"), Required]
     public required string Surname { get; init; }
 
-    public CreateUserCommand ToCommand() => new(Id, Name, Surname);
-} 
+    public UserCreatedNotification ToNotification() => new(Id, Name, Surname);
+}

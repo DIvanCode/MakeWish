@@ -27,7 +27,7 @@ public abstract class MapperBase<TEntity> : IMapper<TEntity> where TEntity : Ent
                 continue;
             }
 
-            var value = fieldInfo.GetValue(entity)!;
+            var value = fieldInfo.GetValue(entity) ?? "";
             properties[property] = value.ToString()!;
         }
 

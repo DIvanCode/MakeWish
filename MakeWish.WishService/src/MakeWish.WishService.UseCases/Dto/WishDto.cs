@@ -16,19 +16,19 @@ public sealed record WishDto
     public required string Description { get; init; }
 
     [JsonPropertyName("imageUrl")]
-    private string? ImageUrl { get; init; }
+    public string? ImageUrl { get; init; }
 
     [JsonPropertyName("status"), Required, JsonConverter(typeof(JsonStringEnumConverter))]
     public required WishStatus Status { get; init; }
 
-    [JsonPropertyName("ownerId"), Required]
-    public required Guid OwnerId { get; init; }
+    [JsonPropertyName("owner"), Required]
+    public required UserDto Owner { get; init; }
 
-    [JsonPropertyName("promiserId")]
-    public Guid? PromiserId { get; private init; }
+    [JsonPropertyName("promiser")]
+    public UserDto? Promiser { get; private init; }
 
-    [JsonPropertyName("completerId")]
-    public Guid? CompleterId { get; private init; }
+    [JsonPropertyName("completer")]
+    public UserDto? Completer { get; private init; }
 
     private WishDto()
     {
@@ -41,8 +41,8 @@ public sealed record WishDto
         Description = wish.Description,
         ImageUrl = wish.ImageUrl,
         Status = wish.GetStatusFor(currUser),
-        OwnerId = wish.Owner.Id,
-        PromiserId = wish.GetPromiserFor(currUser)?.Id,
-        CompleterId = wish.GetCompleter()?.Id
+        Owner = UserDto.FromUser(wish.Owner)!,
+        Promiser = UserDto.FromUser(wish.GetPromiserFor(currUser)),
+        Completer = UserDto.FromUser(wish.GetCompleter())
     };
 }
