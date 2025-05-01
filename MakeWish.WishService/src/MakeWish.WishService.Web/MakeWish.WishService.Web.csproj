@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MakeWish.WishService.Adapters.DataAccess.Neo4j\MakeWish.WishService.Adapters.DataAccess.Neo4j.csproj" />
+      <ProjectReference Include="..\MakeWish.WishService.Adapters.MessageBus.RabbitMQ\MakeWish.WishService.Adapters.MessageBus.RabbitMQ.csproj" />
       <ProjectReference Include="..\MakeWish.WishService.UseCases\MakeWish.WishService.UseCases.csproj" />
     </ItemGroup>
 

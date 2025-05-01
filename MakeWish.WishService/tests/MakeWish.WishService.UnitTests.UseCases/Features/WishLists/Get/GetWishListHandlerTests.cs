@@ -52,12 +52,12 @@ public class GetWishListHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Id.Should().Be(wishList.Id);
         result.Value.Title.Should().Be(wishList.Title);
-        result.Value.OwnerId.Should().Be(owner.Id);
+        result.Value.Owner.Id.Should().Be(owner.Id);
         result.Value.Wishes.Should().HaveCount(1);
         result.Value.Wishes[0].Id.Should().Be(wish.Id);
         result.Value.Wishes[0].Title.Should().Be(wish.Title);
         result.Value.Wishes[0].Status.Should().Be(WishStatus.Created);
-        result.Value.Wishes[0].OwnerId.Should().Be(owner.Id);
+        result.Value.Wishes[0].Owner.Id.Should().Be(owner.Id);
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class GetWishListHandlerTests
         _unitOfWork.WishLists.Add(wishList);
         
         // Настраиваем доступ пользователя к списку желаний
-        _unitOfWork.WishLists.AllowUserAccess(wishList, user, CancellationToken.None);
+        _unitOfWork.WishLists.AllowUserAccess(wishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
@@ -94,12 +94,12 @@ public class GetWishListHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Id.Should().Be(wishList.Id);
         result.Value.Title.Should().Be(wishList.Title);
-        result.Value.OwnerId.Should().Be(owner.Id);
+        result.Value.Owner.Id.Should().Be(owner.Id);
         result.Value.Wishes.Should().HaveCount(1);
         result.Value.Wishes[0].Id.Should().Be(wish.Id);
         result.Value.Wishes[0].Title.Should().Be(wish.Title);
         result.Value.Wishes[0].Status.Should().Be(WishStatus.Created);
-        result.Value.Wishes[0].OwnerId.Should().Be(owner.Id);
+        result.Value.Wishes[0].Owner.Id.Should().Be(owner.Id);
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class GetWishListHandlerTests
         _unitOfWork.WishLists.Add(wishList);
         
         // Явно запрещаем доступ пользователя к списку желаний
-        _unitOfWork.WishLists.DenyUserAccess(wishList, user, CancellationToken.None);
+        _unitOfWork.WishLists.DenyUserAccess(wishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);

@@ -48,7 +48,7 @@ public class GetWishHandlerTests
         result.Value.Id.Should().Be(wish.Id);
         result.Value.Title.Should().Be(wish.Title);
         result.Value.Description.Should().Be(wish.Description);
-        result.Value.OwnerId.Should().Be(user.Id);
+        result.Value.Owner.Id.Should().Be(user.Id);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class GetWishHandlerTests
         _unitOfWork.WishLists.Add(wishList);
         
         // Настраиваем доступ пользователя к списку желаний
-        _unitOfWork.WishLists.AllowUserAccess(wishList, user, CancellationToken.None);
+        _unitOfWork.WishLists.AllowUserAccess(wishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
@@ -86,7 +86,7 @@ public class GetWishHandlerTests
         result.Value.Id.Should().Be(wish.Id);
         result.Value.Title.Should().Be(wish.Title);
         result.Value.Description.Should().Be(wish.Description);
-        result.Value.OwnerId.Should().Be(owner.Id);
+        result.Value.Owner.Id.Should().Be(owner.Id);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class GetWishHandlerTests
         _unitOfWork.WishLists.Add(wishList);
         
         // Явно запрещаем доступ пользователя к списку желаний
-        _unitOfWork.WishLists.DenyUserAccess(wishList, user, CancellationToken.None);
+        _unitOfWork.WishLists.DenyUserAccess(wishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
@@ -148,7 +148,8 @@ public class GetWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Status.Should().Be(WishStatus.Promised);
-        result.Value.PromiserId.Should().Be(owner.Id);
+        result.Value.Promiser.Should().NotBeNull();
+        result.Value.Promiser.Id.Should().Be(owner.Id);
     }
 
     [Fact]
@@ -177,7 +178,7 @@ public class GetWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Status.Should().Be(WishStatus.Created);
-        result.Value.PromiserId.Should().BeNull();
+        result.Value.Promiser.Should().BeNull();
     }
 
     [Fact]
@@ -237,8 +238,10 @@ public class GetWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Status.Should().Be(WishStatus.Completed);
-        result.Value.PromiserId.Should().Be(promiser.Id);
-        result.Value.CompleterId.Should().Be(promiser.Id);
+        result.Value.Promiser.Should().NotBeNull();
+        result.Value.Promiser.Id.Should().Be(promiser.Id);
+        result.Value.Completer.Should().NotBeNull();
+        result.Value.Completer.Id.Should().Be(promiser.Id);
     }
 
     [Fact]
@@ -269,8 +272,10 @@ public class GetWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Status.Should().Be(WishStatus.Approved);
-        result.Value.PromiserId.Should().Be(promiser.Id);
-        result.Value.CompleterId.Should().Be(promiser.Id);
+        result.Value.Promiser.Should().NotBeNull();
+        result.Value.Promiser.Id.Should().Be(promiser.Id);
+        result.Value.Completer.Should().NotBeNull();
+        result.Value.Completer.Id.Should().Be(promiser.Id);
     }
 
     [Fact]
@@ -297,8 +302,8 @@ public class GetWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Status.Should().Be(WishStatus.Deleted);
-        result.Value.PromiserId.Should().BeNull();
-        result.Value.CompleterId.Should().BeNull();
+        result.Value.Promiser.Should().BeNull();
+        result.Value.Completer.Should().BeNull();
     }
 
     [Fact]

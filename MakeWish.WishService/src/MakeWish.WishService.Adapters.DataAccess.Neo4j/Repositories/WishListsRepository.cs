@@ -55,6 +55,23 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         
         return wishList;
     }
+    
+    public async Task<WishList> GetMainForUserAsync(User user, CancellationToken cancellationToken)
+    {
+        var wishListQuery = NewQuery()
+            .MatchMainWishList()
+            .MatchWishListOwner(user);
+        var wishListResult = await ExecuteAsync(wishListQuery.Build(), cancellationToken);
+        var wishList = wishListResult.SingleOrDefault()!;
+
+        var wishListWishesQuery = NewQuery()
+            .MatchWishList(wishList.Id)
+            .MatchWishListWishes();
+        var wishListWishesResult = await ExecuteAsync(wishListWishesQuery.Build(), cancellationToken);
+        wishListWishesResult.ForEach(wl => wl.Wishes.ToList().ForEach(w => AddWishToWishList(wishList, w)));
+
+        return wishList;
+    }
 
     public async Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
     {
@@ -74,7 +91,7 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         return result.Count != 0;
     }
     
-    public void AllowUserAccess(WishList wishList, User user, CancellationToken cancellationToken)
+    public void AllowUserAccess(WishList wishList, User user)
     {
         var query = NewQuery()
             .MatchWishList(wishList)
@@ -82,7 +99,7 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         AddWriteQuery(query.Build());
     }
     
-    public void DenyUserAccess(WishList wishList, User user, CancellationToken cancellationToken)
+    public void DenyUserAccess(WishList wishList, User user)
     {
         var query = NewQuery()
             .MatchWishList(wishList)
@@ -90,7 +107,7 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         AddWriteQuery(query.Build());
     }
     
-    public async Task<List<WishList>> GetWishListsWithOwnerAsync(User owner, CancellationToken cancellationToken)
+    public async Task<List<WishList>> GetWithOwnerAsync(User owner, CancellationToken cancellationToken)
     {
         var query = NewQuery()
             .MatchWishList()

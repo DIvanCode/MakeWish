@@ -47,7 +47,7 @@ public sealed class AllowUserAccessToWishListHandler(IUserContext userContext, I
             return Result.Ok();
         }
         
-        unitOfWork.WishLists.AllowUserAccess(wishList, targetUser, cancellationToken);
+        unitOfWork.WishLists.AllowUserAccess(wishList, targetUser);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Ok();

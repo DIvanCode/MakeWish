@@ -51,7 +51,8 @@ public class CompleteApproveWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Status.Should().Be(WishStatus.Approved);
-        result.Value.CompleterId.Should().Be(otherUser.Id);
+        result.Value.Completer.Should().NotBeNull();
+        result.Value.Completer.Id.Should().Be(otherUser.Id);
     }
 
     [Fact]

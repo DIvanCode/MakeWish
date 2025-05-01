@@ -2,20 +2,19 @@
 using MakeWish.WishService.Interfaces.DataAccess;
 using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
-using MakeWish.WishService.UseCases.Features.Users.Create;
-using MakeWish.WishService.Utils.Errors;
+using MakeWish.WishService.UseCases.Events;
 
-namespace MakeWish.WishService.UnitTests.UseCases.Features.Users.Create;
+namespace MakeWish.WishService.UnitTests.UseCases.Events;
 
-public class CreateUserHandlerTests
+public class UserCreatedHandlerTests
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly CreateUserHandler _handler;
+    private readonly UserCreatedHandler _createdHandler;
 
-    public CreateUserHandlerTests()
+    public UserCreatedHandlerTests()
     {
         _unitOfWork = new UnitOfWorkStub();
-        _handler = new CreateUserHandler(_unitOfWork);
+        _createdHandler = new UserCreatedHandler(_unitOfWork);
     }
 
     [Fact]
@@ -27,18 +26,18 @@ public class CreateUserHandlerTests
         
         var userId = Guid.NewGuid();
         
-        var command = new CreateUserCommand(userId, name, surname);
+        var command = new UserCreatedNotification(userId, name, surname);
         
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        await _createdHandler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
-        
         var createdUser = await _unitOfWork.Users.GetByIdAsync(userId, CancellationToken.None);
         createdUser.Should().NotBeNull();
         createdUser.Name.Should().Be(name);
         createdUser.Surname.Should().Be(surname);
+        var createdMainWishList = await _unitOfWork.WishLists.GetMainForUserAsync(createdUser, CancellationToken.None);
+        createdMainWishList.Should().NotBeNull();
     }
 
     [Fact]
@@ -53,13 +52,9 @@ public class CreateUserHandlerTests
         var existingUser = new User(userId, name, surname);
         _unitOfWork.Users.Add(existingUser);
         
-        var command = new CreateUserCommand(userId, name, surname);
+        var command = new UserCreatedNotification(userId, name, surname);
 
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        result.IsFailed.Should().BeTrue();
-        result.Errors.Should().ContainSingle(e => e is EntityAlreadyExistsError);
+        // Act & Assert
+        await _createdHandler.Handle(command, CancellationToken.None);
     }
 }

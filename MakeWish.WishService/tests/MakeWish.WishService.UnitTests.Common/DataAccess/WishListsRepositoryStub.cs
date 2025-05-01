@@ -39,6 +39,11 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
     }
 
+    public Task<WishList> GetMainForUserAsync(User user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_wishLists.Single(wishList => wishList.Owner == user && wishList.IsMain));
+    }
+
     public Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
     {
         if (!_allowedAccessors.ContainsKey(wishList))
@@ -49,9 +54,9 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         return Task.FromResult(_allowedAccessors[wishList].Contains(user));
     }
 
-    public void AllowUserAccess(WishList wishList, User user, CancellationToken cancellationToken)
+    public void AllowUserAccess(WishList wishList, User user)
     {
-        if (HasUserAccessAsync(wishList, user, cancellationToken).Result)
+        if (HasUserAccessAsync(wishList, user, CancellationToken.None).GetAwaiter().GetResult())
         {
             return;
         }
@@ -59,9 +64,9 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         _allowedAccessors[wishList].Add(user);
     }
 
-    public void DenyUserAccess(WishList wishList, User user, CancellationToken cancellationToken)
+    public void DenyUserAccess(WishList wishList, User user)
     {
-        if (!HasUserAccessAsync(wishList, user, cancellationToken).Result)
+        if (!HasUserAccessAsync(wishList, user, CancellationToken.None).GetAwaiter().GetResult())
         {
             return;
         }
@@ -69,7 +74,7 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         _allowedAccessors[wishList].Remove(user);
     }
 
-    public Task<List<WishList>> GetWishListsWithOwnerAsync(User owner, CancellationToken cancellationToken)
+    public Task<List<WishList>> GetWithOwnerAsync(User owner, CancellationToken cancellationToken)
     {
         return Task.FromResult(_wishLists.Where(wishList => wishList.Owner == owner).ToList());
     }

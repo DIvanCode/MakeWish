@@ -51,7 +51,7 @@ public class RemoveWishFromWishListHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Id.Should().Be(wishList.Id);
         result.Value.Title.Should().Be(wishList.Title);
-        result.Value.OwnerId.Should().Be(owner.Id);
+        result.Value.Owner.Id.Should().Be(owner.Id);
         result.Value.Wishes.Should().BeEmpty();
         
         var updatedWishList = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
@@ -79,7 +79,7 @@ public class RemoveWishFromWishListHandlerTests
         _unitOfWork.WishLists.Add(wishList);
         
         // Настраиваем доступ пользователя к списку желаний
-        _unitOfWork.WishLists.AllowUserAccess(wishList, user, CancellationToken.None);
+        _unitOfWork.WishLists.AllowUserAccess(wishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);

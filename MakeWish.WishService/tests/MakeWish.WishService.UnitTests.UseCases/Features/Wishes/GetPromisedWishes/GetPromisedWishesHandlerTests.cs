@@ -55,7 +55,8 @@ public class GetPromisedWishesHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().HaveCount(2);
         result.Value.Should().AllSatisfy(wish => wish.Status.Should().Be(WishStatus.Promised));
-        result.Value.Should().AllSatisfy(wish => wish.PromiserId.Should().Be(user.Id));
+        result.Value.Should().AllSatisfy(wish => wish.Promiser.Should().NotBeNull());
+        result.Value.Should().AllSatisfy(wish => wish.Promiser!.Id.Should().Be(user.Id));
     }
 
     [Fact]
@@ -100,8 +101,9 @@ public class GetPromisedWishesHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().HaveCount(2);
         result.Value.Should().AllSatisfy(wish => wish.Status.Should().Be(WishStatus.Promised));
-        result.Value.Should().AllSatisfy(wish => wish.PromiserId.Should().Be(user.Id));
-        result.Value.Select(w => w.Id).Should().BeEquivalentTo(new[] { promisedWish1.Id, promisedWish2.Id });
+        result.Value.Should().AllSatisfy(wish => wish.Promiser.Should().NotBeNull());
+        result.Value.Should().AllSatisfy(wish => wish.Promiser!.Id.Should().Be(user.Id));
+        result.Value.Select(w => w.Id).Should().BeEquivalentTo([promisedWish1.Id, promisedWish2.Id]);
     }
 
     [Fact]

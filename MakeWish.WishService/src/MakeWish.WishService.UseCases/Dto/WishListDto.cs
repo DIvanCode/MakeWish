@@ -13,7 +13,7 @@ public sealed record WishListDto
     public required string Title { get; init; }
 
     [JsonPropertyName("owner"), Required]
-    public required Guid OwnerId { get; init; }
+    public required UserDto Owner { get; init; }
 
     [JsonPropertyName("wishes"), Required]
     public required IReadOnlyList<WishDto> Wishes { get; init; }
@@ -26,7 +26,7 @@ public sealed record WishListDto
     {
         Id = wishList.Id,
         Title = wishList.Title,
-        OwnerId = wishList.Owner.Id,
+        Owner = UserDto.FromUser(wishList.Owner)!,
         Wishes = excludeWishes ? [] : wishList.Wishes.Select(wish => WishDto.FromWish(wish, currUser)).ToList()
     };
 }
