@@ -48,6 +48,11 @@ public sealed class FriendshipsRepositoryStub : IFriendshipsRepository
                 (e.FirstUser.Id == secondUser.Id && e.SecondUser.Id == firstUser.Id)));
     }
 
+    public Task<List<Friendship>> GetAllConfirmedAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_friendships.Where(e => e.IsConfirmed).ToList());
+    }
+    
     public Task<List<Friendship>> GetConfirmedForUserAsync(User user, CancellationToken cancellationToken)
     {
         return Task.FromResult(_friendships

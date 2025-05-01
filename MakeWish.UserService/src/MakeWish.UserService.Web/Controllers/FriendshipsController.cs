@@ -1,4 +1,5 @@
 ﻿using MakeWish.UserService.UseCases.Dto;
+using MakeWish.UserService.UseCases.Features.Friendships.GetAll;
 using MakeWish.UserService.UseCases.Features.Friendships.GetConfirmed;
 using MakeWish.UserService.UseCases.Features.Friendships.GetPendingFriendshipsToUser;
 using MakeWish.UserService.UseCases.Features.Friendships.GetPendingFromUser;
@@ -27,6 +28,15 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
     public async Task<ActionResult<FriendshipDto>> CreateAsync(CreateFriendshipRequest request, CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
+        var result = await mediator.Send(command, cancellationToken);
+        return this.HandleResult(result);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<FriendshipDto>>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var command = new GetAllFriendshipsCommand();
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

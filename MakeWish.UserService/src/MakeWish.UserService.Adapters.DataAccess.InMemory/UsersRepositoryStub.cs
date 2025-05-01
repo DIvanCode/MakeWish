@@ -33,6 +33,11 @@ public sealed class UsersRepositoryStub : IUsersRepository
     {
         return Task.FromResult(_users.SingleOrDefault(e => e.Id == id));
     }
+    
+    public Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_users.ToList());
+    }
 
     public Task<bool> HasWithEmailAsync(string email, CancellationToken cancellationToken)
     {
