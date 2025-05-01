@@ -44,9 +44,9 @@ public sealed class RabbitMessagePublisher(
             {
                 // ReSharper disable once AccessToDisposedClosure
                 await channel.BasicPublishAsync(
-                    exchange: "",
-                    routingKey: options.Value.QueueName,
-                    mandatory: true,
+                    exchange: options.Value.ExchangeName,
+                    routingKey: "",
+                    mandatory: false,
                     basicProperties: properties,
                     body: payload);
             });

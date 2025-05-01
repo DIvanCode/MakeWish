@@ -6,5 +6,5 @@ public sealed record RabbitConnectionOptions
 
     public required string ConnectionString { get; init; }
     public required int RetryCount { get; init; }
-    public required string QueueName { get; init; } 
+    public required string ExchangeName { get; init; } 
 }
