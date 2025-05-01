@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MakeWish.UserService.Interfaces.DataAccess\MakeWish.UserService.Interfaces.DataAccess.csproj" />
+      <ProjectReference Include="..\MakeWish.UserService.Interfaces.MessageBus\MakeWish.UserService.Interfaces.MessageBus.csproj" />
       <ProjectReference Include="..\MakeWish.UserService.Utils\MakeWish.UserService.Utils.csproj" />
     </ItemGroup>
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using MakeWish.UserService.UseCases.Features.Friendships.RemoveFriendship;
+using MakeWish.UserService.UseCases.Features.Friendships.Remove;
 
 namespace MakeWish.UserService.Web.Controllers.Requests.Friendships;
 

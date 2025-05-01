@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 
 namespace MakeWish.UserService.UseCases.Dto;
 

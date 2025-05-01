@@ -1,17 +1,19 @@
 ﻿using FluentResults;
 using MakeWish.UserService.Interfaces.DataAccess;
-using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UseCases.Dto;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
 using MediatR;
 
-namespace MakeWish.UserService.UseCases.Features.Friendships.GetConfirmedFriendships;
+namespace MakeWish.UserService.UseCases.Features.Friendships.GetPendingFromUser;
 
-public sealed class GetConfirmedFriendshipsHandler(IUnitOfWork unitOfWork, IUserContext userContext)
-    : IRequestHandler<GetConfirmedFriendshipsCommand, Result<List<FriendshipDto>>>
+public sealed class GetPendingFriendshipsFromUserHandler(IUnitOfWork unitOfWork, IUserContext userContext)
+    : IRequestHandler<GetPendingFriendshipsFromUserCommand, Result<List<FriendshipDto>>>
 {
-    public async Task<Result<List<FriendshipDto>>> Handle(GetConfirmedFriendshipsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<List<FriendshipDto>>> Handle(
+        GetPendingFriendshipsFromUserCommand request,
+        CancellationToken cancellationToken)
     {
         if (!userContext.IsAuthenticated)
         {
@@ -22,7 +24,7 @@ public sealed class GetConfirmedFriendshipsHandler(IUnitOfWork unitOfWork, IUser
         {
             return new ForbiddenError(
                 nameof(Friendship), 
-                "get confirmed", 
+                "get pending from user", 
                 nameof(User.Id), 
                 request.UserId);
         }
@@ -33,8 +35,8 @@ public sealed class GetConfirmedFriendshipsHandler(IUnitOfWork unitOfWork, IUser
             return new EntityNotFoundError(nameof(User), nameof(User.Id), request.UserId);
         }
 
-        var friendships = await unitOfWork.Friendships.GetConfirmedForUserAsync(user, cancellationToken);
+        var friendships = await unitOfWork.Friendships.GetPendingFromUserAsync(user, cancellationToken);
 
-        return friendships.Select(FriendshipDto.FromFriendship).ToList();
+        return friendships.Select(FriendshipDto.FromFriendship) .ToList();
     }
 }

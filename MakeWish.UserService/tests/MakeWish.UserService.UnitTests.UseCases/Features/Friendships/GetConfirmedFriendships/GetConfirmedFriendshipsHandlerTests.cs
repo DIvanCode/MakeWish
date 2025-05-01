@@ -3,7 +3,7 @@ using MakeWish.UserService.Interfaces.DataAccess;
 using MakeWish.UserService.Models;
 using MakeWish.UserService.UnitTests.Common;
 using MakeWish.UserService.UnitTests.Common.Models;
-using MakeWish.UserService.UseCases.Features.Friendships.GetConfirmedFriendships;
+using MakeWish.UserService.UseCases.Features.Friendships.GetConfirmed;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Utils.Errors;
 using Moq;

@@ -1,4 +1,5 @@
 ﻿using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UnitTests.Common;
 using MakeWish.UserService.UnitTests.Common.Models;
 using MakeWish.UserService.Utils.Errors;
@@ -67,6 +68,53 @@ public class FriendshipTests
 
         // Act
         var result = friendship.ConfirmBy(invalidUser);
+        
+        // Assert
+        Assert.True(result.IsFailed);
+        Assert.IsType<ForbiddenError>(result.Errors.First());
+    }
+    
+    [Fact]
+    public void RemoveBy_ValidUser1_ShouldRemoveFriendship()
+    {
+        // Arrange
+        var user1 = new UserBuilder().Build();
+        var user2 = new UserBuilder().Build();
+        var friendship = Friendship.Create(user1, user2).Value;
+
+        // Act
+        var result = friendship.RemoveBy(user1);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+    }
+    
+    [Fact]
+    public void RemoveBy_ValidUser2_ShouldRemoveFriendship()
+    {
+        // Arrange
+        var user1 = new UserBuilder().Build();
+        var user2 = new UserBuilder().Build();
+        var friendship = Friendship.Create(user1, user2).Value;
+
+        // Act
+        var result = friendship.RemoveBy(user2);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void RemoveBy_InvalidUser_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var user1 = new UserBuilder().Build();
+        var user2 = new UserBuilder().Build();
+        var invalidUser = new UserBuilder().Build();
+        var friendship = Friendship.Create(user1, user2).Value;
+
+        // Act
+        var result = friendship.RemoveBy(invalidUser);
         
         // Assert
         Assert.True(result.IsFailed);

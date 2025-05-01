@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Web.Options;
 using Microsoft.Extensions.Options;

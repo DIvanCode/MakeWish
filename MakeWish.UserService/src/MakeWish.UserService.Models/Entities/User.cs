@@ -1,8 +1,9 @@
 ﻿using EnsureThat;
+using MakeWish.UserService.Models.Events;
 
-namespace MakeWish.UserService.Models;
+namespace MakeWish.UserService.Models.Entities;
 
-public sealed class User
+public sealed class User : DomainEntity
 {
     public Guid Id { get; init; }
 
@@ -29,6 +30,15 @@ public sealed class User
         EnsureArg.IsNotNullOrWhiteSpace(passwordHash);
         
         var id = Guid.NewGuid();
-        return new User(id, email, passwordHash, name, surname);
+        var user = new User(id, email, passwordHash, name, surname);
+        
+        user.DomainEvents.Add(new UserCreatedEvent(user));
+        
+        return user;
+    }
+
+    public void Delete()
+    {
+        DomainEvents.Add(new UserDeletedEvent(this));
     }
 }

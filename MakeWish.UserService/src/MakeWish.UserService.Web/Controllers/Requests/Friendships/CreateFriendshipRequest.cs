@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using MakeWish.UserService.UseCases.Features.Friendships.CreateFriendship;
+using MakeWish.UserService.UseCases.Features.Friendships.Create;
 
 namespace MakeWish.UserService.Web.Controllers.Requests.Friendships;
 

@@ -1,4 +1,5 @@
 ﻿using MakeWish.UserService.Models;
+using MakeWish.UserService.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
