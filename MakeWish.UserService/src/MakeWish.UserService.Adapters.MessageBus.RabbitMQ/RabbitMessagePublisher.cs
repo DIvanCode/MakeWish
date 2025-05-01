@@ -5,7 +5,6 @@ using MakeWish.UserService.Adapters.MessageBus.RabbitMQ.Infrastructure;
 using MakeWish.UserService.Adapters.MessageBus.RabbitMQ.Options;
 using MakeWish.UserService.Interfaces.MessageBus;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
@@ -17,6 +16,11 @@ public sealed class RabbitMessagePublisher(
     IOptions<RabbitConnectionOptions> options)
     : IMessagePublisher
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions()
+    {
+        IncludeFields = true
+    };
+    
     public async Task PublishAsync(Message message)
     {
         if (!connection.IsConnected)
@@ -35,7 +39,7 @@ public sealed class RabbitMessagePublisher(
             }!
         };
 
-        var payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message.Payload));
+        var payload = SerializePayload(message.Payload);
         
         await Policy
             .Handle<BrokerUnreachableException>().Or<SocketException>()
@@ -50,5 +54,11 @@ public sealed class RabbitMessagePublisher(
                     basicProperties: properties,
                     body: payload);
             });
+    }
+
+    private static byte[] SerializePayload(object payload)
+    {
+        var json = JsonSerializer.Serialize(payload, payload.GetType(), JsonSerializerOptions);
+        return Encoding.UTF8.GetBytes(json);
     }
 }
