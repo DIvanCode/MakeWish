@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MakeWish.WishService.Interfaces.Client\MakeWish.WishService.Interfaces.Client.csproj" />
       <ProjectReference Include="..\MakeWish.WishService.Interfaces.DataAccess\MakeWish.WishService.Interfaces.DataAccess.csproj" />
       <ProjectReference Include="..\MakeWish.WishService.Utils\MakeWish.WishService.Utils.csproj" />
     </ItemGroup>

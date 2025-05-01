@@ -24,9 +24,16 @@ public sealed class FriendshipConfirmedHandler(IUnitOfWork unitOfWork)
 
         var firstUserMainWishList = await unitOfWork.WishLists.GetMainForUserAsync(firstUser, cancellationToken);
         var secondUserMainWishList = await unitOfWork.WishLists.GetMainForUserAsync(secondUser, cancellationToken);
-        
-        unitOfWork.WishLists.AllowUserAccess(firstUserMainWishList, secondUser);
-        unitOfWork.WishLists.AllowUserAccess(secondUserMainWishList, firstUser);
+
+        if (!await unitOfWork.WishLists.HasUserAccessAsync(firstUserMainWishList, secondUser, cancellationToken))
+        {
+            unitOfWork.WishLists.AllowUserAccess(firstUserMainWishList, secondUser);   
+        }
+
+        if (!await unitOfWork.WishLists.HasUserAccessAsync(secondUserMainWishList, firstUser, cancellationToken))
+        {
+            unitOfWork.WishLists.AllowUserAccess(secondUserMainWishList, firstUser);   
+        }
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
