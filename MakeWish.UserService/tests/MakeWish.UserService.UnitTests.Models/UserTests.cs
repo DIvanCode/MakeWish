@@ -1,7 +1,5 @@
-﻿using MakeWish.UserService.Models;
-using MakeWish.UserService.Models.Entities;
-using MakeWish.UserService.UnitTests.Common;
-using MakeWish.UserService.UnitTests.Common.Models;
+﻿using MakeWish.UserService.Models.Entities;
+using MakeWish.UserService.Models.Events;
 
 namespace MakeWish.UserService.UnitTests.Models;
 
@@ -34,10 +32,12 @@ public class UserTests
     public void Create_InvalidEmail_ShouldThrowArgumentException(string invalidEmail)
     {
         // Arrange
-        var builder = new UserBuilder().WithEmail(invalidEmail);
+        const string passwordHash = "hashedpassword";
+        const string name = "John";
+        const string surname = "Doe";
 
         // Act & Assert
-        Assert.ThrowsAny<ArgumentException>(() => builder.Build());
+        Assert.ThrowsAny<ArgumentException>(() => User.Create(invalidEmail, passwordHash, name, surname));
     }
 
     [Theory]
@@ -47,9 +47,55 @@ public class UserTests
     public void Create_InvalidPasswordHash_ShouldThrowArgumentException(string invalidPasswordHash)
     {
         // Arrange
-        var builder = new UserBuilder().WithPasswordHash(invalidPasswordHash);
+        const string email = "test@example.com";
+        const string name = "John";
+        const string surname = "Doe";
 
         // Act & Assert
-        Assert.ThrowsAny<ArgumentException>(() => builder.Build());
+        Assert.ThrowsAny<ArgumentException>(() => User.Create(email, invalidPasswordHash, name, surname));
+    }
+
+    [Fact]
+    public void Create_ShouldCreateDomainEvent()
+    {
+        // Arrange
+        const string email = "test@example.com";
+        const string passwordHash = "hashedpassword";
+        const string name = "John";
+        const string surname = "Doe";
+        
+        // Act
+        var user = User.Create(email, passwordHash, name, surname);
+
+        // Assert
+        var domainEvents = user.CollectDomainEvents();
+        Assert.Single(domainEvents);
+        Assert.IsType<UserCreatedEvent>(domainEvents[0]);
+        
+        var @event = (UserCreatedEvent)domainEvents[0];
+        Assert.Equivalent(user, @event.User);
+    }
+    
+    [Fact]
+    public void Delete_ShouldCreateDomainEvent()
+    {
+        // Arrange
+        const string email = "test@example.com";
+        const string passwordHash = "hashedpassword";
+        const string name = "John";
+        const string surname = "Doe";
+        
+        // Act
+        var user = User.Create(email, passwordHash, name, surname);
+        user.CollectDomainEvents();
+        user.Delete();
+
+        // Assert
+        var domainEvents = user.CollectDomainEvents();
+        Assert.Single(domainEvents);
+        Assert.IsType<UserDeletedEvent>(domainEvents[0]);
+        
+        var @event = (UserDeletedEvent)domainEvents[0];
+        Assert.Equivalent(user, @event.User);
     }
 }
