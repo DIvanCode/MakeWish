@@ -1,5 +1,4 @@
 ﻿using MakeWish.UserService.Interfaces.DataAccess;
-using MakeWish.UserService.Models;
 using MakeWish.UserService.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +30,15 @@ public sealed class FriendshipsRepository(DbSet<Friendship> entities)
             cancellationToken);
     }
 
+    public async Task<List<Friendship>> GetAllConfirmedAsync(CancellationToken cancellationToken)
+    {
+        return await entities
+            .Where(e => e.IsConfirmed)
+            .Include(e => e.FirstUser)
+            .Include(e => e.SecondUser)
+            .ToListAsync(cancellationToken);
+    }
+    
     public async Task<List<Friendship>> GetConfirmedForUserAsync(User user, CancellationToken cancellationToken)
     {
         return await entities

@@ -1,5 +1,6 @@
 ﻿using MakeWish.UserService.UseCases.Dto;
 using MakeWish.UserService.UseCases.Features.Users.Delete;
+using MakeWish.UserService.UseCases.Features.Users.GetAll;
 using MakeWish.UserService.UseCases.Features.Users.GetById;
 using MakeWish.UserService.UseCases.Features.Users.GetCurrent;
 using MakeWish.UserService.Web.Controllers.Requests.Users;
@@ -54,6 +55,15 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<UserDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var command = new GetByIdCommand(id);
+        var result = await mediator.Send(command, cancellationToken);
+        return this.HandleResult(result);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<UserDto>>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var command = new GetAllUsersCommand();
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

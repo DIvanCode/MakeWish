@@ -1,5 +1,4 @@
 ﻿using MakeWish.UserService.Interfaces.DataAccess;
-using MakeWish.UserService.Models;
 using MakeWish.UserService.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +14,11 @@ public sealed class UsersRepository(DbSet<User> entities) : BaseRepository<User>
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await entities.SingleOrDefaultAsync(e => e.Id == id, cancellationToken);
+    }
+
+    public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await entities.ToListAsync(cancellationToken);
     }
 
     public async Task<bool> HasWithEmailAsync(string email, CancellationToken cancellationToken)
