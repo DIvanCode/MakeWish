@@ -29,6 +29,21 @@ public sealed class RabbitMessageConsumer(
         }
         
         await using var channel = await connection.CreateChannelAsync();
+
+        await channel.QueueDeclareAsync(
+            options.Value.QueueName,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            arguments: null,
+            cancellationToken: cancellationToken);
+        
+        await channel.QueueBindAsync(
+            options.Value.QueueName,
+            options.Value.ExchangeName,
+            routingKey: "",
+            cancellationToken: cancellationToken);
+        
         var consumer = new AsyncEventingBasicConsumer(channel);
         
         consumer.ReceivedAsync += async (_, @event) =>
