@@ -30,6 +30,8 @@ public sealed class RabbitMessagePublisher(
 
         await using var channel = await connection.CreateChannelAsync();
         
+        await channel.ExchangeDeclareAsync(options.Value.ExchangeName, ExchangeType.Fanout, durable: true);
+        
         var properties = new BasicProperties
         {
             DeliveryMode = DeliveryModes.Persistent,
