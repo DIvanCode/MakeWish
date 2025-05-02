@@ -16,6 +16,6 @@ public sealed class FriendshipRemovedHandler(IMessagePublisher messagePublisher)
                 SecondUserId = @event.Friendship.SecondUser.Id
             });
 
-        await messagePublisher.PublishAsync(message);
+        await messagePublisher.PublishAsync(message, cancellationToken);
     }
 }
