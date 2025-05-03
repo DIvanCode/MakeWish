@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace MakeWish.WishService.Adapters.MessageBus.RabbitMQ;
@@ -30,6 +31,12 @@ public sealed class RabbitMessageConsumer(
         
         await using var channel = await connection.CreateChannelAsync();
 
+        await channel.ExchangeDeclareAsync(
+            options.Value.ExchangeName,
+            ExchangeType.Fanout,
+            durable: true,
+            cancellationToken: cancellationToken);
+        
         await channel.QueueDeclareAsync(
             options.Value.QueueName,
             durable: true,
