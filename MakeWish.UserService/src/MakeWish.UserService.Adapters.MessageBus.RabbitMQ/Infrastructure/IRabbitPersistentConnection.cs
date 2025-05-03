@@ -6,7 +6,7 @@ public interface IRabbitPersistentConnection : IAsyncDisposable
 {
     bool IsConnected { get; }
 
-    Task ConnectAsync();
+    Task ConnectAsync(CancellationToken cancellationToken);
 
-    Task<IChannel> CreateChannelAsync();
+    Task<IChannel> CreateChannelAsync(CancellationToken cancellationToken);
 }

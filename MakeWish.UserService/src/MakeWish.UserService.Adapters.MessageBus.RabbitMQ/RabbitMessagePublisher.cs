@@ -16,21 +16,25 @@ public sealed class RabbitMessagePublisher(
     IOptions<RabbitConnectionOptions> options)
     : IMessagePublisher
 {
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions()
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         IncludeFields = true
     };
     
-    public async Task PublishAsync(Message message)
+    public async Task PublishAsync(Message message, CancellationToken cancellationToken)
     {
         if (!connection.IsConnected)
         {
-            await connection.ConnectAsync();
+            await connection.ConnectAsync(cancellationToken);
         }
 
-        await using var channel = await connection.CreateChannelAsync();
+        await using var channel = await connection.CreateChannelAsync(cancellationToken);
         
-        await channel.ExchangeDeclareAsync(options.Value.ExchangeName, ExchangeType.Fanout, durable: true);
+        await channel.ExchangeDeclareAsync(
+            options.Value.ExchangeName,
+            ExchangeType.Fanout,
+            durable: true,
+            cancellationToken: cancellationToken);
         
         var properties = new BasicProperties
         {
@@ -54,7 +58,8 @@ public sealed class RabbitMessagePublisher(
                     routingKey: "",
                     mandatory: false,
                     basicProperties: properties,
-                    body: payload);
+                    body: payload,
+                    cancellationToken: cancellationToken);
             });
     }
 

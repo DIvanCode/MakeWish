@@ -17,22 +17,22 @@ public sealed class RabbitPersistentConnection(
 
     public bool IsConnected => _connection is { IsOpen: true } && !_disposed;
 
-    public async Task<IChannel> CreateChannelAsync()
+    public async Task<IChannel> CreateChannelAsync(CancellationToken cancellationToken)
     {
         if (!IsConnected)
         {
             throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
         }
         
-        return await _connection!.CreateChannelAsync();
+        return await _connection!.CreateChannelAsync(cancellationToken: cancellationToken);
     }
     
-    public async Task ConnectAsync()
+    public async Task ConnectAsync(CancellationToken cancellationToken)
     {
         await Policy
             .Handle<SocketException>().Or<BrokerUnreachableException>()
             .WaitAndRetryAsync(options.Value.RetryCount, k => TimeSpan.FromSeconds(Math.Pow(2, k)))
-            .ExecuteAsync(async () => _connection = await connectionFactory.CreateConnectionAsync());
+            .ExecuteAsync(async () => _connection = await connectionFactory.CreateConnectionAsync(cancellationToken));
     }
 
     public async ValueTask DisposeAsync()

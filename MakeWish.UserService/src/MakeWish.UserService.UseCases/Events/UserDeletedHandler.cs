@@ -15,6 +15,6 @@ public sealed class UserDeletedHandler(IMessagePublisher messagePublisher) : INo
                 Id = @event.User.Id
             });
 
-        await messagePublisher.PublishAsync(message);
+        await messagePublisher.PublishAsync(message, cancellationToken);
     }
 }

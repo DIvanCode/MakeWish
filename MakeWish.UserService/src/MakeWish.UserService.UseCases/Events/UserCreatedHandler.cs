@@ -17,6 +17,6 @@ public sealed class UserCreatedHandler(IMessagePublisher messagePublisher) : INo
                 Surname = @event.User.Surname
             });
 
-        await messagePublisher.PublishAsync(message);
+        await messagePublisher.PublishAsync(message, cancellationToken);
     }
 }

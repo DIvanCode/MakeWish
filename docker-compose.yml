@@ -11,6 +11,8 @@ services:
     image: postgres
     ports:
       - "5432:5432"
+    container_name: makewish.user.service.postgres
+    hostname: makewish.user.service.postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -25,6 +27,8 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    container_name: makewish.rabbitmq
+    hostname: makewish.rabbitmq
     restart: always
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
@@ -38,6 +42,8 @@ services:
     ports:
       - "7474:7474"
       - "7687:7687"
+    container_name: makewish.wish.service.neo4j
+    hostname: makewish.wish.service.neo4j
     environment:
       - NEO4J_AUTH=neo4j/password
     volumes:
