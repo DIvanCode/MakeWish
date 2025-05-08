@@ -1,9 +1,21 @@
-﻿namespace MakeWish.Desktop.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-public class User
+namespace MakeWish.Desktop.Domain;
+
+public sealed class User
 {
-    public Guid Id { get; set; }
-    public required string Email { get; set; }
-    public required string Name { get; set; }
-    public required string Surname { get; set; }
+    [JsonPropertyName("id"), Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("email")]
+    public string Email { get; init; } = string.Empty;
+    
+    [JsonPropertyName("name")]
+    public string Name { get; init; } = string.Empty;
+    
+    [JsonPropertyName("surname")]
+    public string Surname { get; init; } = string.Empty;
+    
+    public string DisplayName => $"{Name} {Surname}";
 }

@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="MakeWish.Desktop.Views.Wishes.WishListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:wishes="clr-namespace:MakeWish.Desktop.ViewModels.Wishes"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=wishes:WishListViewModel}">
+    <materialDesign:Card Padding="32" Margin="16">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                <Button Content="Желания"
+                        Command="{Binding ShowMainWishListCommand}"
+                        Margin="0,0,10,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Списки желаний"
+                        Command="{Binding ShowWishListsCommand}"
+                        Margin="0,0,10,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Width="300">
+                    <StackPanel>
+                        <TextBlock Text="{Binding WishList.Title}"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,0"/>
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding WishList.Wishes}"
+                                  Width="300">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding DataContext.SelectWishCommand,
+                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding Id}"
+                                        Margin="0,0,0,10"
+                                        HorizontalAlignment="Left">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="300">
+                                        <materialDesign:PackIcon Kind="Gift"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Margin="0,0,8,0"
+                                                                 VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Title}"
+                                                   Margin="4,0,4,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                
+                <ContentControl Grid.Column="1" 
+                                Content="{Binding SelectedViewModel}"/>
+            </Grid>
+        </Grid>
+    </materialDesign:Card>
+</UserControl> 

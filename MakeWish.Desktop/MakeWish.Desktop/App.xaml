@@ -1,9 +1,11 @@
 ﻿<Application x:Class="MakeWish.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:views="clr-namespace:MakeWish.Desktop.Views"
-             xmlns:viewModels="clr-namespace:MakeWish.Desktop.ViewModels"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:userViews="clr-namespace:MakeWish.Desktop.Views.Users"
+             xmlns:userViewModels="clr-namespace:MakeWish.Desktop.ViewModels.Users"
+             xmlns:wishViews="clr-namespace:MakeWish.Desktop.Views.Wishes"
+             xmlns:wishViewModels="clr-namespace:MakeWish.Desktop.ViewModels.Wishes">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,28 +23,52 @@
                 <Setter Property="FontFamily" Value="{materialDesign:MaterialDesignFont}"/>
             </Style>
 
-            <DataTemplate DataType="{x:Type viewModels:LoginViewModel}">
-                <views:LoginView/>
+            <DataTemplate DataType="{x:Type userViewModels:LoginViewModel}">
+                <userViews:LoginView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type viewModels:RegisterViewModel}">
-                <views:RegisterView/>
+            <DataTemplate DataType="{x:Type userViewModels:RegisterViewModel}">
+                <userViews:RegisterView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type viewModels:UserViewModel}">
-                <views:UserView/>
+            <DataTemplate DataType="{x:Type userViewModels:UserViewModel}">
+                <userViews:UserView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type viewModels:FriendsViewModel}">
-                <views:FriendsView/>
+            <DataTemplate DataType="{x:Type userViewModels:FriendsViewModel}">
+                <userViews:FriendsView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type viewModels:FriendsPendingFromUserViewModel}">
-                <views:FriendsPendingFromUserView/>
+            <DataTemplate DataType="{x:Type userViewModels:FriendsPendingFromUserViewModel}">
+                <userViews:FriendsPendingFromUserView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type viewModels:FriendsPendingToUserViewModel}">
-                <views:FriendsPendingToUserView/>
+            <DataTemplate DataType="{x:Type userViewModels:FriendsPendingToUserViewModel}">
+                <userViews:FriendsPendingToUserView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishViewModels:WishViewModel}">
+                <wishViews:WishView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishViewModels:CreateWishViewModel}">
+                <wishViews:CreateWishView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishViewModels:WishesViewModel}">
+                <wishViews:WishesView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishViewModels:WishListViewModel}">
+                <wishViews:WishListView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishViewModels:CreateWishListViewModel}">
+                <wishViews:CreateWishListView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishViewModels:WishListsViewModel}">
+                <wishViews:WishListsView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

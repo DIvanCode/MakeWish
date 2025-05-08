@@ -31,7 +31,7 @@
                     Margin="25, 100, 25, 100">
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                     Command="{Binding NavigateToProfileCommand}"
-                    Margin="0,5">
+                    Margin="0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Account" 
                                              Width="24" 
@@ -43,7 +43,7 @@
             
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                     Command="{Binding NavigateToFriendsCommand}"
-                    Margin="0,5">
+                    Margin="0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="AccountGroup" 
                                            Width="24" 
@@ -52,10 +52,22 @@
                     <TextBlock Text="Друзья"/>
                 </StackPanel>
             </Button>
+            
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                    Command="{Binding NavigateToWishesCommand}"
+                    Margin="0,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Gift" 
+                                             Width="24" 
+                                             Height="24"
+                                             Margin="0,0,8,0"/>
+                    <TextBlock Text="Желания"/>
+                </StackPanel>
+            </Button>
 
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                     Command="{Binding LogoutCommand}"
-                    Margin="0,5">
+                    Margin="0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Logout" 
                                            Width="24" 
