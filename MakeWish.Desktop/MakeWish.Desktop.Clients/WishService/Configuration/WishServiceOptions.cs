@@ -1,8 +1,8 @@
-namespace MakeWish.Desktop.Clients.UserService.Configuration;
+﻿namespace MakeWish.Desktop.Clients.WishService.Configuration;
 
-public sealed record UserServiceOptions
+public sealed record WishServiceOptions
 {
-    public const string SectionName = "UserService";
+    public const string SectionName = "WishService";
     
     public string Host { get; init; } = string.Empty;
     public int Port { get; init; }

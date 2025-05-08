@@ -9,19 +9,24 @@ public class NavigationService(IServiceProvider serviceProvider) : INavigationSe
     private int _viewModelsHistoryPtr = -1;
     
     public event Action<ViewModelBase>? CurrentViewModelChanged;
-
+    
     public void NavigateTo<T>(params object[] p) where T : ViewModelBase
     {
         while (_viewModelsHistoryPtr + 1 < _viewModelsHistory.Count)
         {
             _viewModelsHistory.RemoveAt(_viewModelsHistory.Count - 1);
         }
-        
-        var newViewModel = ActivatorUtilities.CreateInstance<T>(serviceProvider, p);
+
+        var newViewModel = GetViewModel<T>(p);
         _viewModelsHistory.Add(newViewModel);
         _viewModelsHistoryPtr++;
         
         ReloadCurrentViewModel();
+    }
+
+    public T GetViewModel<T>(params object[] p) where T : ViewModelBase
+    {
+        return ActivatorUtilities.CreateInstance<T>(serviceProvider, p);
     }
 
     public void GoBack()
