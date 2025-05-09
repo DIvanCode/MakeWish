@@ -3,6 +3,7 @@ using MakeWish.WishService.UseCases.Features.Wishes.Get;
 using MakeWish.WishService.UseCases.Features.Wishes.Delete;
 using MakeWish.WishService.UseCases.Features.Wishes.Complete;
 using MakeWish.WishService.UseCases.Features.Wishes.CompleteApprove;
+using MakeWish.WishService.UseCases.Features.Wishes.CompleteReject;
 using MakeWish.WishService.UseCases.Features.Wishes.Promise;
 using MakeWish.WishService.UseCases.Features.Wishes.PromiseCancel;
 using MakeWish.WishService.UseCases.Features.Wishes.Restore;
@@ -105,6 +106,19 @@ public sealed class WishesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<WishDto>> CompleteApproveAsync(Guid id, CancellationToken cancellationToken)
     {
         var command = new CompleteApproveWishCommand(id);
+        var result = await mediator.Send(command, cancellationToken);
+        return this.HandleResult(result);
+    }
+    
+    [HttpPost("{id:guid}/:complete-reject")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<WishDto>> CompleteRejectAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new CompleteRejectWishCommand(id);
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

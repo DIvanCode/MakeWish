@@ -242,6 +242,28 @@ public class WishTests
     }
     
     [Fact]
+    public void CompleteReject_ShouldRejectCompletion_WhenOwnerRejects()
+    {
+        // Arrange
+        var wish = new WishBuilder()
+            .WithOwner(Owner)
+            .Build()
+            .PromisedBy(OtherUser)
+            .CompletedBy(OtherUser);
+        
+        // Act
+        var result = wish.CompleteReject(by: Owner);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        wish.GetStatusFor(OtherUser).Should().Be(WishStatus.Created);
+        wish.GetStatusFor(Owner).Should().Be(WishStatus.Created);
+        wish.GetPromiserFor(OtherUser).Should().BeNull();
+        wish.GetPromiserFor(Owner).Should().BeNull();
+        wish.GetCompleter().Should().BeNull();
+    }
+    
+    [Fact]
     public void Delete_ShouldSetStatusToDeleted_WhenOwnerDeletes()
     {
         // Arrange
@@ -353,6 +375,8 @@ public class WishTests
             wish.Complete(by: OtherUser),
             wish.CompleteApprove(by: Owner),
             wish.CompleteApprove(by: OtherUser),
+            wish.CompleteReject(by: OtherUser),
+            wish.CompleteReject(by: Owner),
             wish.Delete(by: OtherUser),
             wish.Restore(by: Owner),
             wish.Restore(by: OtherUser)
@@ -385,6 +409,8 @@ public class WishTests
             wish.Complete(by: Owner),
             wish.CompleteApprove(by: Owner),
             wish.CompleteApprove(by: OtherUser),
+            wish.CompleteReject(by: OtherUser),
+            wish.CompleteReject(by: Owner),
             wish.Delete(by: Owner),
             wish.Delete(by: OtherUser),
             wish.Restore(by: Owner),
@@ -420,6 +446,7 @@ public class WishTests
             wish.Complete(by: Owner),
             wish.Complete(by: OtherUser),
             wish.CompleteApprove(by: OtherUser),
+            wish.CompleteReject(by: OtherUser),
             wish.Delete(by: Owner),
             wish.Delete(by: OtherUser),
             wish.Restore(by: Owner),
@@ -457,6 +484,8 @@ public class WishTests
             wish.Complete(by: OtherUser),
             wish.CompleteApprove(by: Owner),
             wish.CompleteApprove(by: OtherUser),
+            wish.CompleteReject(by: OtherUser),
+            wish.CompleteReject(by: Owner),
             wish.Delete(by: Owner),
             wish.Delete(by: OtherUser),
             wish.Restore(by: Owner),
@@ -492,6 +521,8 @@ public class WishTests
             wish.Complete(by: OtherUser),
             wish.CompleteApprove(by: Owner),
             wish.CompleteApprove(by: OtherUser),
+            wish.CompleteReject(by: OtherUser),
+            wish.CompleteReject(by: Owner),
             wish.Delete(by: Owner),
             wish.Delete(by: OtherUser),
             wish.Restore(by: OtherUser)
