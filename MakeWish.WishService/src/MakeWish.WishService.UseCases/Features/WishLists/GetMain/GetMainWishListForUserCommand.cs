@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.WishLists.GetMain;
 
-public sealed record GetMainWishListForCurrentUserCommand : IRequest<Result<WishListDto>>;
+public sealed record GetMainWishListForUserCommand(Guid UserId) : IRequest<Result<WishListDto>>;
