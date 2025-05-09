@@ -18,9 +18,6 @@ public sealed class UserCreatedHandler(IUnitOfWork unitOfWork) : INotificationHa
 
         user = new User(request.Id, request.Name, request.Surname);
         unitOfWork.Users.Add(user);
-
-        var mainWishList = WishList.Create("Все желания", owner: user, isMain: true);
-        unitOfWork.WishLists.Add(mainWishList);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
