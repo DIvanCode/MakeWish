@@ -47,10 +47,10 @@ public sealed class WishServiceClient : ServiceClient, IWishServiceClient
         return await ParseResponse<Wish>(response, cancellationToken);
     }
     
-    public async Task<Result<WishList>> GetMainWishListAsync(CancellationToken cancellationToken)
+    public async Task<Result<WishList>> GetMainWishListForUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();
-        var response = await HttpClient.GetAsync("api/wishlists/main", cancellationToken);
+        var response = await HttpClient.GetAsync($"api/wishlists/main/{userId}", cancellationToken);
         return await ParseResponse<WishList>(response, cancellationToken);
     }
 

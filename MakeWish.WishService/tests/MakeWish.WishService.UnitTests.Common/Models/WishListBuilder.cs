@@ -6,7 +6,6 @@ public class WishListBuilder
 {
     private string _title = "Test Wish List";
     private User _owner = new UserBuilder().Build();
-    private bool _isMain;
     private List<Wish> _wishes = [];
 
     public WishListBuilder WithTitle(string title)
@@ -21,12 +20,6 @@ public class WishListBuilder
         return this;
     }
 
-    public WishListBuilder IsMain()
-    {
-        _isMain = true;
-        return this;
-    }
-
     public WishListBuilder WithWishes(IEnumerable<Wish> wishes)
     {
         _wishes = wishes.ToList();
@@ -35,7 +28,7 @@ public class WishListBuilder
 
     public WishList Build()
     {
-        var wishList = WishList.Create(_title, _owner, _isMain);
+        var wishList = WishList.Create(_title, _owner);
         
         foreach (var wish in _wishes)
         {

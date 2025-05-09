@@ -55,7 +55,7 @@ public partial class WishesViewModel : ViewModelBase
     {
         try
         {
-            var result = await _wishServiceClient.GetMainWishListAsync(CancellationToken.None);
+            var result = await _wishServiceClient.GetMainWishListForUserAsync(, CancellationToken.None);
             if (result.IsFailed)
             {
                 DialogService.ShowError(string.Join("\n", result.Errors.Select(e => e.Message)));
