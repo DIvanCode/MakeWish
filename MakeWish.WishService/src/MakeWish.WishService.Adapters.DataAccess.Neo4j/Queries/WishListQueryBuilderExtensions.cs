@@ -36,6 +36,10 @@ public static class WishListQueryBuilderExtensions
     public static IQueryBuilder<T> MatchWishList<T>(this IQueryBuilder<T> builder, Guid id, string node = WishListNode)
         where T : Entity
         => builder.AppendLine($"MATCH ({node}:{WishListType} {{ {builder.BuildIdProperty(id)} }})");
+
+    public static IQueryBuilder<T> MatchMainWishList<T>(this IQueryBuilder<T> builder, string node = WishListNode)
+        where T : Entity
+        => builder.AppendLine($"MATCH ({node}:{WishListType} {{ {WishListsMapper.BuildIsMainProperty(true)} }})");
     
     public static IQueryBuilder<T> LinkWishListToOwner<T>(this IQueryBuilder<T> builder, User owner, string wishList = WishList)
         where T : Entity

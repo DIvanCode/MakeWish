@@ -8,6 +8,7 @@ public sealed class WishList : Entity
 {
     public string Title { get; private set; } = default!;
     public User Owner { get; init; } = default!;
+    public bool IsMain { get; init; }
     public IReadOnlyList<Wish> Wishes => _wishes.AsReadOnly();
     
     private readonly List<Wish> _wishes = [];
@@ -17,20 +18,21 @@ public sealed class WishList : Entity
     {
     }
 
-    private WishList(Guid id, string title, User owner)
+    private WishList(Guid id, string title, User owner, bool isMain)
     {
         Id = id;
         Title = title;
         Owner = owner;
+        IsMain = isMain;
     }
 
-    public static WishList Create(string title, User owner)
+    public static WishList Create(string title, User owner, bool isMain = false)
     {
         EnsureArg.IsNotNullOrWhiteSpace(title);
         EnsureArg.IsNotNull(owner);
         
         var id = Guid.NewGuid();
-        return new WishList(id, title, owner);
+        return new WishList(id, title, owner, isMain);
     }
 
     public Result Update(string title, User by)

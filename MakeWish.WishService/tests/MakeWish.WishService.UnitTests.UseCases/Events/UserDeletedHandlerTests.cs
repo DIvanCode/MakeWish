@@ -24,11 +24,13 @@ public class UserDeletedHandlerTests
         var user = new UserBuilder().Build();
         var wish1 = new WishBuilder().WithOwner(user).Build();
         var wish2 = new WishBuilder().WithOwner(user).Build();
+        var mainWishList = new WishListBuilder().WithOwner(user).IsMain().WithWishes([wish1, wish2]).Build();
         var wishList = new WishListBuilder().WithOwner(user).WithWishes([wish2]).Build();
         
         _unitOfWork.Users.Add(user);
         _unitOfWork.Wishes.Add(wish1);
         _unitOfWork.Wishes.Add(wish2);
+        _unitOfWork.WishLists.Add(mainWishList);
         _unitOfWork.WishLists.Add(wishList);
         
         var command = new UserDeletedNotification(user.Id);
@@ -43,6 +45,8 @@ public class UserDeletedHandlerTests
         deletedWish1.Should().BeNull();
         var deletedWish2 = await _unitOfWork.Wishes.GetByIdAsync(wish2.Id, CancellationToken.None);
         deletedWish2.Should().BeNull();
+        var deletedMainWishList = await _unitOfWork.WishLists.GetByIdAsync(mainWishList.Id, CancellationToken.None);
+        deletedMainWishList.Should().BeNull();
         var deletedWishList = await _unitOfWork.WishLists.GetByIdAsync(wishList.Id, CancellationToken.None);
         deletedWishList.Should().BeNull();
     }

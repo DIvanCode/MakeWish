@@ -186,7 +186,7 @@ public class WishTests
         
         // Assert
         result.IsSuccess.Should().BeTrue();
-        wish.GetStatusFor(OtherUser).Should().Be(WishStatus.Completed);
+        wish.GetStatusFor(OtherUser).Should().Be(WishStatus.Approved);
         wish.GetStatusFor(Owner).Should().Be(WishStatus.Approved);
         wish.GetCompleter().Should().Be(Owner);
     }
@@ -202,7 +202,7 @@ public class WishTests
         
         // Assert
         result.IsSuccess.Should().BeTrue();
-        wish.GetStatusFor(OtherUser).Should().Be(WishStatus.Completed);
+        wish.GetStatusFor(OtherUser).Should().Be(WishStatus.Approved);
         wish.GetStatusFor(Owner).Should().Be(WishStatus.Approved);
         wish.GetCompleter().Should().Be(Owner);
     }

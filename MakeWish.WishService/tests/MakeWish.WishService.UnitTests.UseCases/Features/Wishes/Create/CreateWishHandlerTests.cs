@@ -30,7 +30,10 @@ public class CreateWishHandlerTests
         const string description = "Wish Description";
         
         var user = new UserBuilder().Build();
+        var wishList = new WishListBuilder().WithOwner(user).IsMain().Build();
+        
         _unitOfWork.Users.Add(user);
+        _unitOfWork.WishLists.Add(wishList);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
@@ -48,6 +51,7 @@ public class CreateWishHandlerTests
         createdWish.Title.Should().Be(title);
         createdWish.Description.Should().Be(description);
         createdWish.Owner.Id.Should().Be(user.Id);
+        wishList.Wishes.Single().Should().BeEquivalentTo(createdWish);
     }
 
     [Fact]

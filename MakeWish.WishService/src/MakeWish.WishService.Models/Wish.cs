@@ -33,43 +33,13 @@ public sealed class Wish : Entity
     {
         EnsureArg.IsNotNull(user, nameof(user));
 
-        if (_status is WishStatus.Promised)
+        if (_status is not WishStatus.Promised || user.Id != Owner.Id)
         {
-            EnsureArg.IsNotNull(_promiser, nameof(_promiser));
-            
-            if (user.Id == Owner.Id && _promiser.Id != Owner.Id)
-            {
-                return WishStatus.Created;
-            }
-
-            return WishStatus.Promised;
+            return _status;
         }
-
-        if (_status is WishStatus.Completed)
-        {
-            EnsureArg.IsNotNull(_completer, nameof(_completer));
-
-            if (user.Id == Owner.Id || user.Id == _completer.Id)
-            {
-                return WishStatus.Completed;
-            }
-
-            return WishStatus.Promised;
-        }
-
-        if (_status is WishStatus.Approved)
-        {
-            EnsureArg.IsNotNull(_completer, nameof(_completer));
-
-            if (user.Id == Owner.Id || user.Id == _completer.Id)
-            {
-                return WishStatus.Approved;
-            }
-
-            return WishStatus.Completed;
-        }
-
-        return _status;
+        
+        EnsureArg.IsNotNull(_promiser, nameof(_promiser));
+        return Owner.Id == _promiser.Id ? WishStatus.Promised : WishStatus.Created;
     }
     
     public User? GetPromiserFor(User user)
