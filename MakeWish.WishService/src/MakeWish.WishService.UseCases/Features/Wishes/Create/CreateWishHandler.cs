@@ -26,15 +26,7 @@ public sealed class CreateWishHandler(IUserContext userContext, IUnitOfWork unit
         
         var wish = Wish.Create(request.Title, request.Description, owner);
         
-        var mainWishList = await unitOfWork.WishLists.GetMainForUserAsync(owner, cancellationToken);
-        var addResult = mainWishList.Add(wish, by: owner);
-        if (addResult.IsFailed)
-        {
-            return addResult;
-        }
-        
         unitOfWork.Wishes.Add(wish);
-        unitOfWork.WishLists.AddWish(mainWishList, wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return WishDto.FromWish(wish, currUser: owner);
