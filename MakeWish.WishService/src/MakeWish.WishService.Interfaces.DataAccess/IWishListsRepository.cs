@@ -7,7 +7,6 @@ public interface IWishListsRepository : IBaseRepository<WishList>
     void AddWish(WishList wishList, Wish wish);
     void RemoveWish(WishList wishList, Wish wish);
     Task<WishList?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<WishList> GetMainForUserAsync(User user, CancellationToken cancellationToken);
     Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken);
     Task<bool> ExistsContainingWishWithUserAccessAsync(Wish wish, User user, CancellationToken cancellationToken);
     void AllowUserAccess(WishList wishList, User user);

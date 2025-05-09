@@ -43,19 +43,6 @@ public sealed class ReconcileUsersHandler(
             unitOfWork.Users.Update(localUser);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
-        
-        var friendshipsResult = await userServiceClient.GetAllFriendshipsAsync(cancellationToken);
-        if (friendshipsResult.IsFailed)
-        {
-            return Result.Fail(friendshipsResult.Errors.First());
-        }
-
-        var friendships = friendshipsResult.Value.ToList();
-        foreach (var friendship in friendships)
-        {
-            var notification = new FriendshipConfirmedNotification(friendship.FirstUser.Id, friendship.SecondUser.Id);
-            await mediator.Publish(notification, cancellationToken);
-        }
 
         return Result.Ok();
     }
