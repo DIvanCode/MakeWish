@@ -35,7 +35,16 @@ public sealed class DeleteWishHandler(IUserContext userContext, IUnitOfWork unit
             return deleteResult;
         }
         
+        var mainWishList = await unitOfWork.WishLists.GetMainForUserAsync(user, cancellationToken);
+        var removeResult = mainWishList.Remove(wish, by: user);
+        if (removeResult.IsFailed)
+        {
+            return removeResult;
+        }
+        
         unitOfWork.Wishes.Update(wish);
+        unitOfWork.WishLists.RemoveWish(mainWishList, wish);
+        
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Ok();

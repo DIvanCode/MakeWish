@@ -32,6 +32,9 @@ public class RestoreWishHandlerTests
         var wish = new WishBuilder().WithOwner(user).Build().DeletedBy(user);
         _unitOfWork.Wishes.Add(wish);
         
+        var wishList = new WishListBuilder().WithOwner(user).IsMain().Build();
+        _unitOfWork.WishLists.Add(wishList);
+        
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
@@ -43,6 +46,7 @@ public class RestoreWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         wish.GetStatusFor(user).Should().Be(WishStatus.Created);
+        wishList.Wishes.Single().Should().BeEquivalentTo(wish);
     }
 
     [Fact]

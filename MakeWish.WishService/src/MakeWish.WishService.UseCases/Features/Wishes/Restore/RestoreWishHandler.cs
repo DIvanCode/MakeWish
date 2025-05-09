@@ -35,8 +35,16 @@ public sealed class RestoreWishHandler(IUserContext userContext, IUnitOfWork uni
         {
             return restoreResult;
         }
+
+        var mainWishList = await unitOfWork.WishLists.GetMainForUserAsync(user, cancellationToken);
+        var addResult = mainWishList.Add(wish, by: user);
+        if (addResult.IsFailed)
+        {
+            return addResult;
+        }
         
         unitOfWork.Wishes.Update(wish);
+        unitOfWork.WishLists.AddWish(mainWishList, wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return WishDto.FromWish(wish, currUser: user);
