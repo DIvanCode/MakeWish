@@ -195,6 +195,27 @@ public sealed class Wish : Entity
         return Result.Ok();
     }
     
+    public Result CompleteReject(User by)
+    {
+        EnsureArg.IsNotNull(by, nameof(by));
+        
+        if (_status != WishStatus.Completed)
+        {
+            return new ForbiddenError(nameof(Wish), nameof(CompleteReject), nameof(_status), _status);
+        }
+        
+        if (Owner.Id != by.Id)
+        {
+            return new ForbiddenError(nameof(Wish), nameof(CompleteReject), nameof(Id), Id);
+        }
+        
+        _status = WishStatus.Created;
+        _completer = null;
+        _promiser = null;
+
+        return Result.Ok();
+    }
+    
     public Result Delete(User by)
     {
         EnsureArg.IsNotNull(by, nameof(by));
