@@ -36,6 +36,8 @@ public class UserCreatedHandlerTests
         createdUser.Should().NotBeNull();
         createdUser.Name.Should().Be(name);
         createdUser.Surname.Should().Be(surname);
+        var createdMainWishList = await _unitOfWork.WishLists.GetMainForUserAsync(createdUser, CancellationToken.None);
+        createdMainWishList.Should().NotBeNull();
     }
 
     [Fact]

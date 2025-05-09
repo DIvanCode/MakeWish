@@ -33,6 +33,9 @@ public class DeleteWishHandlerTests
         var wish = new WishBuilder().WithOwner(owner).Build();
         _unitOfWork.Wishes.Add(wish);
         
+        var wishList = new WishListBuilder().WithOwner(owner).IsMain().WithWishes([wish]).Build();
+        _unitOfWork.WishLists.Add(wishList);
+        
         _userContextMock.Setup(x => x.IsAuthenticated).Returns(true);
         _userContextMock.Setup(x => x.UserId).Returns(owner.Id);
         
@@ -44,6 +47,7 @@ public class DeleteWishHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         wish.GetStatusFor(owner).Should().Be(WishStatus.Deleted);
+        wishList.Wishes.Should().BeEmpty();
     }
 
     [Fact]
