@@ -50,3 +50,31 @@ services:
       - neo4j:/data
     networks:
       - dev
+  user-service:
+    build:
+      context: MakeWish.UserService
+    container_name: makewish.user.service
+    hostname: makewish.user.service
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JwtToken__SecretKey=DevelopmentSecretKey101010NotSensitiveData
+      - DbConnection__ConnectionString=Server=makewish.user.service.postgres:5432;Database=postgres;Username=postgres;Password=postgres
+      - RabbitConnection__ConnectionString=amqp://rabbitmq:rabbitmq@makewish.rabbitmq:5672
+    networks:
+      - dev
+  wish-service:
+    build:
+      context: MakeWish.WishService
+    container_name: makewish.wish.service
+    hostname: makewish.wish.service
+    ports:
+      - "5002:5002"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JwtToken__SecretKey=DevelopmentSecretKey101010NotSensitiveData
+      - DbConnection__Password=password
+      - RabbitConnection__ConnectionString=amqp://rabbitmq:rabbitmq@makewish.rabbitmq:5672
+    networks:
+      - dev
