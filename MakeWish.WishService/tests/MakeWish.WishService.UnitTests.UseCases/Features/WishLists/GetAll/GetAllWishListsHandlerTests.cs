@@ -23,34 +23,36 @@ public class GetAllWishListsHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnOnlyMyWishLists_WhenOnlyMyIsTrue()
+    public async Task Handle_ShouldReturnMyWishLists_ExceptPublicAndPrivate()
     {
         // Arrange
         var owner = new UserBuilder().Build();
-        var user = new UserBuilder().Build();
+        var otherUser = new UserBuilder().Build();
         var wish = new WishBuilder()
             .WithOwner(owner)
             .Build();
+        var publicWishList = new WishListBuilder()
+            .WithOwner(owner)
+            .Build();
+        owner.PublicWishListId = publicWishList.Id;
         var ownerWishList = new WishListBuilder()
             .WithOwner(owner)
             .WithWishes(new[] { wish })
             .Build();
-        var userWishList = new WishListBuilder()
-            .WithOwner(user)
+        var otherUserWishList = new WishListBuilder()
+            .WithOwner(otherUser)
             .WithWishes(new[] { wish })
             .Build();
         
         _unitOfWork.Users.Add(owner);
-        _unitOfWork.Users.Add(user);
+        _unitOfWork.Users.Add(otherUser);
         _unitOfWork.Wishes.Add(wish);
         _unitOfWork.WishLists.Add(ownerWishList);
-        _unitOfWork.WishLists.Add(userWishList);
-        
-        // Настраиваем доступ пользователя к списку желаний владельца
-        _unitOfWork.WishLists.AllowUserAccess(ownerWishList, user);
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.Add(otherUserWishList);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
-        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
+        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
         
         var command = new GetAllWishListsCommand();
         
@@ -60,7 +62,7 @@ public class GetAllWishListsHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().HaveCount(1);
-        result.Value.Should().Contain(wl => wl.Id == userWishList.Id);
+        result.Value.Should().Contain(wl => wl.Id == ownerWishList.Id);
     }
 
     [Fact]

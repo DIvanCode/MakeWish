@@ -18,6 +18,17 @@ public sealed class UserCreatedHandler(IUnitOfWork unitOfWork) : INotificationHa
 
         user = new User(request.Id, request.Name, request.Surname);
         unitOfWork.Users.Add(user);
+
+        var publicWishList = WishList.Create($"user-{user.Id}-public", user);
+        unitOfWork.WishLists.Add(publicWishList);
+        
+        var privateWishList = WishList.Create($"user-{user.Id}-private", user);
+        unitOfWork.WishLists.Add(privateWishList);
+        
+        user.PublicWishListId = publicWishList.Id;
+        user.PrivateWishListId = privateWishList.Id;
+        
+        unitOfWork.Users.Update(user);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

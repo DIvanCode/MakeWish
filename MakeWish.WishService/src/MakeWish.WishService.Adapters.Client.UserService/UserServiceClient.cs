@@ -25,6 +25,12 @@ public class UserServiceClient : IUserServiceClient
         var response = await _httpClient.GetAsync("api/users", cancellationToken);
         return await ParseResponse<List<UserResponse>>(response, cancellationToken);
     }
+    
+    public async Task<Result<List<FriendshipResponse>>> GetAllFriendshipsAsync(CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetAsync("api/friendships", cancellationToken);
+        return await ParseResponse<List<FriendshipResponse>>(response, cancellationToken);
+    }
 
     private static async Task<Result<T>> ParseResponse<T>(HttpResponseMessage response, CancellationToken cancellationToken)
     {
@@ -37,4 +43,4 @@ public class UserServiceClient : IUserServiceClient
         var value = await response.Content.ReadFromJsonAsync<T>(cancellationToken);
         return value is not null ? Result.Ok(value) : Result.Fail("Request failed");
     }
-} 
+}  

@@ -6,7 +6,9 @@ public sealed class User : Entity
 {
     public string Name { get; set; } =  default!;
     public string Surname { get; set; } = default!;
-    
+    public Guid PublicWishListId { get; set; } = default!;
+    public Guid PrivateWishListId { get; set; } = default!;
+
     // ReSharper disable once UnusedMember.Local
     public User()
     {
