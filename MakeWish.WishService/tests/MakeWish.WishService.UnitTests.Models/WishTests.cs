@@ -10,10 +10,8 @@ public class WishTests
 {
     private const string Title = "title";
     private const string Description = "description";
-    private const string ImageUrl = "imageUrl";
     private const string OtherTitle = "otherTitle";
     private const string OtherDescription = "otherTitle";
-    private const string OtherImageUrl = "otherImageUrl";
     
     private static readonly User Owner = new UserBuilder().Build();
     private static readonly User OtherUser = new UserBuilder().Build();
@@ -30,7 +28,6 @@ public class WishTests
         wish.Should().NotBeNull();
         wish.Title.Should().Be(Title);
         wish.Description.Should().Be(Description);
-        wish.ImageUrl.Should().Be(null);
         wish.GetStatusFor(Owner).Should().Be(WishStatus.Created);
         wish.Owner.Should().Be(Owner);
         wish.GetPromiserFor(Owner).Should().Be(null);
@@ -45,18 +42,16 @@ public class WishTests
         var wish = new WishBuilder()
             .WithTitle(Title)
             .WithDescription(Description)
-            .WithImageUrl(ImageUrl)
             .WithOwner(Owner)
             .Build();
         
         // Act
-        var result = wish.Update(OtherTitle, OtherDescription, OtherImageUrl, by: Owner);
+        var result = wish.Update(OtherTitle, OtherDescription, by: Owner);
         
         // Assert
         result.IsSuccess.Should().BeTrue();
         wish.Title.Should().Be(OtherTitle);
         wish.Description.Should().Be(OtherDescription);
-        wish.ImageUrl.Should().Be(OtherImageUrl);
         wish.Owner.Should().Be(Owner);
         wish.GetPromiserFor(Owner).Should().Be(null);
         wish.GetPromiserFor(OtherUser).Should().Be(null);
@@ -70,7 +65,7 @@ public class WishTests
         var wish = new WishBuilder().WithOwner(Owner).Build();
         
         // Act
-        var result = wish.Update(OtherTitle, OtherDescription, OtherImageUrl, by: OtherUser);
+        var result = wish.Update(OtherTitle, OtherDescription, by: OtherUser);
         
         // Assert
         result.IsFailed.Should().BeTrue();
@@ -393,7 +388,6 @@ public class WishTests
         var wish = new WishBuilder()
             .WithTitle(Title)
             .WithDescription(Description)
-            .WithImageUrl(ImageUrl)
             .WithOwner(Owner)
             .Build()
             .PromisedBy(OtherUser);
@@ -401,8 +395,8 @@ public class WishTests
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, OtherImageUrl,by: Owner),
-            wish.Update(OtherTitle, OtherDescription, OtherImageUrl, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),
@@ -428,7 +422,6 @@ public class WishTests
         var wish = new WishBuilder()
             .WithTitle(Title)
             .WithDescription(Description)
-            .WithImageUrl(ImageUrl)
             .WithOwner(Owner)
             .Build()
             .PromisedBy(OtherUser)
@@ -437,8 +430,8 @@ public class WishTests
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, OtherImageUrl, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, OtherImageUrl, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),
@@ -464,7 +457,6 @@ public class WishTests
         var wish = new WishBuilder()
             .WithTitle(Title)
             .WithDescription(Description)
-            .WithImageUrl(ImageUrl)
             .WithOwner(Owner)
             .Build()
             .PromisedBy(OtherUser)
@@ -474,8 +466,8 @@ public class WishTests
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, ImageUrl, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, ImageUrl, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),
@@ -503,7 +495,6 @@ public class WishTests
         var wish = new WishBuilder()
             .WithTitle(Title)
             .WithDescription(Description)
-            .WithImageUrl(ImageUrl)
             .WithOwner(Owner)
             .Build()
             .DeletedBy(Owner);
@@ -511,8 +502,8 @@ public class WishTests
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, ImageUrl, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, ImageUrl, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),

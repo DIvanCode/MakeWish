@@ -36,6 +36,12 @@ public class UserCreatedHandlerTests
         createdUser.Should().NotBeNull();
         createdUser.Name.Should().Be(name);
         createdUser.Surname.Should().Be(surname);
+        
+        var publicWishListId = await _unitOfWork.WishLists.GetByIdAsync(createdUser.PublicWishListId, CancellationToken.None);
+        publicWishListId.Should().NotBeNull();
+        
+        var privateWishListId = await _unitOfWork.WishLists.GetByIdAsync(createdUser.PrivateWishListId, CancellationToken.None);
+        privateWishListId.Should().NotBeNull();
     }
 
     [Fact]

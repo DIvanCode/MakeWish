@@ -28,7 +28,6 @@ public class UpdateWishHandlerTests
         // Arrange
         const string newTitle = "New Title";
         const string newDescription = "New Description";
-        const string newImageUrl = "New ImageUrl";
         
         var owner = new UserBuilder().Build();
         _unitOfWork.Users.Add(owner);
@@ -39,7 +38,7 @@ public class UpdateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
 
-        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription, newImageUrl);
+        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -56,7 +55,7 @@ public class UpdateWishHandlerTests
         // Arrange
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(false);
         
-        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description", "ImageUrl");
+        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -73,7 +72,7 @@ public class UpdateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(Guid.NewGuid());
         
-        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description", "ImageUrl");
+        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -93,7 +92,7 @@ public class UpdateWishHandlerTests
         var wish = new WishBuilder().Build();
         _unitOfWork.Wishes.Add(wish);
 
-        var command = new UpdateWishCommand(wish.Id, "Title", "Description", "ImageUrl");
+        var command = new UpdateWishCommand(wish.Id, "Title", "Description");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -116,7 +115,7 @@ public class UpdateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
 
-        var command = new UpdateWishCommand(wish.Id, "Title", "Description", "ImageUrl");
+        var command = new UpdateWishCommand(wish.Id, "Title", "Description");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

@@ -66,6 +66,8 @@ public sealed class RabbitMessageConsumer(
                 {
                     "user.created" => JsonSerializer.Deserialize<UserCreatedEvent>(payload)!.ToNotification(),
                     "user.deleted" => JsonSerializer.Deserialize<UserDeletedEvent>(payload)!.ToNotification(),
+                    "friendship.confirmed" => JsonSerializer.Deserialize<FriendshipConfirmedEvent>(payload)!.ToNotification(),
+                    "friendship.removed" => JsonSerializer.Deserialize<FriendshipRemovedEvent>(payload)!.ToNotification(),
                     _ => null
                 };
 

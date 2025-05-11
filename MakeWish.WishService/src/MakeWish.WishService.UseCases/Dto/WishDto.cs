@@ -15,9 +15,6 @@ public sealed record WishDto
     [JsonPropertyName("description"), Required]
     public required string Description { get; init; }
 
-    [JsonPropertyName("imageUrl")]
-    public string? ImageUrl { get; init; }
-
     [JsonPropertyName("status"), Required, JsonConverter(typeof(JsonStringEnumConverter))]
     public required WishStatus Status { get; init; }
 
@@ -39,7 +36,6 @@ public sealed record WishDto
         Id = wish.Id,
         Title = wish.Title,
         Description = wish.Description,
-        ImageUrl = wish.ImageUrl,
         Status = wish.GetStatusFor(currUser),
         Owner = UserDto.FromUser(wish.Owner)!,
         Promiser = UserDto.FromUser(wish.GetPromiserFor(currUser)),

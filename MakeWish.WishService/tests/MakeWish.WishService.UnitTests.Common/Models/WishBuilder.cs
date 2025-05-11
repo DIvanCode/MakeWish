@@ -6,7 +6,6 @@ public sealed class WishBuilder
 {
     private string _title = "title";
     private string _description = "description";
-    private string _imageUrl = "imageUrl";
     private User _owner = new(Guid.NewGuid(), "name", "surname");
 
     public WishBuilder WithTitle(string title)
@@ -18,12 +17,6 @@ public sealed class WishBuilder
     public WishBuilder WithDescription(string description)
     {
         _description = description;
-        return this;
-    }
-    
-    public WishBuilder WithImageUrl(string imageUrl)
-    {
-        _imageUrl = imageUrl;
         return this;
     }
 

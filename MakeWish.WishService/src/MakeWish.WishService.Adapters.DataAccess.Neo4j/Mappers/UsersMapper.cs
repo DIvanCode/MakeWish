@@ -10,11 +10,18 @@ public sealed class UsersMapper : MapperBase<User>
 
     public const string NameProperty = "Name";
     public const string SurnameProperty = "Surname";
+    public const string PublicWishListIdProperty = "PublicWishListId";
+    public const string PrivateWishListIdProperty = "PrivateWishListId";
     
     public override string EntityType => UserType;
     public override string EntityNode => UserNode;
     
-    protected override List<string> Properties => [IMapper<User>.IdProperty, NameProperty, SurnameProperty];
+    protected override List<string> Properties => [
+        IMapper<User>.IdProperty,
+        NameProperty,
+        SurnameProperty,
+        PublicWishListIdProperty,
+        PrivateWishListIdProperty];
     
     public override User? MapToEntity(IRecord record, string? node = null)
     {

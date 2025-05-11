@@ -23,7 +23,6 @@ public sealed class WishesMapper(IMapper<User> usersMapper) : MapperBase<Wish>
 
     private const string TitleProperty = "Title";
     private const string DescriptionProperty = "Description";
-    private const string ImageUrlProperty = "ImageUrl";
     public const string StatusProperty = "_status";
     
     public const string OwnerProperty = "Owner";
@@ -37,7 +36,6 @@ public sealed class WishesMapper(IMapper<User> usersMapper) : MapperBase<Wish>
         IMapper<Wish>.IdProperty,
         TitleProperty,
         DescriptionProperty,
-        ImageUrlProperty,
         StatusProperty];
     
     public override List<string> GetReturningRecordProperties(string node, params string[] neighbours)
