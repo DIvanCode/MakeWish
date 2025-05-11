@@ -81,7 +81,7 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
         return this.HandleResult(result);
     }
     
-    [HttpGet("pending/from/{userId:guid}")]
+    [HttpGet("pending-from/{userId:guid}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -94,7 +94,7 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
         return this.HandleResult(result);
     }
     
-    [HttpGet("pending/to/{userId:guid}")]
+    [HttpGet("pending-to/{userId:guid}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
