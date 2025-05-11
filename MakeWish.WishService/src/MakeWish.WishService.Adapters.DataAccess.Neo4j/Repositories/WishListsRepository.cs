@@ -55,6 +55,15 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         
         return wishList;
     }
+    
+    public async Task<WishList?> GetByIdWithoutWishesAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var wishListQuery = NewQuery()
+            .MatchWishList(id)
+            .MatchWishListOwner();
+        var wishListResult = await ExecuteAsync(wishListQuery.Build(), cancellationToken);
+        return wishListResult.SingleOrDefault();
+    }
 
     public async Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
     {
@@ -95,6 +104,16 @@ public sealed class WishListsRepository(IServiceProvider serviceProvider)
         var query = NewQuery()
             .MatchWishList()
             .MatchWishListOwner(owner);
+        var result = await ExecuteAsync(query.Build(), cancellationToken);
+        return result.ToList();
+    }
+
+    public async Task<List<WishList>> GetWithOwnerAndUserAccessAsync(User owner, User user, CancellationToken cancellationToken)
+    {
+        var query = NewQuery()
+            .MatchWishList()
+            .MatchWishListOwner(owner)
+            .MatchUserAccessToWishList(user);
         var result = await ExecuteAsync(query.Build(), cancellationToken);
         return result.ToList();
     }

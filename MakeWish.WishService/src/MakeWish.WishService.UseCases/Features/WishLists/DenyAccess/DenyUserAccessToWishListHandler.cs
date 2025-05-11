@@ -23,7 +23,7 @@ public sealed class DenyUserAccessToWishListHandler(IUserContext userContext, IU
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
         
-        var wishList = await unitOfWork.WishLists.GetByIdAsync(request.Id, cancellationToken);
+        var wishList = await unitOfWork.WishLists.GetByIdWithoutWishesAsync(request.Id, cancellationToken);
         if (wishList is null)
         {
             return new EntityNotFoundError(nameof(WishList), nameof(WishList.Id), request.Id);

@@ -3,7 +3,7 @@ using MakeWish.WishService.UseCases.Features.WishLists.AddWish;
 using MakeWish.WishService.UseCases.Features.WishLists.AllowAccess;
 using MakeWish.WishService.UseCases.Features.WishLists.DenyAccess;
 using MakeWish.WishService.UseCases.Features.WishLists.Get;
-using MakeWish.WishService.UseCases.Features.WishLists.GetAll;
+using MakeWish.WishService.UseCases.Features.WishLists.GetUserWishLists;
 using MakeWish.WishService.UseCases.Features.WishLists.RemoveWish;
 using MakeWish.WishService.Web.Controllers.Requests.WishLists;
 using MediatR;
@@ -43,13 +43,13 @@ public sealed class WishListsController(IMediator mediator) : ControllerBase
         return this.HandleResult(result);
     }
 
-    [HttpGet]
+    [HttpGet("user/{userId:guid}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<List<WishListDto>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<WishListDto>>> GetUserWishListsAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var command = new GetAllWishListsCommand();
+        var command = new GetUserWishListsCommand(userId);
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

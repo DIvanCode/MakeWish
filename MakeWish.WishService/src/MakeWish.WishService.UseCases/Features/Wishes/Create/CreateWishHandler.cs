@@ -25,8 +25,18 @@ public sealed class CreateWishHandler(IUserContext userContext, IUnitOfWork unit
         }
         
         var wish = Wish.Create(request.Title, request.Description, owner);
-        
         unitOfWork.Wishes.Add(wish);
+
+        var wishList = request.IsPublic
+            ? await unitOfWork.WishLists.GetByIdWithoutWishesAsync(owner.PublicWishListId, cancellationToken)
+            : await unitOfWork.WishLists.GetByIdWithoutWishesAsync(owner.PrivateWishListId, cancellationToken);
+        var addResult = wishList!.Add(wish, by: owner);
+        if (addResult.IsFailed)
+        {
+            return addResult;
+        }
+        
+        unitOfWork.WishLists.AddWish(wishList, wish);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return WishDto.FromWish(wish, currUser: owner);

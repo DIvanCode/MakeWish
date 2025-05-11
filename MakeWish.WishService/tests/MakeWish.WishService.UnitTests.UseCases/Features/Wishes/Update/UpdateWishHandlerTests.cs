@@ -23,22 +23,29 @@ public class UpdateWishHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldUpdateWish_WhenUserIsOwnerAndWishIsCreated()
+    public async Task Handle_ShouldUpdateWish_WhenUserIsOwnerAndWishIsCreated_WishWasAndBecomePublic()
     {
         // Arrange
         const string newTitle = "New Title";
         const string newDescription = "New Description";
         
         var owner = new UserBuilder().Build();
-        _unitOfWork.Users.Add(owner);
-
         var wish = new WishBuilder().WithOwner(owner).Build();
+        var publicWishList = new WishListBuilder().WithOwner(owner).WithWishes([wish]).Build();
+        var privateWishList = new WishListBuilder().WithOwner(owner).Build();
+        
+        owner.PublicWishListId = publicWishList.Id;
+        owner.PrivateWishListId = privateWishList.Id;
+        
+        _unitOfWork.Users.Add(owner);
         _unitOfWork.Wishes.Add(wish);
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.Add(privateWishList);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
 
-        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription);
+        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription, IsPublic: true);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -47,6 +54,120 @@ public class UpdateWishHandlerTests
         result.IsSuccess.Should().BeTrue();
         wish.Title.Should().Be(newTitle);
         wish.Description.Should().Be(newDescription);
+        
+        publicWishList.Wishes.Count.Should().Be(1);
+        privateWishList.Wishes.Count.Should().Be(0);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldUpdateWish_WhenUserIsOwnerAndWishIsCreated_WishWasAndBecomePrivate()
+    {
+        // Arrange
+        const string newTitle = "New Title";
+        const string newDescription = "New Description";
+        
+        var owner = new UserBuilder().Build();
+        var wish = new WishBuilder().WithOwner(owner).Build();
+        var publicWishList = new WishListBuilder().WithOwner(owner).Build();
+        var privateWishList = new WishListBuilder().WithOwner(owner).WithWishes([wish]).Build();
+        
+        owner.PublicWishListId = publicWishList.Id;
+        owner.PrivateWishListId = privateWishList.Id;
+        
+        _unitOfWork.Users.Add(owner);
+        _unitOfWork.Wishes.Add(wish);
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.Add(privateWishList);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+
+        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription, IsPublic: false);
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        wish.Title.Should().Be(newTitle);
+        wish.Description.Should().Be(newDescription);
+        
+        publicWishList.Wishes.Count.Should().Be(0);
+        privateWishList.Wishes.Count.Should().Be(1);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldUpdateWish_WhenUserIsOwnerAndWishIsCreated_WishWasPublicAndBecomePrivate()
+    {
+        // Arrange
+        const string newTitle = "New Title";
+        const string newDescription = "New Description";
+        
+        var owner = new UserBuilder().Build();
+        var wish = new WishBuilder().WithOwner(owner).Build();
+        var publicWishList = new WishListBuilder().WithOwner(owner).WithWishes([wish]).Build();
+        var privateWishList = new WishListBuilder().WithOwner(owner).Build();
+        
+        owner.PublicWishListId = publicWishList.Id;
+        owner.PrivateWishListId = privateWishList.Id;
+        
+        _unitOfWork.Users.Add(owner);
+        _unitOfWork.Wishes.Add(wish);
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.Add(privateWishList);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+
+        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription, IsPublic: false);
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        wish.Title.Should().Be(newTitle);
+        wish.Description.Should().Be(newDescription);
+        
+        publicWishList.Wishes.Count.Should().Be(0);
+        privateWishList.Wishes.Count.Should().Be(1);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldUpdateWish_WhenUserIsOwnerAndWishIsCreated_WishWasPrivateAndBecomePublic()
+    {
+        // Arrange
+        const string newTitle = "New Title";
+        const string newDescription = "New Description";
+        
+        var owner = new UserBuilder().Build();
+        var wish = new WishBuilder().WithOwner(owner).Build();
+        var publicWishList = new WishListBuilder().WithOwner(owner).Build();
+        var privateWishList = new WishListBuilder().WithOwner(owner).WithWishes([wish]).Build();
+        
+        owner.PublicWishListId = publicWishList.Id;
+        owner.PrivateWishListId = privateWishList.Id;
+        
+        _unitOfWork.Users.Add(owner);
+        _unitOfWork.Wishes.Add(wish);
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.Add(privateWishList);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+
+        var command = new UpdateWishCommand(wish.Id, newTitle, newDescription, IsPublic: true);
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        wish.Title.Should().Be(newTitle);
+        wish.Description.Should().Be(newDescription);
+        
+        publicWishList.Wishes.Count.Should().Be(1);
+        privateWishList.Wishes.Count.Should().Be(0);
     }
 
     [Fact]
@@ -55,7 +176,7 @@ public class UpdateWishHandlerTests
         // Arrange
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(false);
         
-        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description");
+        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description", IsPublic: true);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -72,7 +193,7 @@ public class UpdateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(Guid.NewGuid());
         
-        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description");
+        var command = new UpdateWishCommand(Guid.NewGuid(), "Title", "Description", IsPublic: true);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -92,7 +213,7 @@ public class UpdateWishHandlerTests
         var wish = new WishBuilder().Build();
         _unitOfWork.Wishes.Add(wish);
 
-        var command = new UpdateWishCommand(wish.Id, "Title", "Description");
+        var command = new UpdateWishCommand(wish.Id, "Title", "Description", IsPublic: true);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -115,7 +236,7 @@ public class UpdateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
 
-        var command = new UpdateWishCommand(wish.Id, "Title", "Description");
+        var command = new UpdateWishCommand(wish.Id, "Title", "Description", IsPublic: true);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

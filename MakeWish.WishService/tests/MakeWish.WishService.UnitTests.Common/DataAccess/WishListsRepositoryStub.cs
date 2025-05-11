@@ -39,6 +39,11 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
         return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
     }
 
+    public Task<WishList?> GetByIdWithoutWishesAsync(Guid wishListId, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
+    }
+
     public Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
     {
         if (!_allowedAccessors.ContainsKey(wishList))
@@ -72,6 +77,12 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
     public Task<List<WishList>> GetWithOwnerAsync(User owner, CancellationToken cancellationToken)
     {
         return Task.FromResult(_wishLists.Where(wishList => wishList.Owner == owner).ToList());
+    }
+    
+    public Task<List<WishList>> GetWithOwnerAndUserAccessAsync(User owner, User user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_wishLists.Where(wishList =>
+            wishList.Owner == owner && HasUserAccessAsync(wishList, user, cancellationToken).Result).ToList());
     }
 
     public Task<bool> ExistsContainingWishWithUserAccessAsync(Wish wish, User user, CancellationToken cancellationToken)

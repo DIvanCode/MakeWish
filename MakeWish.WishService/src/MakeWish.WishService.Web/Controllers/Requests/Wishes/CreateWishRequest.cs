@@ -11,6 +11,9 @@ public sealed record CreateWishRequest
     
     [JsonPropertyName("description")]
     public string? Description { get; init; }
+    
+    [JsonPropertyName("isPublic")]
+    public bool IsPublic { get; init; }
 
-    public CreateWishCommand ToCommand() => new(Title, Description);
+    public CreateWishCommand ToCommand() => new(Title, Description, IsPublic);
 } 
