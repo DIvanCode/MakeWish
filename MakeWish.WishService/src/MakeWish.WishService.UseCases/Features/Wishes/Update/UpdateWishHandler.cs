@@ -37,6 +37,31 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
         }
         
         unitOfWork.Wishes.Update(wish);
+        
+        var publicWishList = await unitOfWork.WishLists.GetByIdWithoutWishesAsync(
+            user.PublicWishListId,
+            cancellationToken);
+        var privateWishList = await unitOfWork.WishLists.GetByIdWithoutWishesAsync(
+            user.PrivateWishListId,
+            cancellationToken);
+
+        publicWishList!.Remove(wish, by: user);
+        unitOfWork.WishLists.RemoveWish(publicWishList, wish);
+        
+        privateWishList!.Remove(wish, by: user);
+        unitOfWork.WishLists.RemoveWish(privateWishList, wish);
+
+        if (request.IsPublic)
+        {
+            publicWishList.Add(wish, by: user);
+            unitOfWork.WishLists.AddWish(publicWishList, wish);
+        }
+        else
+        {
+            privateWishList.Add(wish, by: user);
+            unitOfWork.WishLists.AddWish(privateWishList, wish);   
+        }
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return WishDto.FromWish(wish, currUser: user);

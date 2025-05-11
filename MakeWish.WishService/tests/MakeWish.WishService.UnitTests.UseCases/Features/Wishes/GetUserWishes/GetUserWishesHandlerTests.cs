@@ -1,45 +1,43 @@
 using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
-using MakeWish.WishService.UseCases.Features.Wishes.GetMy;
-using MakeWish.WishService.UseCases.Features.Wishes.GetPromisedWishes;
+using MakeWish.WishService.UseCases.Features.Wishes.GetUserWishes;
 using MakeWish.WishService.UseCases.Services;
 using MakeWish.WishService.Utils.Errors;
 using Moq;
 
-namespace MakeWish.WishService.UnitTests.UseCases.Features.Wishes.GetMy;
+namespace MakeWish.WishService.UnitTests.UseCases.Features.Wishes.GetUserWishes;
 
-public class GetMyWishesHandlerTests
+public class GetUserWishesHandlerTests
 {
     private readonly Mock<IUserContext> _userContextMock;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly GetMyWishesHandler _handler;
+    private readonly GetUserWishesHandler _handler;
 
-    public GetMyWishesHandlerTests()
+    public GetUserWishesHandlerTests()
     {
         _userContextMock = new Mock<IUserContext>();
         _unitOfWork = new UnitOfWorkStub();
-        _handler = new GetMyWishesHandler(_userContextMock.Object, _unitOfWork);
+        _handler = new GetUserWishesHandler(_userContextMock.Object, _unitOfWork);
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnWishes_WhenUserIsAuthenticated()
+    public async Task Handle_ShouldReturnWishes_WhenUserRequestsHisWishes_WhenUserIsAuthenticated()
     {
         // Arrange
-        var owner = new UserBuilder().Build();
-        var wish1 = new WishBuilder().WithOwner(owner).Build();
-        var wish2 = new WishBuilder().WithOwner(owner).Build();
+        var user = new UserBuilder().Build();
+        var wish1 = new WishBuilder().WithOwner(user).Build();
+        var wish2 = new WishBuilder().WithOwner(user).Build();
         
-        _unitOfWork.Users.Add(owner);
+        _unitOfWork.Users.Add(user);
         _unitOfWork.Wishes.Add(wish1);
         _unitOfWork.Wishes.Add(wish2);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
-        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new GetMyWishesCommand();
+        var command = new GetUserWishesCommand(user.Id);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -48,35 +46,56 @@ public class GetMyWishesHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().HaveCount(2);
     }
-
+    
     [Fact]
-    public async Task Handle_ShouldReturnOnlyPromisedWishes_WhenMixedWishesExist()
+    public async Task Handle_ShouldReturnPublicWishes_WhenUserIsAuthenticated()
     {
         // Arrange
         var user = new UserBuilder().Build();
         var owner = new UserBuilder().Build();
-        var wish1 = new WishBuilder().WithOwner(owner).Build();
-        var wish2 = new WishBuilder().WithOwner(owner).Build();
-        var wish3 = new WishBuilder().WithOwner(user).Build();
+        
+        var publicWishList = new WishListBuilder()
+            .WithOwner(owner)
+            .WithWishes([new WishBuilder().WithOwner(owner).Build()])
+            .Build();
+        var privateWishList = new WishListBuilder()
+            .WithOwner(owner)
+            .WithWishes([new WishBuilder().WithOwner(owner).Build()])
+            .Build();
+        var otherWishList = new WishListBuilder()
+            .WithOwner(owner)
+            .WithWishes([new WishBuilder().WithOwner(owner).Build()])
+            .Build();
+        
+        owner.PublicWishListId = publicWishList.Id;
+        owner.PrivateWishListId = privateWishList.Id;
         
         _unitOfWork.Users.Add(user);
         _unitOfWork.Users.Add(owner);
-        _unitOfWork.Wishes.Add(wish1);
-        _unitOfWork.Wishes.Add(wish2);
-        _unitOfWork.Wishes.Add(wish3);
+        
+        publicWishList.Wishes.ToList().ForEach(wish => _unitOfWork.Wishes.Add(wish));
+        privateWishList.Wishes.ToList().ForEach(wish => _unitOfWork.Wishes.Add(wish));
+        otherWishList.Wishes.ToList().ForEach(wish => _unitOfWork.Wishes.Add(wish));
+        
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.Add(privateWishList);
+        _unitOfWork.WishLists.Add(otherWishList);
+        
+        _unitOfWork.WishLists.AllowUserAccess(publicWishList, user);
+        _unitOfWork.WishLists.AllowUserAccess(otherWishList, user);
         
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
-        _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
+        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new GetMyWishesCommand();
+        var command = new GetUserWishesCommand(owner.Id);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
         
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().HaveCount(2);
-        result.Value.Select(w => w.Id).Should().BeEquivalentTo([wish1.Id, wish2.Id]);
+        result.Value.Should().HaveCount(1);
+        result.Value.ToList().Single().Id.Should().Be(publicWishList.Wishes.Single().Id);
     }
 
     [Fact]
@@ -94,7 +113,7 @@ public class GetMyWishesHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
         
-        var command = new GetMyWishesCommand();
+        var command = new GetUserWishesCommand(owner.Id);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -110,7 +129,7 @@ public class GetMyWishesHandlerTests
         // Arrange
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(false);
         
-        var command = new GetMyWishesCommand();
+        var command = new GetUserWishesCommand(Guid.NewGuid());
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -129,7 +148,7 @@ public class GetMyWishesHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(userId);
         
-        var command = new GetMyWishesCommand();
+        var command = new GetUserWishesCommand(Guid.NewGuid());
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

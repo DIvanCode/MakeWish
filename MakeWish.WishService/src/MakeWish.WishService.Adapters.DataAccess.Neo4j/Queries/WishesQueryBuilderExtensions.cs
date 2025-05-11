@@ -52,7 +52,7 @@ public static class WishesQueryBuilderExtensions
     
     public static IQueryBuilder<T> MatchWishOwner<T>(this IQueryBuilder<T> builder, User owner, string wish = Wish)
         where T : Entity
-        => builder.MatchUser(owner, OwnerNode).AppendLine($"MATCH ({Owner})-{Owns}->({wish})");
+        => builder.MatchUser(owner, OwnerNode).AppendLine($"MATCH {Owner}-{Owns}->{wish}");
 
     public static IQueryBuilder<T> LinkWishToPromiser<T>(this IQueryBuilder<T> builder, User promiser, string wish = Wish)
         where T : Entity

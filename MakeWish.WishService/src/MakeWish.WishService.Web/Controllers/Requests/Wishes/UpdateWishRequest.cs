@@ -15,8 +15,8 @@ public sealed record UpdateWishRequest
     [JsonPropertyName("description")]
     public string? Description { get; init; }
     
-    [JsonPropertyName("imageUrl")]
-    public string? ImageUrl { get; init; }
+    [JsonPropertyName("isPublic")]
+    public bool IsPublic { get; init; }
 
-    public UpdateWishCommand ToCommand() => new(Id, Title, Description ?? "");
+    public UpdateWishCommand ToCommand() => new(Id, Title, Description ?? "", IsPublic);
 } 

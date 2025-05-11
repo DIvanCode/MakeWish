@@ -4,4 +4,5 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.Wishes.Update;
 
-public sealed record UpdateWishCommand(Guid Id, string Title, string Description) : IRequest<Result<WishDto>>;
+public sealed record UpdateWishCommand(Guid Id, string Title, string Description, bool IsPublic)
+    : IRequest<Result<WishDto>>;

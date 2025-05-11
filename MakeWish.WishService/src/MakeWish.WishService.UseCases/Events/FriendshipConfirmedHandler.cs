@@ -22,8 +22,12 @@ public sealed class FriendshipConfirmedHandler(IUnitOfWork unitOfWork)
             return;
         }
 
-        var firstUserPublicWishList = await unitOfWork.WishLists.GetByIdAsync(firstUser.PublicWishListId, cancellationToken);
-        var secondUserPublicWishList = await unitOfWork.WishLists.GetByIdAsync(secondUser.PublicWishListId, cancellationToken);
+        var firstUserPublicWishList = await unitOfWork.WishLists.GetByIdWithoutWishesAsync(
+            firstUser.PublicWishListId,
+            cancellationToken);
+        var secondUserPublicWishList = await unitOfWork.WishLists.GetByIdWithoutWishesAsync(
+            secondUser.PublicWishListId,
+            cancellationToken);
         
         unitOfWork.WishLists.AllowUserAccess(firstUserPublicWishList!, secondUser);
         unitOfWork.WishLists.AllowUserAccess(secondUserPublicWishList!, firstUser);
