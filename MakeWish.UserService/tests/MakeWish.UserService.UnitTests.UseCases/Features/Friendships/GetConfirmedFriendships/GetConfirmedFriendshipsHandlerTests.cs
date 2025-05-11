@@ -40,23 +40,6 @@ public class GetConfirmedFriendshipsHandlerTests
     }
 
     [Fact]
-    public async Task Handle_UserNotAuthorized_ReturnsForbiddenError()
-    {
-        // Arrange
-        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
-        _userContextMock.Setup(uc => uc.UserId).Returns(Guid.NewGuid());
-        
-        var command = new GetConfirmedFriendshipsCommand(Guid.NewGuid());
-
-        // Act
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsFailed);
-        Assert.IsType<ForbiddenError>(result.Errors[0]);
-    }
-
-    [Fact]
     public async Task Handle_UserNotFound_ReturnsEntityNotFoundError()
     {
         // Arrange
@@ -95,6 +78,42 @@ public class GetConfirmedFriendshipsHandlerTests
 
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(firstUser.Id);
+
+        var command = new GetConfirmedFriendshipsCommand(firstUser.Id);
+
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Single(result.Value);
+        var friendshipDto = result.Value.First();
+        Assert.Equal(firstUser.Id, friendshipDto.FirstUser.Id);
+        Assert.Equal(secondUser.Id, friendshipDto.SecondUser.Id);
+        Assert.True(friendshipDto.IsConfirmed);
+    }
+    
+    [Fact]
+    public async Task Handle_SuccessfulFriendshipRetrievalForAnotherUser_ReturnsFriendshipDtos()
+    {
+        // Arrange
+        var user = new UserBuilder().Build();
+        var firstUser = new UserBuilder().Build();
+        var secondUser = new UserBuilder().Build();
+
+        _unitOfWork.Users.Add(firstUser);
+        _unitOfWork.Users.Add(secondUser);
+
+        var friendship = new FriendshipBuilder()
+            .WithFirstUser(firstUser)
+            .WithSecondUser(secondUser)
+            .Build()
+            .ConfirmedBy(secondUser);
+        
+        _unitOfWork.Friendships.Add(friendship);
+
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
 
         var command = new GetConfirmedFriendshipsCommand(firstUser.Id);
 

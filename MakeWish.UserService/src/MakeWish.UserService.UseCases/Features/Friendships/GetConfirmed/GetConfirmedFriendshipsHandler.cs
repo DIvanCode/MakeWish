@@ -18,15 +18,6 @@ public sealed class GetConfirmedFriendshipsHandler(IUnitOfWork unitOfWork, IUser
             return new AuthenticationError();
         }
         
-        if (request.UserId != userContext.UserId)
-        {
-            return new ForbiddenError(
-                nameof(Friendship), 
-                "get confirmed", 
-                nameof(User.Id), 
-                request.UserId);
-        }
-        
         var user = await unitOfWork.Users.GetByIdAsync(request.UserId, cancellationToken);
         if (user is null)
         {
