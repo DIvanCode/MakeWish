@@ -16,6 +16,7 @@
   * [Функционал](README.md#функционал-1)
   * [База данных](README.md#база-данных-1)
 * [Desktop](README.md#desktop)
+* [Деплой](README.md#деплой)
 
 # Техническое задание
 
@@ -300,3 +301,9 @@ Message Bus выбирался из двух вариантов (Kafka и Rabbit
 
 <img src="/docs/MakeWish.Desktop.Design.png" />
 <!-- https://unidraw.io/app/board/e5699ffc011409d64978 -->
+
+# Деплой
+
+Развертывание происходит в облако Timeweb на облачный сервер с виртуальной машиной Ubuntu 22.04.
+- UserService, WishService, Neo4j запускаются в docker-контейнерах и обслуживаются самостоятельно.
+- Postgresql и RabbitMQ располагаются в DBaaS и обсуживаются командой Timeweb.
