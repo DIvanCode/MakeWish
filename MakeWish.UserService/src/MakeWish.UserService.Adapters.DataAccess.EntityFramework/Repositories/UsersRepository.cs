@@ -16,6 +16,13 @@ public sealed class UsersRepository(DbSet<User> entities) : BaseRepository<User>
         return await entities.SingleOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
+    public async Task<List<User>> GetBySearchQueryAsync(string searchQuery, CancellationToken cancellationToken)
+    {
+        return await entities
+            .Where(u => u.Name + " " + u.Surname == searchQuery || u.Surname + " " + u.Name == searchQuery)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await entities.ToListAsync(cancellationToken);
