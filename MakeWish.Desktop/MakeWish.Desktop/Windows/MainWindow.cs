@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MakeWish.Desktop.Abstract;
 using MakeWish.Desktop.Clients.Common.UserContext;
 using MakeWish.Desktop.Forms.Login;
-using MakeWish.Desktop.Pages.Friends;
+using MakeWish.Desktop.Pages.Friends.Confirmed;
 using MakeWish.Desktop.Pages.Profile;
 using MakeWish.Desktop.Services;
 
@@ -74,7 +74,7 @@ public partial class MainWindow : ObservableObject
     [RelayCommand]
     private void ShowFriends()
     {
-        _navigationService.NavigateTo<FriendsPage>(_userContext.UserId!);
+        _navigationService.NavigateTo<ConfirmedFriendsPage>(_userContext.UserId!);
     }
     
     [RelayCommand]

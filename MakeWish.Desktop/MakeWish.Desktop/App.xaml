@@ -8,7 +8,11 @@
              xmlns:register="clr-namespace:MakeWish.Desktop.Forms.Register"
              xmlns:profile="clr-namespace:MakeWish.Desktop.Pages.Profile"
              xmlns:userCard="clr-namespace:MakeWish.Desktop.Cards.UserCard"
-             xmlns:friends="clr-namespace:MakeWish.Desktop.Pages.Friends">
+             xmlns:friends="clr-namespace:MakeWish.Desktop.Pages.Friends"
+             xmlns:searchUser="clr-namespace:MakeWish.Desktop.Forms.SearchUser"
+             xmlns:confirmed="clr-namespace:MakeWish.Desktop.Pages.Friends.Confirmed"
+             xmlns:pendingToUser="clr-namespace:MakeWish.Desktop.Pages.Friends.PendingToUser"
+             xmlns:pendingFromUser="clr-namespace:MakeWish.Desktop.Pages.Friends.PendingFromUser">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -50,8 +54,20 @@
                 <userCard:UserCardView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type friends:FriendsPage}">
-                <friends:FriendsPageView/>
+            <DataTemplate DataType="{x:Type confirmed:ConfirmedFriendsPage}">
+                <confirmed:ConfirmedFriendsPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type pendingToUser:PendingToUserFriendsPage}">
+                <pendingToUser:PendingToUserFriendsPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type pendingFromUser:PendingFromUserFriendsPage}">
+                <pendingFromUser:PendingFromUserFriendsPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type searchUser:SearchUserForm}">
+                <searchUser:SearchUserFormView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

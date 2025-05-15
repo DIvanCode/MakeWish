@@ -1,0 +1,77 @@
+<UserControl x:Class="MakeWish.Desktop.Forms.SearchUser.SearchUserFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MakeWish.Desktop.Forms.SearchUser"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:SearchUserForm}">
+    <materialDesign:Card Margin="16">
+        <Grid>
+            <Button Command="{Binding CloseCommand}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    Padding="0"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Width="Auto"
+                    Height="Auto"
+                    Margin="0">
+                <materialDesign:PackIcon Kind="Close"
+                                         Width="24"
+                                         Height="24"/>
+            </Button>
+            <StackPanel Margin="32">
+                <TextBox Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                         materialDesign:HintAssist.Hint="Имя Фамилия"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         Width="400"
+                         Margin="0,0,0,16"/>
+                
+                <ItemsControl ItemsSource="{Binding Users}"
+                              Margin="0, 16,0, 0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding DataContext.ShowUserCardCommand,
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding Id}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Margin="0, 10, 0, 0"
+                                        HorizontalAlignment="Left"
+                                        Padding="8,4">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Account"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Margin="0,0,8,0" />
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                   FontSize="14"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Content="Выбрать"
+                                        Command="{Binding DataContext.PickUserCommand,
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding Id}"
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Margin="0, 12, 0, 0"
+                                        HorizontalAlignment="Left"
+                                        Padding="8,4" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <Button Content="Искать"
+                        Command="{Binding SearchUserCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Height="35"
+                        Width="400"
+                        Margin="0, 20, 0, 0"/>
+            </StackPanel>
+        </Grid>
+    </materialDesign:Card>
+</UserControl>

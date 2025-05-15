@@ -26,6 +26,12 @@ public class UserServiceClient : ServiceClient, IUserServiceClient
         return await ParseResponse<User>(response, cancellationToken);
     }
 
+    public async Task<Result<List<User>>> SearchUserAsync(string query, CancellationToken cancellationToken)
+    {
+        var response = await HttpClient.GetAsync($"api/users?query={query}", cancellationToken);
+        return await ParseResponse<List<User>>(response, cancellationToken);   
+    }
+
     public async Task<Result> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();

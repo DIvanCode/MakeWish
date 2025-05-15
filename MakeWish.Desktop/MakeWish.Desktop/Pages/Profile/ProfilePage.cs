@@ -6,7 +6,7 @@ using MakeWish.Desktop.Clients.UserService;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Domain;
 using MakeWish.Desktop.Forms.Login;
-using MakeWish.Desktop.Pages.Friends;
+using MakeWish.Desktop.Pages.Friends.Confirmed;
 using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Profile;
@@ -85,7 +85,7 @@ public sealed partial class ProfilePage : Page
     [RelayCommand]
     private void NavigateToFriends()
     {
-        NavigationService.NavigateTo<FriendsPage>(User.Id);
+        NavigationService.NavigateTo<ConfirmedFriendsPage>(User.Id);
     }
 
     [RelayCommand]

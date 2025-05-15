@@ -1,4 +1,3 @@
-using System.Windows.Media.Animation;
 using FluentResults;
 using MakeWish.Desktop.Abstract;
 using MakeWish.Desktop.Dialogs.YesNo;
@@ -9,6 +8,8 @@ namespace MakeWish.Desktop.Services;
 
 public interface INavigationService
 {
+    Overlay? CurrentOverlay { get; }
+
     event Action? OnContentLoadingBegin;
     event Action? OnContentLoadingEnd;
     event Action<Page>? OnCurrentPageChanged;
@@ -40,6 +41,8 @@ public sealed class NavigationService(IServiceProvider serviceProvider) : INavig
     private Action? _loadContentAction;
     private string _loadingContentToken = string.Empty;
     private readonly object _syncObject = new();
+
+    public Overlay? CurrentOverlay => _overlays.LastOrDefault();
     
     public event Action? OnContentLoadingBegin;
     public event Action? OnContentLoadingEnd;
@@ -70,7 +73,8 @@ public sealed class NavigationService(IServiceProvider serviceProvider) : INavig
             
             OnContentLoadingEnd?.Invoke();
             _loadContentAction?.Invoke();
-            _isContentLoading = false;   
+            LoadContent();
+            _isContentLoading = false;
         }
     }
 
@@ -101,12 +105,13 @@ public sealed class NavigationService(IServiceProvider serviceProvider) : INavig
             _pagesHistoryPtr++;
 
             _overlays.Clear();
-            LoadContent();
         };
         
         if (!_isContentLoading)
         {
             _loadContentAction?.Invoke();
+            _loadContentAction = null;
+            LoadContent();
         }
     }
 
@@ -117,13 +122,13 @@ public sealed class NavigationService(IServiceProvider serviceProvider) : INavig
         _loadContentAction = () =>
         {
             _overlays.Add(overlay);
-            
-            LoadContent();
         };
         
         if (!_isContentLoading)
         {
             _loadContentAction?.Invoke();
+            _loadContentAction = null;
+            LoadContent();
         }
     }
 
