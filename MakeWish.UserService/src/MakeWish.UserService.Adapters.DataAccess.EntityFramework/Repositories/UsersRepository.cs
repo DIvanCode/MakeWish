@@ -19,7 +19,7 @@ public sealed class UsersRepository(DbSet<User> entities) : BaseRepository<User>
     public async Task<List<User>> GetBySearchQueryAsync(string searchQuery, CancellationToken cancellationToken)
     {
         return await entities
-            .Where(u => $"{u.Name} {u.Surname}" == searchQuery || $"{u.Surname} {u.Name}" == searchQuery)
+            .Where(u => u.Name + " " + u.Surname == searchQuery || u.Surname + " " + u.Name == searchQuery)
             .ToListAsync(cancellationToken);
     }
 
