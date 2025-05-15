@@ -1,19 +1,19 @@
 ﻿using System.IO;
 using System.Windows;
+using MakeWish.Desktop.Cards.UserCard;
 using MakeWish.Desktop.Clients.Common.UserContext;
 using Microsoft.Extensions.DependencyInjection;
 using MakeWish.Desktop.Services;
-using MakeWish.Desktop.ViewModels;
-using MakeWish.Desktop.Views;
 using MakeWish.Desktop.Clients.UserService;
 using Microsoft.Extensions.Configuration;
 using MakeWish.Desktop.Clients.UserService.Configuration;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Clients.WishService.Configuration;
-using MakeWish.Desktop.ViewModels.Users;
-using MakeWish.Desktop.ViewModels.Wishes;
-using MakeWish.Desktop.Views.Users;
-using MakeWish.Desktop.Views.Wishes;
+using MakeWish.Desktop.Forms.Login;
+using MakeWish.Desktop.Forms.Register;
+using MakeWish.Desktop.Pages.Friends;
+using MakeWish.Desktop.Pages.Profile;
+using MakeWish.Desktop.Windows;
 
 namespace MakeWish.Desktop;
 
@@ -35,65 +35,43 @@ public partial class App
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-        services.AddSingleton<MainWindow>();
-        
         services.AddSingleton<INavigationService, NavigationService>();
-        services.AddSingleton<IDialogService, DialogService>();
-        
+        services.AddTransient<IRequestExecutor, RequestExecutor>();
         services.AddSingleton<IUserContext, UserContext>();
+        
         services.AddHttpClient();
-        
-        ConfigureUsers(services, configuration);
-        ConfigureWishes(services, configuration);
-    }
-
-    private static void ConfigureUsers(IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddTransient<LoginView>();
-        services.AddTransient<RegisterView>();
-        services.AddTransient<UserView>();
-        services.AddTransient<FriendsView>();
-        services.AddTransient<FriendsPendingFromUserView>();
-        services.AddTransient<FriendsPendingToUserView>();
-        
-        services.AddTransient<MainViewModel>();
-        services.AddTransient<LoginViewModel>();
-        services.AddTransient<RegisterViewModel>();
-        services.AddTransient<UserViewModel>();
-        services.AddTransient<FriendsViewModel>();
-        services.AddTransient<FriendsPendingFromUserViewModel>();
-        services.AddTransient<FriendsPendingToUserViewModel>();
         
         services.Configure<UserServiceOptions>(configuration.GetSection(UserServiceOptions.SectionName));
         services.AddSingleton<IUserServiceClient, UserServiceClient>();
-    }
-
-    private static void ConfigureWishes(IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddTransient<WishView>();
-        services.AddTransient<CreateWishView>();
-        services.AddTransient<WishesView>();
-        services.AddTransient<WishListView>();
-        services.AddTransient<CreateWishListView>();
-        services.AddTransient<WishListsView>();
-
-        services.AddTransient<WishViewModel>();
-        services.AddTransient<CreateWishViewModel>();
-        services.AddTransient<WishesViewModel>();
-        services.AddTransient<WishListViewModel>();
-        services.AddTransient<CreateWishListViewModel>();
-        services.AddTransient<WishListsViewModel>();
         
         services.Configure<WishServiceOptions>(configuration.GetSection(WishServiceOptions.SectionName));
         services.AddSingleton<IWishServiceClient, WishServiceClient>();
+        
+        services.AddSingleton<MainWindow>();
+        services.AddSingleton<MainWindowView>();
+        
+        services.AddTransient<LoginForm>();
+        services.AddTransient<LoginFormView>();
+        
+        services.AddTransient<RegisterForm>();
+        services.AddTransient<RegisterFormView>();
+        
+        services.AddTransient<ProfilePage>();
+        services.AddTransient<ProfilePageView>();
+        
+        services.AddTransient<UserCard>();
+        services.AddTransient<UserCardView>();
+        
+        services.AddTransient<FriendsPage>();
+        services.AddTransient<FriendsPageView>();
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-        mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindowView>();
+        mainWindow.DataContext = _serviceProvider.GetRequiredService<MainWindow>();
         mainWindow.Show();
     }
 }
