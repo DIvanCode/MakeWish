@@ -11,7 +11,10 @@ using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Clients.WishService.Configuration;
 using MakeWish.Desktop.Forms.Login;
 using MakeWish.Desktop.Forms.Register;
-using MakeWish.Desktop.Pages.Friends;
+using MakeWish.Desktop.Forms.SearchUser;
+using MakeWish.Desktop.Pages.Friends.Confirmed;
+using MakeWish.Desktop.Pages.Friends.PendingFromUser;
+using MakeWish.Desktop.Pages.Friends.PendingToUser;
 using MakeWish.Desktop.Pages.Profile;
 using MakeWish.Desktop.Windows;
 
@@ -62,8 +65,17 @@ public partial class App
         services.AddTransient<UserCard>();
         services.AddTransient<UserCardView>();
         
-        services.AddTransient<FriendsPage>();
-        services.AddTransient<FriendsPageView>();
+        services.AddTransient<ConfirmedFriendsPage>();
+        services.AddTransient<ConfirmedFriendsPageView>();
+        
+        services.AddTransient<PendingToUserFriendsPage>();
+        services.AddTransient<PendingToUserFriendsPageView>();
+        
+        services.AddTransient<PendingFromUserFriendsPage>();
+        services.AddTransient<PendingFromUserFriendsPageView>();
+        
+        services.AddTransient<SearchUserForm>();
+        services.AddTransient<SearchUserFormView>();
     }
 
     protected override void OnStartup(StartupEventArgs e)
