@@ -74,8 +74,8 @@
                                         CommandParameter="{Binding Id}"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Margin="8,0"
-                                        Width="100"
-                                        Height="100">
+                                        Width="110"
+                                        Height="110">
                                     <StackPanel Orientation="Vertical"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center">
