@@ -61,9 +61,12 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<UserDto>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<UserDto>>> GetAllAsync(
+        [FromQuery] string? query,
+        [FromQuery] bool? onlyFriends,
+        CancellationToken cancellationToken)
     {
-        var command = new GetAllUsersCommand();
+        var command = new GetAllUsersCommand(query, onlyFriends);
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

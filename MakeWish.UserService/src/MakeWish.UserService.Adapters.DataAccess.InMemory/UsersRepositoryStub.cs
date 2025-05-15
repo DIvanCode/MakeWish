@@ -33,6 +33,13 @@ public sealed class UsersRepositoryStub : IUsersRepository
     {
         return Task.FromResult(_users.SingleOrDefault(e => e.Id == id));
     }
+
+    public Task<List<User>> GetBySearchQueryAsync(string searchQuery, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_users
+            .Where(u => $"{u.Name} {u.Surname}" == searchQuery || $"{u.Surname} {u.Name}" == searchQuery)
+            .ToList());
+    }
     
     public Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
     {
