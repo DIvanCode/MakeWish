@@ -44,6 +44,7 @@ services:
       - "7687:7687"
     container_name: makewish.wish.service.neo4j
     hostname: makewish.wish.service.neo4j
+    restart: always
     environment:
       - NEO4J_AUTH=neo4j/password
     volumes:
@@ -55,6 +56,7 @@ services:
       context: MakeWish.UserService
     container_name: makewish.user.service
     hostname: makewish.user.service
+    restart: always
     ports:
       - "5001:5001"
     environment:
@@ -69,6 +71,7 @@ services:
       context: MakeWish.WishService
     container_name: makewish.wish.service
     hostname: makewish.wish.service
+    restart: always
     ports:
       - "5002:5002"
     environment:
