@@ -1,0 +1,31 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MakeWish.Desktop.Abstract;
+
+namespace MakeWish.Desktop.Dialogs.YesNo;
+
+public sealed partial class YesNoDialog : Dialog
+{
+    public event Action? OnYesCommand;
+    public event Action? OnNoCommand;
+    
+    [ObservableProperty]
+    private string _message = string.Empty;
+
+    public YesNoDialog(string message)
+    {
+        Message = message;
+    }
+
+    [RelayCommand]
+    private void Yes()
+    {
+        OnYesCommand?.Invoke();
+    }
+    
+    [RelayCommand]
+    private void No()
+    {
+        OnNoCommand?.Invoke();
+    }
+}

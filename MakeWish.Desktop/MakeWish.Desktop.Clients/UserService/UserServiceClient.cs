@@ -80,14 +80,14 @@ public class UserServiceClient : ServiceClient, IUserServiceClient
     public async Task<Result<List<Friendship>>> GetPendingFriendshipsFromUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();
-        var response = await HttpClient.GetAsync($"api/friendships/pending/from/{userId}", cancellationToken);
+        var response = await HttpClient.GetAsync($"api/friendships/pending-from/{userId}", cancellationToken);
         return await ParseResponse<List<Friendship>>(response, cancellationToken);
     }
 
     public async Task<Result<List<Friendship>>> GetPendingFriendshipsToUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();
-        var response = await HttpClient.GetAsync($"api/friendships/pending/to/{userId}", cancellationToken);
+        var response = await HttpClient.GetAsync($"api/friendships/pending-to/{userId}", cancellationToken);
         return await ParseResponse<List<Friendship>>(response, cancellationToken);
     }
 

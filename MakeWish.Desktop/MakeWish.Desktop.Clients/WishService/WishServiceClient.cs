@@ -32,6 +32,13 @@ public sealed class WishServiceClient : ServiceClient, IWishServiceClient
         var response = await HttpClient.PostAsJsonAsync("api/wishes", request, cancellationToken);
         return await ParseResponse<Wish>(response, cancellationToken);
     }
+    
+    public async Task<Result<List<Wish>>> GetUserWishesAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        AddAuthorizationHeader();
+        var response = await HttpClient.GetAsync($"/api/wishes/user/{userId}", cancellationToken);
+        return await ParseResponse<List<Wish>>(response, cancellationToken);
+    }
 
     public async Task<Result<Wish>> CompleteApproveAsync(Guid id, CancellationToken cancellationToken)
     {
@@ -45,13 +52,6 @@ public sealed class WishServiceClient : ServiceClient, IWishServiceClient
         AddAuthorizationHeader();
         var response = await HttpClient.PostAsync($"api/wishes/{id}/:complete-reject", null, cancellationToken);
         return await ParseResponse<Wish>(response, cancellationToken);
-    }
-    
-    public async Task<Result<WishList>> GetMainWishListAsync(CancellationToken cancellationToken)
-    {
-        AddAuthorizationHeader();
-        var response = await HttpClient.GetAsync("api/wishlists/main", cancellationToken);
-        return await ParseResponse<WishList>(response, cancellationToken);
     }
 
     public async Task<Result<WishList>> GetWishListAsync(Guid id, CancellationToken cancellationToken)
@@ -68,10 +68,10 @@ public sealed class WishServiceClient : ServiceClient, IWishServiceClient
         return await ParseResponse<WishList>(response, cancellationToken);
     }
 
-    public async Task<Result<List<WishList>>> GetWishListsAsync(CancellationToken cancellationToken)
+    public async Task<Result<List<WishList>>> GetUserWishListsAsync(Guid userId, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();
-        var response = await HttpClient.GetAsync("api/wishlists", cancellationToken);
+        var response = await HttpClient.GetAsync($"api/wishlists/user/{userId}", cancellationToken);
         return await ParseResponse<List<WishList>>(response, cancellationToken);
     }
 }
