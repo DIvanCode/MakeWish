@@ -1,0 +1,17 @@
+﻿- name: Build and push UserService to Docker hub
+  hosts: localhost
+  vars_files:
+    - ../../vars.yml
+  tasks:
+    - name: Build Docker image
+      docker_image:
+        name: divancode74/makewish-user-service
+        tag: "{{ user_service_tag }}"
+        build:
+          path: ../../../MakeWish.UserService
+        source: build
+    - name: Push Docker image to Docker Hub
+      docker_image:
+        name: divancode74/makewish-user-service
+        tag: "{{ user_service_tag }}"
+        push: true
