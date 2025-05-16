@@ -1,0 +1,31 @@
+- name: Deploy WishService
+  hosts: production
+  vars_files:
+    - ../../vars.yml
+    - ../../credentials.yml
+  remote_user: root
+  tasks:
+    - name: Ensure Docker network dev exists
+      docker_network:
+        name: dev
+        state: present
+    - name: Pull Docker image
+      docker_image:
+        name: divancode74/makewish-wish-service
+        tag: "{{ wish_service_tag }}"
+        source: pull
+        force_source: true
+    - name: Deploy container
+      docker_container:
+        name: wish-service
+        image: "divancode74/makewish-wish-service:{{ wish_service_tag }}"
+        recreate: true
+        ports:
+          - "5002:5002"
+        env:
+          ASPNETCORE_ENVIRONMENT: "{{ aspnet_environment }}"
+          JwtToken__SecretKey: "{{ jwt_token_secret_key }}"
+          DbConnection__Password: "{{ neo4j_password }}"
+          RabbitConnection__Password: "{{ rabbit_password }}"
+        networks:
+          - name: dev

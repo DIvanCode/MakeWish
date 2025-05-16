@@ -1,0 +1,22 @@
+- name: Deploy Neo4j
+  hosts: production
+  remote_user: root
+  vars_files:
+    - ../../credentials.yml
+  tasks:
+    - name: Ensure Docker network dev exists
+      docker_network:
+        name: dev
+        state: present
+    - name: Deploy container
+      docker_container:
+        name: neo4j
+        image: neo4j
+        recreate: true
+        ports:
+          - "7474:7474"
+          - "7687:7687"
+        env:
+          NEO4J_AUTH: "{{ neo4j_username }}/{{ neo4j_password }}"
+        networks:
+          - name: dev
