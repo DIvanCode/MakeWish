@@ -2,17 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:ok="clr-namespace:MakeWish.Desktop.Dialogs.Ok"
-             xmlns:yesNo="clr-namespace:MakeWish.Desktop.Dialogs.YesNo"
-             xmlns:login="clr-namespace:MakeWish.Desktop.Forms.Login"
-             xmlns:register="clr-namespace:MakeWish.Desktop.Forms.Register"
-             xmlns:profile="clr-namespace:MakeWish.Desktop.Pages.Profile"
-             xmlns:userCard="clr-namespace:MakeWish.Desktop.Cards.UserCard"
-             xmlns:friends="clr-namespace:MakeWish.Desktop.Pages.Friends"
-             xmlns:searchUser="clr-namespace:MakeWish.Desktop.Forms.SearchUser"
-             xmlns:confirmed="clr-namespace:MakeWish.Desktop.Pages.Friends.Confirmed"
-             xmlns:pendingToUser="clr-namespace:MakeWish.Desktop.Pages.Friends.PendingToUser"
-             xmlns:pendingFromUser="clr-namespace:MakeWish.Desktop.Pages.Friends.PendingFromUser">
+             xmlns:dialogs="clr-namespace:MakeWish.Desktop.Dialogs"
+             xmlns:usersPages="clr-namespace:MakeWish.Desktop.Pages.Users"
+             xmlns:usersCards="clr-namespace:MakeWish.Desktop.Cards.Users"
+             xmlns:usersForms="clr-namespace:MakeWish.Desktop.Forms.Users"
+             xmlns:wishesPages="clr-namespace:MakeWish.Desktop.Pages.Wishes"
+             xmlns:wishesCards="clr-namespace:MakeWish.Desktop.Cards.Wishes">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,44 +25,72 @@
                 <Setter Property="FontFamily" Value="{materialDesign:MaterialDesignFont}"/>
             </Style>
             
-            <DataTemplate DataType="{x:Type ok:OkDialog}">
-                <ok:OkDialogView/>
+            <DataTemplate DataType="{x:Type dialogs:OkDialog}">
+                <dialogs:OkDialogView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type yesNo:YesNoDialog}">
-                <yesNo:YesNoDialogView/>
+            <DataTemplate DataType="{x:Type dialogs:YesNoDialog}">
+                <dialogs:YesNoDialogView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type login:LoginForm}">
-                <login:LoginFormView/>
+            <DataTemplate DataType="{x:Type usersForms:LoginForm}">
+                <usersForms:LoginFormView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type register:RegisterForm}">
-                <register:RegisterFormView/>
+            <DataTemplate DataType="{x:Type usersForms:RegisterForm}">
+                <usersForms:RegisterFormView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type profile:ProfilePage}">
-                <profile:ProfilePageView/>
+            <DataTemplate DataType="{x:Type usersPages:ProfilePage}">
+                <usersPages:ProfilePageView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type userCard:UserCard}">
-                <userCard:UserCardView/>
+            <DataTemplate DataType="{x:Type usersCards:UserCard}">
+                <usersCards:UserCardView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type confirmed:ConfirmedFriendsPage}">
-                <confirmed:ConfirmedFriendsPageView/>
+            <DataTemplate DataType="{x:Type usersPages:ConfirmedFriendsPage}">
+                <usersPages:ConfirmedFriendsPageView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type pendingToUser:PendingToUserFriendsPage}">
-                <pendingToUser:PendingToUserFriendsPageView/>
+            <DataTemplate DataType="{x:Type usersPages:PendingToUserFriendsPage}">
+                <usersPages:PendingToUserFriendsPageView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type pendingFromUser:PendingFromUserFriendsPage}">
-                <pendingFromUser:PendingFromUserFriendsPageView/>
+            <DataTemplate DataType="{x:Type usersPages:PendingFromUserFriendsPage}">
+                <usersPages:PendingFromUserFriendsPageView/>
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type searchUser:SearchUserForm}">
-                <searchUser:SearchUserFormView/>
+            <DataTemplate DataType="{x:Type usersForms:SearchUserForm}">
+                <usersForms:SearchUserFormView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesPages:UserWishesPage}">
+                <wishesPages:UserWishesPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesPages:UserWishListsPage}">
+                <wishesPages:UserWishListsPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesPages:UserPromisedWishesPage}">
+                <wishesPages:UserPromisedWishesPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesPages:WishPage}">
+                <wishesPages:WishPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesCards:WishCard}">
+                <wishesCards:WishCardView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesPages:WishListPage}">
+                <wishesPages:WishListPageView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesCards:WishListCard}">
+                <wishesCards:WishListCardView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

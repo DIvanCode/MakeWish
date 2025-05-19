@@ -1,0 +1,81 @@
+<UserControl x:Class="MakeWish.Desktop.Cards.Wishes.WishCardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wishes="clr-namespace:MakeWish.Desktop.Cards.Wishes"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=wishes:WishCard}">
+    <materialDesign:Card Margin="16" MinWidth="400" MinHeight="300">
+        <Grid>
+            <Button Command="{Binding CloseCommand}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    Padding="0"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Width="Auto"
+                    Height="Auto"
+                    Margin="0">
+                <materialDesign:PackIcon Kind="Close" Width="24" Height="24"/>
+            </Button>
+    
+            <Grid Margin="32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+    
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Wish.Title}" 
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,32"/>
+    
+                <StackPanel Grid.Row="1"
+                            Orientation="Horizontal"
+                            Margin="0,10">
+                    <TextBlock Text="Статус"
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <TextBlock Text="{Binding Wish.Status}" 
+                               Margin="30,0"
+                               FontSize="20"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                </StackPanel>
+    
+                <StackPanel Grid.Row="2"
+                            Orientation="Horizontal"
+                            Margin="0,10"
+                            Visibility="{Binding Wish.HasDescription, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Описание"
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <TextBlock Text="{Binding Wish.Description}" 
+                               Margin="30,0"
+                               FontSize="20"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                </StackPanel>
+    
+                <Grid Grid.Row="3"/>
+    
+                <Button Grid.Row="4"
+                        Content="Перейти на страницу желания"
+                        Command="{Binding NavigateToWishCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Height="35"
+                        Width="300"
+                        HorizontalAlignment="Center"/>
+            </Grid>
+        </Grid>
+    </materialDesign:Card>
+</UserControl>

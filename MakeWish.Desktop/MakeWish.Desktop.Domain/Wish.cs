@@ -28,4 +28,11 @@ public sealed class Wish
 
     [JsonPropertyName("completer")]
     public User? Completer { get; init; }
+    
+    public bool HasDescription => !string.IsNullOrEmpty(Description);
+    
+    public bool IsPromised => Status is WishStatus.Promised;
+    public bool IsCompleted => Status is WishStatus.Completed;
+    public bool IsApproved => Status is WishStatus.Approved;
+    public bool IsDeleted => Status is WishStatus.Deleted;
 }
