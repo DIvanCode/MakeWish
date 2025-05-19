@@ -10,12 +10,19 @@ public interface IWishServiceClient
     // Wishes
     Task<Result<Wish>> GetWishAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<Wish>> CreateWishAsync(CreateWishRequest request, CancellationToken cancellationToken);
+    Task<Result<Wish>> DeleteWishAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<Wish>> RestoreWishAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<List<Wish>>> GetUserWishesAsync(Guid userId, CancellationToken cancellationToken);
+    Task<Result<List<Wish>>> GetPromisedWishesAsync(CancellationToken cancellationToken);
+    Task<Result<Wish>> PromiseAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<Wish>> PromiseCancelAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<Wish>> CompleteAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<Wish>> CompleteApproveAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<Wish>> CompleteRejectAsync(Guid id, CancellationToken cancellationToken);
     
     // WishLists
     Task<Result<WishList>> GetWishListAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<WishList>> CreateWishListAsync(CreateWishListRequest request, CancellationToken cancellationToken);
+    Task<Result> DeleteWishListAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<List<WishList>>> GetUserWishListsAsync(Guid userId, CancellationToken cancellationToken);
 }

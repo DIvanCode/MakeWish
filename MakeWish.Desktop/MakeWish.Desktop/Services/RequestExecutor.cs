@@ -1,21 +1,27 @@
+using FluentResults;
+
 namespace MakeWish.Desktop.Services;
 
 public interface IRequestExecutor
 {
-    public void Execute(Func<Task> action);
+    public void Execute(Func<Task<Result>> action);
 }
 
 public sealed class RequestExecutor(INavigationService navigationService) : IRequestExecutor
 {
-    public void Execute(Func<Task> action) => _ = ExecuteAsync(action);
+    public void Execute(Func<Task<Result>> action) => _ = ExecuteAsync(action);
 
-    private async Task ExecuteAsync(Func<Task> action)
+    private async Task ExecuteAsync(Func<Task<Result>> action)
     {
         var token = navigationService.BeginLoading();
         
         try
         {
-            await action.Invoke();
+            var result = await action.Invoke();
+            if (result.IsFailed)
+            {
+                navigationService.ShowErrors(result.Errors);
+            }
         }
         catch (Exception ex)
         {

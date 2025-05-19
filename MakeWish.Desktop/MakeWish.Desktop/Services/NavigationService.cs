@@ -1,8 +1,8 @@
 using FluentResults;
 using MakeWish.Desktop.Abstract;
-using MakeWish.Desktop.Dialogs.YesNo;
 using Microsoft.Extensions.DependencyInjection;
-using OkDialog = MakeWish.Desktop.Dialogs.Ok.OkDialog;
+using OkDialog = MakeWish.Desktop.Dialogs.OkDialog;
+using YesNoDialog = MakeWish.Desktop.Dialogs.YesNoDialog;
 
 namespace MakeWish.Desktop.Services;
 

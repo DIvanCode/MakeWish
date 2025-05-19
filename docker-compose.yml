@@ -77,6 +77,6 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       DbConnection__Uri: neo4j://makewish.wish.service.neo4j:7687
       RabbitConnection__Host: makewish.rabbitmq
-      UserService__Host: user.service
+      UserService__Host: makewish.user.service
     networks:
       - dev

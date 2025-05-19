@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
-using MakeWish.Desktop.Cards.UserCard;
+using MakeWish.Desktop.Cards.Users;
+using MakeWish.Desktop.Cards.Wishes;
 using MakeWish.Desktop.Clients.Common.UserContext;
 using Microsoft.Extensions.DependencyInjection;
 using MakeWish.Desktop.Services;
@@ -9,13 +10,9 @@ using Microsoft.Extensions.Configuration;
 using MakeWish.Desktop.Clients.UserService.Configuration;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Clients.WishService.Configuration;
-using MakeWish.Desktop.Forms.Login;
-using MakeWish.Desktop.Forms.Register;
-using MakeWish.Desktop.Forms.SearchUser;
-using MakeWish.Desktop.Pages.Friends.Confirmed;
-using MakeWish.Desktop.Pages.Friends.PendingFromUser;
-using MakeWish.Desktop.Pages.Friends.PendingToUser;
-using MakeWish.Desktop.Pages.Profile;
+using MakeWish.Desktop.Forms.Users;
+using MakeWish.Desktop.Pages.Users;
+using MakeWish.Desktop.Pages.Wishes;
 using MakeWish.Desktop.Windows;
 
 namespace MakeWish.Desktop;
@@ -76,6 +73,27 @@ public partial class App
         
         services.AddTransient<SearchUserForm>();
         services.AddTransient<SearchUserFormView>();
+        
+        services.AddTransient<UserWishesPage>();
+        services.AddTransient<UserWishesPageView>();
+        
+        services.AddTransient<UserWishListsPage>();
+        services.AddTransient<UserWishListsPageView>();
+        
+        services.AddTransient<UserPromisedWishesPage>();
+        services.AddTransient<UserPromisedWishesPageView>();
+
+        services.AddTransient<WishPage>();
+        services.AddTransient<WishPageView>();
+        
+        services.AddTransient<WishCard>();
+        services.AddTransient<WishCardView>();
+        
+        services.AddTransient<WishListPage>();
+        services.AddTransient<WishListPageView>();
+        
+        services.AddTransient<WishListCard>();
+        services.AddTransient<WishListCardView>();
     }
 
     protected override void OnStartup(StartupEventArgs e)

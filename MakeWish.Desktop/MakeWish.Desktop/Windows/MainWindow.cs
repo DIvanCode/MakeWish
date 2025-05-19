@@ -2,9 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MakeWish.Desktop.Abstract;
 using MakeWish.Desktop.Clients.Common.UserContext;
-using MakeWish.Desktop.Forms.Login;
-using MakeWish.Desktop.Pages.Friends.Confirmed;
-using MakeWish.Desktop.Pages.Profile;
+using MakeWish.Desktop.Forms.Users;
+using MakeWish.Desktop.Pages.Users;
+using MakeWish.Desktop.Pages.Wishes;
 using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Windows;
@@ -80,8 +80,7 @@ public partial class MainWindow : ObservableObject
     [RelayCommand]
     private void ShowWishes()
     {
-        _navigationService.ShowMessage("Переход на страницу желаний не реализован");
-        // _navigationService.NavigateTo<WishesPage>(_userContext.UserId!);
+        _navigationService.NavigateTo<UserWishesPage>(_userContext.UserId!);
     }
     
     [RelayCommand]

@@ -1,0 +1,195 @@
+<UserControl x:Class="MakeWish.Desktop.Pages.Wishes.WishPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:wishes="clr-namespace:MakeWish.Desktop.Pages.Wishes"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=wishes:WishPage}">
+    <materialDesign:Card Padding="32" Margin="16">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>                    
+                <ColumnDefinition Width="Auto"/>                    
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0"
+                        Orientation="Vertical">
+                <Button Content="{Binding Wish.Title}"
+                        Command="{Binding ReloadWishCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        FontSize="30"
+                        Margin="0, 30"
+                        FontWeight="SemiBold"
+                        Height="Auto"
+                        HorizontalAlignment="Left" />
+                <StackPanel Orientation="Horizontal"
+                            Margin="0, 10">
+                    <TextBlock Text="Статус"
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <TextBlock Text="{Binding Wish.Status}" 
+                               Margin="30, 0"
+                               FontSize="20"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0, 10">
+                    <TextBlock Text="Загадал" 
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <Button Command="{Binding ShowUserCardCommand}"
+                            CommandParameter="{Binding Wish.Owner.Id}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            HorizontalAlignment="Left"
+                            Margin="30, 0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Account"
+                                                     Width="24"
+                                                     Height="24"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding Wish.Owner.DisplayName}"
+                                       FontSize="20"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0, 10"
+                            Visibility="{Binding Wish.IsPromised, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Обещал"
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <Button Command="{Binding ShowUserCardCommand}"
+                            CommandParameter="{Binding Wish.Promiser.Id}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            HorizontalAlignment="Left"
+                            Margin="30, 0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Account"
+                                                     Width="24"
+                                                     Height="24"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding Wish.Promiser.DisplayName}"
+                                       FontSize="20"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0, 10"
+                            Visibility="{Binding Wish.IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Исполнил" 
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <Button Command="{Binding ShowUserCardCommand}"
+                            CommandParameter="{Binding Wish.Completer.Id}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            HorizontalAlignment="Left"
+                            Margin="30, 0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Account"
+                                                     Width="24"
+                                                     Height="24"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding Wish.Completer.DisplayName}"
+                                       FontSize="20"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0, 10"
+                            Visibility="{Binding Wish.HasDescription, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Описание"
+                               FontSize="14"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Foreground="Gray"
+                               VerticalAlignment="Bottom"/>
+                    <TextBlock Text="{Binding Wish.Description}" 
+                               Margin="30, 0"
+                               FontSize="20"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                </StackPanel>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1"
+                        Margin="0, 20"
+                        Orientation="Vertical">
+                <Button Content="Редактировать"
+                        Command="{Binding EditCommand}"
+                        Visibility="{Binding ShowEditButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Удалить"
+                        Command="{Binding DeleteCommand}"
+                        Visibility="{Binding ShowDeleteButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Восстановить"
+                        Command="{Binding RestoreCommand}"
+                        Visibility="{Binding ShowRestoreButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Обещаю"
+                        Command="{Binding PromiseCommand}"
+                        Visibility="{Binding ShowPromiseButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Исполнено"
+                        Command="{Binding CompleteCommand}"
+                        Visibility="{Binding ShowCompleteButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Отказываюсь"
+                        Command="{Binding PromiseCancelCommand}"
+                        Visibility="{Binding ShowPromiseCancelButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Подтверждаю исполнение"
+                        Command="{Binding CompleteApproveCommand}"
+                        Visibility="{Binding ShowCompleteApproveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+                <Button Content="Отклонить исполнение"
+                        Command="{Binding CompleteRejectCommand}"
+                        Visibility="{Binding ShowCompleteRejectButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="50, 10"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Padding="8,4" />
+            </StackPanel>
+        </Grid>
+    </materialDesign:Card>
+</UserControl>
