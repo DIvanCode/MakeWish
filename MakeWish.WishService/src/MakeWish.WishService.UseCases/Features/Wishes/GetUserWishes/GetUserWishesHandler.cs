@@ -44,6 +44,13 @@ public sealed class GetUserWishesHandler(IUserContext userContext, IUnitOfWork u
                 wishes = publicWishList!.Wishes.ToList();
             }
         }
+
+        if (request.Query is not null)
+        {
+            wishes = wishes.
+                Where(wish => wish.Title.Contains(request.Query, StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+        }
         
         return wishes.Select(wish => WishDto.FromWish(wish, currUser: user)).ToList();
     }

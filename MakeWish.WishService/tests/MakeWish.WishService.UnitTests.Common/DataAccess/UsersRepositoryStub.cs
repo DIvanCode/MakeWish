@@ -3,18 +3,19 @@ using MakeWish.WishService.Models;
 
 namespace MakeWish.WishService.UnitTests.Common.DataAccess;
 
-public sealed class UsersRepositoryStub : IUsersRepository
+public sealed class UsersRepositoryStub(GlobalStorage globalStorage) : IUsersRepository
 {
-    private readonly List<User> _users = [];
-
+    private List<User> Users => globalStorage.Users;
+    private Dictionary<WishList, List<User>> WishListUserAccess => globalStorage.WishListUserAccess;
+    
     public void Add(User entity)
     {
-        _users.Add(entity);
+        Users.Add(entity);
     }
 
     public void Remove(User entity)
     {
-        _users.Remove(entity);
+        Users.Remove(entity);
     }
 
     public void Update(User entity)
@@ -25,6 +26,11 @@ public sealed class UsersRepositoryStub : IUsersRepository
 
     public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_users.SingleOrDefault(e => e.Id == id));
+        return Task.FromResult(Users.SingleOrDefault(e => e.Id == id));
+    }
+
+    public Task<List<User>> GetUsersWithAccessToWishListAsync(WishList wishList, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Users.Where(user => WishListUserAccess[wishList].Contains(user)).ToList());
     }
 }

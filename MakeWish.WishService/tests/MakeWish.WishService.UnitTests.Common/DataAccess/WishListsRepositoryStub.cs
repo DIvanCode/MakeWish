@@ -3,19 +3,19 @@ using MakeWish.WishService.Models;
 
 namespace MakeWish.WishService.UnitTests.Common.DataAccess;
 
-public sealed class WishListsRepositoryStub : IWishListsRepository
+public sealed class WishListsRepositoryStub(GlobalStorage globalStorage) : IWishListsRepository
 {
-    private readonly List<WishList> _wishLists = [];
-    private readonly Dictionary<WishList, List<User>> _allowedAccessors = new();
+    private List<WishList> WishLists => globalStorage.WishLists;
+    private Dictionary<WishList, List<User>> WishListUserAccess => globalStorage.WishListUserAccess;
 
     public void Add(WishList entity)
     {
-        _wishLists.Add(entity);
+        WishLists.Add(entity);
     }
 
     public void Remove(WishList entity)
     {
-        _wishLists.Remove(entity);
+        WishLists.Remove(entity);
     }
 
     public void Update(WishList entity)
@@ -36,22 +36,22 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
 
     public Task<WishList?> GetByIdAsync(Guid wishListId, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
+        return Task.FromResult(WishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
     }
 
     public Task<WishList?> GetByIdWithoutWishesAsync(Guid wishListId, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_wishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
+        return Task.FromResult(WishLists.SingleOrDefault(wishList => wishList.Id == wishListId));
     }
 
     public Task<bool> HasUserAccessAsync(WishList wishList, User user, CancellationToken cancellationToken)
     {
-        if (!_allowedAccessors.ContainsKey(wishList))
+        if (!WishListUserAccess.ContainsKey(wishList))
         {
-            _allowedAccessors.Add(wishList, []);
+            WishListUserAccess.Add(wishList, []);
         }
         
-        return Task.FromResult(_allowedAccessors[wishList].Contains(user));
+        return Task.FromResult(WishListUserAccess[wishList].Contains(user));
     }
 
     public void AllowUserAccess(WishList wishList, User user)
@@ -61,7 +61,7 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
             return;
         }
         
-        _allowedAccessors[wishList].Add(user);
+        WishListUserAccess[wishList].Add(user);
     }
 
     public void DenyUserAccess(WishList wishList, User user)
@@ -71,23 +71,23 @@ public sealed class WishListsRepositoryStub : IWishListsRepository
             return;
         }
         
-        _allowedAccessors[wishList].Remove(user);
+        WishListUserAccess[wishList].Remove(user);
     }
 
     public Task<List<WishList>> GetWithOwnerAsync(User owner, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_wishLists.Where(wishList => wishList.Owner == owner).ToList());
+        return Task.FromResult(WishLists.Where(wishList => wishList.Owner == owner).ToList());
     }
     
     public Task<List<WishList>> GetWithOwnerAndUserAccessAsync(User owner, User user, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_wishLists.Where(wishList =>
+        return Task.FromResult(WishLists.Where(wishList =>
             wishList.Owner == owner && HasUserAccessAsync(wishList, user, cancellationToken).Result).ToList());
     }
 
     public Task<bool> ExistsContainingWishWithUserAccessAsync(Wish wish, User user, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_wishLists.Any(wishList =>
+        return Task.FromResult(WishLists.Any(wishList =>
             wishList.Wishes.Contains(wish) && HasUserAccessAsync(wishList, user, cancellationToken).Result));
     }
 }

@@ -37,7 +37,7 @@ public class GetUserWishesHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new GetUserWishesCommand(user.Id);
+        var command = new GetUserWishesCommand(user.Id, Query: null);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -87,7 +87,7 @@ public class GetUserWishesHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new GetUserWishesCommand(owner.Id);
+        var command = new GetUserWishesCommand(owner.Id, Query: null);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -113,7 +113,7 @@ public class GetUserWishesHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(owner.Id);
         
-        var command = new GetUserWishesCommand(owner.Id);
+        var command = new GetUserWishesCommand(owner.Id, Query: null);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -129,7 +129,7 @@ public class GetUserWishesHandlerTests
         // Arrange
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(false);
         
-        var command = new GetUserWishesCommand(Guid.NewGuid());
+        var command = new GetUserWishesCommand(Guid.NewGuid(), Query: null);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -148,7 +148,7 @@ public class GetUserWishesHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(userId);
         
-        var command = new GetUserWishesCommand(Guid.NewGuid());
+        var command = new GetUserWishesCommand(Guid.NewGuid(), Query: null);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -156,5 +156,73 @@ public class GetUserWishesHandlerTests
         // Assert
         result.IsFailed.Should().BeTrue();
         result.Errors.Should().ContainSingle(e => e is EntityNotFoundError);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldReturnFilteredWishes_WhenQueryIsProvided_AndUserIsOwner()
+    {
+        // Arrange
+        var user = new UserBuilder().Build();
+        var wish1 = new WishBuilder().WithOwner(user).WithTitle("Buy a new bike").Build();
+        var wish2 = new WishBuilder().WithOwner(user).WithTitle("Buy chocolate").Build();
+        var wish3 = new WishBuilder().WithOwner(user).WithTitle("Travel to Japan").Build();
+        var wish4 = new WishBuilder().WithOwner(user).WithTitle("buy apple").Build();
+
+        _unitOfWork.Users.Add(user);
+        _unitOfWork.Wishes.Add(wish1);
+        _unitOfWork.Wishes.Add(wish2);
+        _unitOfWork.Wishes.Add(wish3);
+        _unitOfWork.Wishes.Add(wish4);
+
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
+
+        var command = new GetUserWishesCommand(user.Id, Query: "Buy");
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().HaveCount(3);
+        result.Value.Select(w => w.Id).Should().BeEquivalentTo([wish1.Id, wish2.Id, wish4.Id]);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnFilteredPublicWishes_WhenQueryIsProvided()
+    {
+        // Arrange
+        var user = new UserBuilder().Build();
+        var owner = new UserBuilder().Build();
+
+        var matchingWish = new WishBuilder().WithOwner(owner).WithTitle("Buy Lego").Build();
+        var nonMatchingWish = new WishBuilder().WithOwner(owner).WithTitle("Go hiking").Build();
+
+        var publicWishList = new WishListBuilder()
+            .WithOwner(owner)
+            .WithWishes([matchingWish, nonMatchingWish])
+            .Build();
+
+        owner.PublicWishListId = publicWishList.Id;
+
+        _unitOfWork.Users.Add(user);
+        _unitOfWork.Users.Add(owner);
+        _unitOfWork.Wishes.Add(matchingWish);
+        _unitOfWork.Wishes.Add(nonMatchingWish);
+        _unitOfWork.WishLists.Add(publicWishList);
+        _unitOfWork.WishLists.AllowUserAccess(publicWishList, user);
+
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
+
+        var command = new GetUserWishesCommand(owner.Id, Query: "Lego");
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().HaveCount(1);
+        result.Value.Single().Id.Should().Be(matchingWish.Id);
     }
 } 

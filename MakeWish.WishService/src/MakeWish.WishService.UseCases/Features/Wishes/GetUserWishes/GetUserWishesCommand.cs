@@ -4,4 +4,4 @@ using MediatR;
 
 namespace MakeWish.WishService.UseCases.Features.Wishes.GetUserWishes;
 
-public sealed record GetUserWishesCommand(Guid UserId) : IRequest<Result<IReadOnlyList<WishDto>>>;
+public sealed record GetUserWishesCommand(Guid UserId, string? Query) : IRequest<Result<IReadOnlyList<WishDto>>>;
