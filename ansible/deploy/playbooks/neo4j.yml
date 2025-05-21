@@ -1,8 +1,8 @@
 - name: Deploy Neo4j
-  hosts: production
+  hosts: FriendlyCrane
   remote_user: root
   vars_files:
-    - ../../credentials.yml
+    - ../credentials.yml
   tasks:
     - name: Ensure Docker network dev exists
       docker_network:

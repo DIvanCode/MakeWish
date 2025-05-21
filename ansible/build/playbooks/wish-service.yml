@@ -1,5 +1,6 @@
 ﻿- name: Build and push WishService to Docker hub
-  hosts: localhost
+  hosts: Local
+  connection: local
   vars_files:
     - ../../vars.yml
   tasks:
@@ -7,11 +8,12 @@
       docker_image:
         name: divancode74/makewish-wish-service
         tag: "{{ wish_service_tag }}"
+        source: build
         build:
           path: ../../../MakeWish.WishService
-        source: build
     - name: Push Docker image to Docker Hub
       docker_image:
         name: divancode74/makewish-wish-service
         tag: "{{ wish_service_tag }}"
         push: true
+        source: local

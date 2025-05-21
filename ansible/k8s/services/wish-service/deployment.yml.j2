@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wish-service
+  namespace: makewish
+  labels:
+    app: wish-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wish-service
+  template:
+    metadata:
+      namespace: makewish
+      labels:
+        app: wish-service
+    spec:
+      containers:
+        - name: wish-service
+          image: "divancode74/makewish-wish-service:{{ wish_service_tag }}"
+          ports:
+            - containerPort: 5002
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "{{ aspnet_environment }}"
+            - name: JwtToken__SecretKey
+              value: "{{ jwt_token_secret_key }}"
+            - name: DbConnection__Username
+              value: "{{ neo4j_username }}"
+            - name: DbConnection__Password
+              value: "{{ neo4j_password }}"
+            - name: RabbitConnection__Username
+              value: "{{ rabbit_user }}"
+            - name: RabbitConnection__Password
+              value: "{{ rabbit_password }}"

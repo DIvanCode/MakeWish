@@ -1,4 +1,2 @@
-﻿user_service_tag: "test-v2.1"
-wish_service_tag: "test-v2.2"
-
-aspnet_environment: "Production"
+﻿user_service_tag: "test-v2.2.2"
+wish_service_tag: "test-v2.2.1"

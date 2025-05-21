@@ -1,0 +1,31 @@
+- name: Deploy Neo4j to k8s
+  hosts: Local
+  connection: local
+  vars_files:
+    - ../../vars.yml
+    - ../credentials.yml
+  tasks:
+    - name: Apply neo4j persistent volume
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/neo4j/pv.yml
+    - name: Apply neo4j persistent volume claim
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/neo4j/pvc.yml
+    - name: Apply neo4j service
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/neo4j/service.yml
+    - name: Apply neo4j deployment
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        definition: "{{ lookup('template', '../services/neo4j/deployment.yml.j2') }}"
