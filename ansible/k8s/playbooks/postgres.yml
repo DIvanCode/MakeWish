@@ -1,0 +1,31 @@
+- name: Deploy Postgres to k8s
+  hosts: Local
+  connection: local
+  vars_files:
+    - ../../vars.yml
+    - ../credentials.yml
+  tasks:
+    - name: Apply postgres persistent volume
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/postgres/pv.yml
+    - name: Apply postgres persistent volume claim
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/postgres/pvc.yml
+    - name: Apply postgres service
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/postgres/service.yml
+    - name: Apply postgres deployment
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        definition: "{{ lookup('template', '../services/postgres/deployment.yml.j2') }}"

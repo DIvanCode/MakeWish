@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: "divancode74/makewish-user-service:{{ user_service_tag }}"
+          ports:
+            - containerPort: 5001
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "{{ aspnet_environment }}"
+            - name: JwtToken__SecretKey
+              value: "{{ jwt_token_secret_key }}"
+            - name: DbConnection__ConnectionString
+              value: "Server=postgres:5432;Database={{ postgres_db }};Username={{ postgres_user }};Password={{ postgres_password }}"
+            - name: RabbitConnection__Username
+              value: "{{ rabbit_user }}"
+            - name: RabbitConnection__Password
+              value: "{{ rabbit_password }}"

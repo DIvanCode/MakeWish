@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbit
+  namespace: makewish
+  labels:
+    app: rabbit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbit
+  template:
+    metadata:
+      namespace: makewish
+      labels:
+        app: rabbit
+    spec:
+      containers:
+        - name: rabbit
+          image: rabbitmq:3.10.7-management
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "{{ rabbit_user }}"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "{{ rabbit_password }}"
+          volumeMounts:
+            - name: rabbit-data
+              mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: rabbit-data
+          persistentVolumeClaim:
+            claimName: rabbit-pvc

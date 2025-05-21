@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbit-pvc
+  namespace: makewish
+  labels:
+    app: rabbit
+spec:
+  volumeName: rabbit-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

@@ -1,0 +1,31 @@
+- name: Deploy Rabbit to k8s
+  hosts: Local
+  connection: local
+  vars_files:
+    - ../../vars.yml
+    - ../credentials.yml
+  tasks:
+    - name: Apply rabbit persistent volume
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/rabbit/pv.yml
+    - name: Apply rabbit persistent volume claim
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/rabbit/pvc.yml
+    - name: Apply rabbit service
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/rabbit/service.yml
+    - name: Apply rabbit deployment
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        definition: "{{ lookup('template', '../services/rabbit/deployment.yml.j2') }}"

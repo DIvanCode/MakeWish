@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wish-service
+  namespace: makewish
+  labels:
+    app: wish-service
+spec:
+  selector:
+    app: wish-service
+  ports:
+    - name: http
+      port: 5002
+      targetPort: 5002
+  type: ClusterIP

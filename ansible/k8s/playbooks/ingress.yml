@@ -1,0 +1,19 @@
+- name: Deploy Ingress to k8s
+  hosts: Local
+  connection: local
+  vars_files:
+    - ../../vars.yml
+    - ../credentials.yml
+  tasks:
+    - name: Apply ingress service
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: ingress-nginx
+        state: present
+        src: ../services/ingress/service.yml
+    - name: Apply ingress
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/ingress/ingress.yml
