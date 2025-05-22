@@ -27,6 +27,9 @@ public sealed record WishDto
     [JsonPropertyName("completer")]
     public UserDto? Completer { get; private init; }
 
+    [JsonPropertyName("isPublic")]
+    public bool IsPublic { get; init; }
+
     private WishDto()
     {
     }
@@ -39,6 +42,7 @@ public sealed record WishDto
         Status = wish.GetStatusFor(currUser),
         Owner = UserDto.FromUser(wish.Owner)!,
         Promiser = UserDto.FromUser(wish.GetPromiserFor(currUser)),
-        Completer = UserDto.FromUser(wish.GetCompleter())
+        Completer = UserDto.FromUser(wish.GetCompleter()),
+        IsPublic = wish.IsPublic
     };
 }

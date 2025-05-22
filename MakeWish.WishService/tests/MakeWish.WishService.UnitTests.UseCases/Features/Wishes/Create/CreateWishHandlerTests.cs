@@ -28,6 +28,7 @@ public class CreateWishHandlerTests
         // Arrange
         const string title = "New Wish";
         const string description = "Wish Description";
+        const bool isPublic = true;
         
         var user = new UserBuilder().Build();
         var publicWishList = new WishListBuilder().WithOwner(user).Build();
@@ -43,7 +44,7 @@ public class CreateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new CreateWishCommand(title, description, IsPublic: true);
+        var command = new CreateWishCommand(title, description, isPublic);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -56,6 +57,7 @@ public class CreateWishHandlerTests
         createdWish.Title.Should().Be(title);
         createdWish.Description.Should().Be(description);
         createdWish.Owner.Id.Should().Be(user.Id);
+        createdWish.IsPublic.Should().Be(isPublic);
     }
     
     [Fact]
@@ -64,6 +66,7 @@ public class CreateWishHandlerTests
         // Arrange
         const string title = "New Wish";
         const string description = "Wish Description";
+        const bool isPublic = true;
         
         var user = new UserBuilder().Build();
         var publicWishList = new WishListBuilder().WithOwner(user).Build();
@@ -79,7 +82,7 @@ public class CreateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new CreateWishCommand(title, description, IsPublic: true);
+        var command = new CreateWishCommand(title, description, isPublic);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -92,6 +95,7 @@ public class CreateWishHandlerTests
         createdWish.Title.Should().Be(title);
         createdWish.Description.Should().Be(description);
         createdWish.Owner.Id.Should().Be(user.Id);
+        createdWish.IsPublic.Should().Be(isPublic);
         
         publicWishList.Wishes.Count.Should().Be(1);
         publicWishList.Wishes.Single().Should().Be(createdWish);
@@ -105,6 +109,7 @@ public class CreateWishHandlerTests
         // Arrange
         const string title = "New Wish";
         const string description = "Wish Description";
+        const bool isPublic = false;
         
         var user = new UserBuilder().Build();
         var publicWishList = new WishListBuilder().WithOwner(user).Build();
@@ -120,7 +125,7 @@ public class CreateWishHandlerTests
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
         
-        var command = new CreateWishCommand(title, description, IsPublic: false);
+        var command = new CreateWishCommand(title, description, isPublic);
         
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -133,6 +138,7 @@ public class CreateWishHandlerTests
         createdWish.Title.Should().Be(title);
         createdWish.Description.Should().Be(description);
         createdWish.Owner.Id.Should().Be(user.Id);
+        createdWish.IsPublic.Should().Be(isPublic);
         
         publicWishList.Wishes.Count.Should().Be(0);
         privateWishList.Wishes.Count.Should().Be(1);

@@ -24,7 +24,7 @@ public sealed class CreateWishHandler(IUserContext userContext, IUnitOfWork unit
             return new EntityNotFoundError(nameof(User), nameof(User.Id), userContext.UserId);
         }
         
-        var wish = Wish.Create(request.Title, request.Description, owner);
+        var wish = Wish.Create(request.Title, request.Description, owner, request.IsPublic);
         unitOfWork.Wishes.Add(wish);
 
         var wishList = request.IsPublic

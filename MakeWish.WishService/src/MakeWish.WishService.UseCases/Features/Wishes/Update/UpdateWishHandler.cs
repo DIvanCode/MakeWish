@@ -30,7 +30,7 @@ public sealed class UpdateWishHandler(IUserContext userContext, IUnitOfWork unit
             return new EntityNotFoundError(nameof(Wish), nameof(Wish.Id), request.Id);
         }
 
-        var updateResult = wish.Update(request.Title, request.Description, by: user);
+        var updateResult = wish.Update(request.Title, request.Description, request.IsPublic, by: user);
         if (updateResult.IsFailed)
         {
             return updateResult;
