@@ -11,12 +11,15 @@ namespace MakeWish.Desktop.Forms.Users;
 
 public sealed partial class SearchUserForm : Form
 {
-    public event Action<Guid>? OnPickUser;
+    public event Action<User>? OnPickUser;
     
     private readonly IUserServiceClient _userServiceClient;
     
     [ObservableProperty]
     private string _query = string.Empty;
+    
+    [ObservableProperty]
+    private bool _onlyFriends;
 
     [ObservableProperty]
     private List<User> _users = [];
@@ -24,10 +27,13 @@ public sealed partial class SearchUserForm : Form
     public SearchUserForm(
         INavigationService navigationService,
         IRequestExecutor requestExecutor,
-        IUserServiceClient userServiceClient)
+        IUserServiceClient userServiceClient,
+        bool onlyFriends = false)
         : base(navigationService, requestExecutor)
     {
         _userServiceClient = userServiceClient;
+        
+        OnlyFriends = onlyFriends;
     }
     
     [RelayCommand]
@@ -37,9 +43,9 @@ public sealed partial class SearchUserForm : Form
     }
     
     [RelayCommand]
-    private void PickUser(Guid userId)
+    private void PickUser(User user)
     {
-        OnPickUser?.Invoke(userId);
+        OnPickUser?.Invoke(user);
     }
     
     [RelayCommand]
@@ -51,12 +57,12 @@ public sealed partial class SearchUserForm : Form
     [RelayCommand]
     private void SearchUser()
     {
-        RequestExecutor.Execute(async () => await SearchUserAsync(Query));
+        RequestExecutor.Execute(async () => await SearchUserAsync(Query, OnlyFriends));
     }
 
-    private async Task<Result> SearchUserAsync(string query)
+    private async Task<Result> SearchUserAsync(string query, bool onlyFriends)
     {
-        var usersResult = await _userServiceClient.SearchUserAsync(query, CancellationToken.None);
+        var usersResult = await _userServiceClient.SearchUserAsync(query, onlyFriends, CancellationToken.None);
         if (usersResult.IsFailed)
         {
             return usersResult.ToResult();

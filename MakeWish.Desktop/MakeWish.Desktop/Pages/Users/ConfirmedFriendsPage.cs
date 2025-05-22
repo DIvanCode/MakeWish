@@ -80,9 +80,9 @@ public sealed partial class ConfirmedFriendsPage : Page
     private void ShowSearchUserForm()
     {
         NavigationService.ShowOverlay<SearchUserForm>();
-        ((SearchUserForm)NavigationService.CurrentOverlay!).OnPickUser += userId =>
+        ((SearchUserForm)NavigationService.CurrentOverlay!).OnPickUser += user =>
         {
-            RequestExecutor.Execute(async () => await AddFriendAsync(User.Id, userId));
+            RequestExecutor.Execute(async () => await AddFriendAsync(User.Id, user.Id));
             NavigationService.CloseLastOverlay();
         };
     }

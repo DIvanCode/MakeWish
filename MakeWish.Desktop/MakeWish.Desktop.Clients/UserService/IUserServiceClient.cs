@@ -11,7 +11,7 @@ public interface IUserServiceClient
     Task<Result<User>> RegisterUserAsync(RegisterRequest request, CancellationToken cancellationToken);
     Task<Result<string>> AuthenticateUserAsync(AuthenticateRequest request, CancellationToken cancellationToken);
     Task<Result<User>> GetUserAsync(Guid id, CancellationToken cancellationToken);
-    Task<Result<List<User>>> SearchUserAsync(string query, CancellationToken cancellationToken);
+    Task<Result<List<User>>> SearchUserAsync(string query, bool onlyFriends, CancellationToken cancellationToken);
     Task<Result<User>> GetCurrentUserAsync(CancellationToken cancellationToken);
     Task<Result> DeleteUserAsync(Guid id, CancellationToken cancellationToken);
     

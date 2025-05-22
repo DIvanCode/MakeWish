@@ -7,6 +7,7 @@ using MakeWish.Desktop.Cards.Wishes;
 using MakeWish.Desktop.Clients.Common.UserContext;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Domain;
+using MakeWish.Desktop.Forms.Wishes;
 using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Wishes;
@@ -23,6 +24,12 @@ public sealed partial class WishListPage : Page
     
     [ObservableProperty]
     private bool _showDeleteButton;
+    
+    [ObservableProperty]
+    private List<User> _usersWithAccess = [];
+
+    [ObservableProperty]
+    private bool _showUsersWithAccess;
     
     public WishListPage(
         INavigationService navigationService,
@@ -58,8 +65,7 @@ public sealed partial class WishListPage : Page
     [RelayCommand]
     private void Edit()
     {
-        NavigationService.ShowMessage("Форма редактирования списка желаний не реализована");
-        // NavigationService.ShowOverlay<EditWishListForm>(WishList.Id);
+        NavigationService.ShowOverlay<EditWishListForm>(WishList.Id);
     }
     
     [RelayCommand]
@@ -88,9 +94,19 @@ public sealed partial class WishListPage : Page
         }
 
         WishList = wishListResult.Value;
+
+        var usersWithAccessResult =
+            await _wishServiceClient.GetUsersWithAccessToWishListAsync(wishListId, CancellationToken.None);
+        if (usersWithAccessResult.IsFailed)
+        {
+            return usersWithAccessResult.ToResult();
+        }
+        
+        UsersWithAccess = usersWithAccessResult.Value;
         
         ShowEditButton = WishList.Owner.Id == UserContext.UserId;
         ShowDeleteButton = WishList.Owner.Id == UserContext.UserId;
+        ShowUsersWithAccess = WishList.Owner.Id == UserContext.UserId;
 
         return Result.Ok();
     }

@@ -3,8 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace MakeWish.Desktop.Clients.WishService.Requests.Wishes;
 
-public sealed record CreateWishRequest
+public sealed record UpdateWishRequest
 {
+    [JsonPropertyName("id"), Required] 
+    public required Guid Id { get; init; }
+    
     [JsonPropertyName("title"), Required] 
     public required string Title { get; init; }
     

@@ -45,12 +45,11 @@
             </Grid>
             
             <StackPanel Grid.Row="2"
-                        Margin="0,20,16,0">
-                <ItemsControl ItemsSource="{Binding PromisedWishes}"
-                              Margin="0, 16,0, 0">
+                        Margin="0,16,16,0">
+                <ItemsControl ItemsSource="{Binding PromisedWishes}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Margin="0, 5">
                                 <Button Command="{Binding DataContext.ShowWishCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding Id}"

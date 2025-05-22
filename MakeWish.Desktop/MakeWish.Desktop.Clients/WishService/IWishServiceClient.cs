@@ -9,7 +9,9 @@ public interface IWishServiceClient
 {
     // Wishes
     Task<Result<Wish>> GetWishAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<List<Wish>>> SearchWishAsync(Guid userId, string query, CancellationToken cancellationToken);
     Task<Result<Wish>> CreateWishAsync(CreateWishRequest request, CancellationToken cancellationToken);
+    Task<Result<Wish>> UpdateWishAsync(UpdateWishRequest request, CancellationToken cancellationToken);
     Task<Result<Wish>> DeleteWishAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<Wish>> RestoreWishAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<List<Wish>>> GetUserWishesAsync(Guid userId, CancellationToken cancellationToken);
@@ -23,6 +25,12 @@ public interface IWishServiceClient
     // WishLists
     Task<Result<WishList>> GetWishListAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<WishList>> CreateWishListAsync(CreateWishListRequest request, CancellationToken cancellationToken);
+    Task<Result<WishList>> UpdateWishListAsync(UpdateWishListRequest request, CancellationToken cancellationToken);
     Task<Result> DeleteWishListAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<WishList>> AddWishToWishListAsync(Guid id, Guid wishId, CancellationToken cancellationToken);
+    Task<Result<WishList>> RemoveWishFromWishListAsync(Guid id, Guid wishId, CancellationToken cancellationToken);
     Task<Result<List<WishList>>> GetUserWishListsAsync(Guid userId, CancellationToken cancellationToken);
+    Task<Result> AllowUserAccessToWishListAsync(Guid id, Guid userId, CancellationToken cancellationToken);
+    Task<Result> DenyUserAccessToWishListAsync(Guid id, Guid userId, CancellationToken cancellationToken);
+    Task<Result<List<User>>> GetUsersWithAccessToWishListAsync(Guid wishListId, CancellationToken cancellationToken);
 }
