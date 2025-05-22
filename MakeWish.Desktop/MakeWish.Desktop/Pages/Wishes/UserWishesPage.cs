@@ -8,6 +8,7 @@ using MakeWish.Desktop.Clients.Common.UserContext;
 using MakeWish.Desktop.Clients.UserService;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Domain;
+using MakeWish.Desktop.Forms.Wishes;
 using MakeWish.Desktop.Pages.Users;
 using MakeWish.Desktop.Services;
 
@@ -123,8 +124,7 @@ public sealed partial class UserWishesPage : Page
     [RelayCommand]
     private void CreateWish()
     {
-        NavigationService.ShowMessage("Форма создания желания не реализована");
-        // NavigationService.ShowOverlay<CreateWishForm>();
+        NavigationService.ShowOverlay<CreateWishForm>();
     }
     
     private void LoadData(Guid userId)

@@ -7,7 +7,8 @@
              xmlns:usersCards="clr-namespace:MakeWish.Desktop.Cards.Users"
              xmlns:usersForms="clr-namespace:MakeWish.Desktop.Forms.Users"
              xmlns:wishesPages="clr-namespace:MakeWish.Desktop.Pages.Wishes"
-             xmlns:wishesCards="clr-namespace:MakeWish.Desktop.Cards.Wishes">
+             xmlns:wishesCards="clr-namespace:MakeWish.Desktop.Cards.Wishes"
+             xmlns:wishesForms="clr-namespace:MakeWish.Desktop.Forms.Wishes">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -91,6 +92,26 @@
             
             <DataTemplate DataType="{x:Type wishesCards:WishListCard}">
                 <wishesCards:WishListCardView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesForms:SearchWishForm}">
+                <wishesForms:SearchWishFormView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesForms:CreateWishForm}">
+                <wishesForms:CreateWishFormView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesForms:EditWishForm}">
+                <wishesForms:EditWishFormView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesForms:CreateWishListForm}">
+                <wishesForms:CreateWishListFormView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type wishesForms:EditWishListForm}">
+                <wishesForms:EditWishListFormView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

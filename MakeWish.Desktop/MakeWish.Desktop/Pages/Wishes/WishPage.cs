@@ -6,6 +6,7 @@ using MakeWish.Desktop.Cards.Users;
 using MakeWish.Desktop.Clients.Common.UserContext;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Domain;
+using MakeWish.Desktop.Forms.Wishes;
 using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Wishes;
@@ -69,8 +70,7 @@ public sealed partial class WishPage : Page
     [RelayCommand]
     private void Edit()
     {
-        NavigationService.ShowMessage("Форма редактирования желания не реализована");
-        // NavigationService.ShowOverlay<EditWishForm>(Wish.Id);
+        NavigationService.ShowOverlay<EditWishForm>(Wish.Id);
     }
     
     [RelayCommand]

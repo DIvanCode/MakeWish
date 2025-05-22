@@ -49,51 +49,6 @@ public partial class App
         
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowView>();
-        
-        services.AddTransient<LoginForm>();
-        services.AddTransient<LoginFormView>();
-        
-        services.AddTransient<RegisterForm>();
-        services.AddTransient<RegisterFormView>();
-        
-        services.AddTransient<ProfilePage>();
-        services.AddTransient<ProfilePageView>();
-        
-        services.AddTransient<UserCard>();
-        services.AddTransient<UserCardView>();
-        
-        services.AddTransient<ConfirmedFriendsPage>();
-        services.AddTransient<ConfirmedFriendsPageView>();
-        
-        services.AddTransient<PendingToUserFriendsPage>();
-        services.AddTransient<PendingToUserFriendsPageView>();
-        
-        services.AddTransient<PendingFromUserFriendsPage>();
-        services.AddTransient<PendingFromUserFriendsPageView>();
-        
-        services.AddTransient<SearchUserForm>();
-        services.AddTransient<SearchUserFormView>();
-        
-        services.AddTransient<UserWishesPage>();
-        services.AddTransient<UserWishesPageView>();
-        
-        services.AddTransient<UserWishListsPage>();
-        services.AddTransient<UserWishListsPageView>();
-        
-        services.AddTransient<UserPromisedWishesPage>();
-        services.AddTransient<UserPromisedWishesPageView>();
-
-        services.AddTransient<WishPage>();
-        services.AddTransient<WishPageView>();
-        
-        services.AddTransient<WishCard>();
-        services.AddTransient<WishCardView>();
-        
-        services.AddTransient<WishListPage>();
-        services.AddTransient<WishListPageView>();
-        
-        services.AddTransient<WishListCard>();
-        services.AddTransient<WishListCardView>();
     }
 
     protected override void OnStartup(StartupEventArgs e)

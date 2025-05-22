@@ -14,9 +14,6 @@ public sealed class Wish
     [JsonPropertyName("description")]
     public string Description { get; init; } = string.Empty;
 
-    [JsonPropertyName("imageUrl")]
-    public string? ImageUrl { get; init; }
-
     [JsonPropertyName("status"), Required, JsonConverter(typeof(JsonStringEnumConverter))]
     public required WishStatus Status { get; init; }
 
@@ -28,6 +25,9 @@ public sealed class Wish
 
     [JsonPropertyName("completer")]
     public User? Completer { get; init; }
+    
+    [JsonPropertyName("isPublic")]
+    public bool IsPublic { get; init; }
     
     public bool HasDescription => !string.IsNullOrEmpty(Description);
     
