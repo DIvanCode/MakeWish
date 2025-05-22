@@ -9,6 +9,7 @@ public sealed class Wish : Entity
     public string Title { get; private set; } = default!;
     public string Description { get; private set; } = string.Empty;
     public User Owner { get; } = default!;
+    public bool IsPublic { get; private set; }
 
     private WishStatus _status;
     private User? _promiser;
@@ -19,12 +20,13 @@ public sealed class Wish : Entity
     {
     }
 
-    private Wish(Guid id, string title, string description, User owner, WishStatus status)
+    private Wish(Guid id, string title, string description, User owner, bool isPublic, WishStatus status)
     {
         Id = id;
         Title = title;
         Description = description;
         Owner = owner;
+        IsPublic = isPublic;
         _status = status;
     }
 
@@ -89,16 +91,16 @@ public sealed class Wish : Entity
         return _completer;
     }
     
-    public static Wish Create(string title, string? description, User owner)
+    public static Wish Create(string title, string? description, User owner, bool isPublic)
     {
         EnsureArg.IsNotEmptyOrWhiteSpace(title, nameof(title));
         EnsureArg.IsNotNull(owner, nameof(owner));
 
         var id = Guid.NewGuid();
-        return new Wish(id, title, description ?? string.Empty, owner, WishStatus.Created);
+        return new Wish(id, title, description ?? string.Empty, owner, isPublic, WishStatus.Created);
     }
 
-    public Result Update(string title, string description, User by)
+    public Result Update(string title, string description, bool isPublic, User by)
     {
         EnsureArg.IsNotEmptyOrWhiteSpace(title, nameof(title));
         EnsureArg.IsNotNull(by, nameof(by));
@@ -115,6 +117,7 @@ public sealed class Wish : Entity
 
         Title = title;
         Description = description;
+        IsPublic = isPublic;
 
         return Result.Ok();
     }

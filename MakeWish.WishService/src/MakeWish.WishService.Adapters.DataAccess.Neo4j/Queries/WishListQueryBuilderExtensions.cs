@@ -74,6 +74,10 @@ public static class WishListQueryBuilderExtensions
         where T : Entity
         => builder.MatchUser(user).AppendLine($"MATCH {User}-{HasAccess}->{wishList}");
     
+    public static IQueryBuilder<T> MatchUserAccessToWishList<T>(this IQueryBuilder<T> builder, string wishList = WishList) 
+        where T : Entity
+        => builder.MatchUser().AppendLine($"MATCH {User}-{HasAccess}->{wishList}");
+    
     public static IQueryBuilder<T> LinkUserAccessToWishList<T>(this IQueryBuilder<T> builder, User user, string wishList = WishList)
         where T : Entity
         => builder.MatchUser(user).AppendLine($"MERGE {User}-{HasAccess}->{wishList}");

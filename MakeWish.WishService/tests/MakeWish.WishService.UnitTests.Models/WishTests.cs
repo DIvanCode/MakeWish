@@ -10,8 +10,10 @@ public class WishTests
 {
     private const string Title = "title";
     private const string Description = "description";
+    private const bool IsPublic = true;
     private const string OtherTitle = "otherTitle";
     private const string OtherDescription = "otherTitle";
+    private const bool OtherIsPublic = false;
     
     private static readonly User Owner = new UserBuilder().Build();
     private static readonly User OtherUser = new UserBuilder().Build();
@@ -22,7 +24,7 @@ public class WishTests
         // Arrange
 
         // Act
-        var wish = Wish.Create(Title, Description, Owner);
+        var wish = Wish.Create(Title, Description, Owner, IsPublic);
         
         // Assert
         wish.Should().NotBeNull();
@@ -43,10 +45,11 @@ public class WishTests
             .WithTitle(Title)
             .WithDescription(Description)
             .WithOwner(Owner)
+            .WithIsPublic(IsPublic)
             .Build();
         
         // Act
-        var result = wish.Update(OtherTitle, OtherDescription, by: Owner);
+        var result = wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: Owner);
         
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -65,7 +68,7 @@ public class WishTests
         var wish = new WishBuilder().WithOwner(Owner).Build();
         
         // Act
-        var result = wish.Update(OtherTitle, OtherDescription, by: OtherUser);
+        var result = wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: OtherUser);
         
         // Assert
         result.IsFailed.Should().BeTrue();
@@ -389,14 +392,15 @@ public class WishTests
             .WithTitle(Title)
             .WithDescription(Description)
             .WithOwner(Owner)
+            .WithIsPublic(IsPublic)
             .Build()
             .PromisedBy(OtherUser);
         
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),
@@ -423,6 +427,7 @@ public class WishTests
             .WithTitle(Title)
             .WithDescription(Description)
             .WithOwner(Owner)
+            .WithIsPublic(IsPublic)
             .Build()
             .PromisedBy(OtherUser)
             .CompletedBy(OtherUser);
@@ -430,8 +435,8 @@ public class WishTests
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),
@@ -458,6 +463,7 @@ public class WishTests
             .WithTitle(Title)
             .WithDescription(Description)
             .WithOwner(Owner)
+            .WithIsPublic(IsPublic)
             .Build()
             .PromisedBy(OtherUser)
             .CompletedBy(OtherUser)
@@ -466,8 +472,8 @@ public class WishTests
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),
@@ -496,14 +502,15 @@ public class WishTests
             .WithTitle(Title)
             .WithDescription(Description)
             .WithOwner(Owner)
+            .WithIsPublic(IsPublic)
             .Build()
             .DeletedBy(Owner);
         
         // Act
         var results = new List<Result>
         {
-            wish.Update(OtherTitle, OtherDescription, by: Owner),
-            wish.Update(OtherTitle, OtherDescription, by: OtherUser),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: Owner),
+            wish.Update(OtherTitle, OtherDescription, OtherIsPublic, by: OtherUser),
             wish.Promise(by: Owner),
             wish.Promise(by: OtherUser),
             wish.PromiseCancel(by: Owner),

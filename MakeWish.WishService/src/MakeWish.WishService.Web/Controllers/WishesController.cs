@@ -52,9 +52,12 @@ public sealed class WishesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IReadOnlyList<WishDto>>> GetUserWishesAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<WishDto>>> GetUserWishesAsync(
+        Guid userId,
+        [FromQuery] string? query,
+        CancellationToken cancellationToken)
     {
-        var command = new GetUserWishesCommand(userId);
+        var command = new GetUserWishesCommand(userId, query);
         var result = await mediator.Send(command, cancellationToken);
         return this.HandleResult(result);
     }

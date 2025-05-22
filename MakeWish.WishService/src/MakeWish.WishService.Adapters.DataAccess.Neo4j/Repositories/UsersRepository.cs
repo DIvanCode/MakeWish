@@ -13,4 +13,13 @@ public sealed class UsersRepository(IServiceProvider serviceProvider)
         var result = await ExecuteAsync(query, cancellationToken);
         return result.SingleOrDefault();
     }
+    
+    public async Task<List<User>> GetUsersWithAccessToWishListAsync(WishList wishList, CancellationToken cancellationToken)
+    {
+        var query = NewQuery()
+            .MatchWishList(wishList)
+            .MatchUserAccessToWishList();
+        var result = await ExecuteAsync(query.Build(), cancellationToken);
+        return result.ToList();
+    }
 }
