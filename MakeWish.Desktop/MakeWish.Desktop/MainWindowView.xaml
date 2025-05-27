@@ -1,12 +1,12 @@
-<Window x:Class="MakeWish.Desktop.Windows.MainWindowView"
+<Window x:Class="MakeWish.Desktop.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:windows="clr-namespace:MakeWish.Desktop.Windows"
+        xmlns:desktop="clr-namespace:MakeWish.Desktop"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=windows:MainWindow}"
+        d:DataContext="{d:DesignInstance Type=desktop:MainWindow}"
         Title="Make Wish"
         WindowState="Maximized">
     <Grid>
@@ -111,6 +111,17 @@
                     <ContentControl
                         Content="{Binding CurrentOverlay}"
                         Visibility="{Binding ShowOverlay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                    
+                    <ContentControl
+                        Content="{Binding CurrentDialog}"
+                        Visibility="{Binding ShowDialog, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>

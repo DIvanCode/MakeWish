@@ -10,10 +10,13 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Wishes;
 
-public sealed partial class CreateWishForm : Form
+internal sealed partial class CreateWishForm(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IWishServiceClient wishServiceClient)
+    : OverlayBase
 {
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private string _title = string.Empty;
     
@@ -23,46 +26,37 @@ public sealed partial class CreateWishForm : Form
     [ObservableProperty]
     private bool _isPublic;
     
-    public CreateWishForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IWishServiceClient wishServiceClient)
-        : base(navigationService, requestExecutor)
+    public override Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _wishServiceClient = wishServiceClient;
+        return Task.FromResult(Result.Ok());
     }
 
     [RelayCommand]
     private void Close()
     {
-        NavigationService.CloseLastOverlay();
+        overlayService.Close();
     }
 
     [RelayCommand]
     private void Create()
     {
-        RequestExecutor.Execute(async () =>
+        asyncExecutor.Execute(async cancellationToken =>
         {
-            var result = await CreateAsync(Title, Description, IsPublic);
+            var request = new CreateWishRequest
+            {
+                Title = Title,
+                Description = Description,
+                IsPublic = IsPublic
+            };
+
+            var result = await wishServiceClient.CreateWishAsync(request, cancellationToken);
             if (result.IsFailed)
             {
                 return result.ToResult();
             }
 
-            NavigationService.NavigateTo<WishPage>(result.Value.Id);
+            navigationService.NavigateTo<WishPage>(result.Value.Id);
             return Result.Ok();
         });
-    }
-
-    private async Task<Result<Wish>> CreateAsync(string title, string description, bool isPublic)
-    {
-        var request = new CreateWishRequest
-        {
-            Title = title,
-            Description = description,
-            IsPublic = isPublic
-        };
-
-        return await _wishServiceClient.CreateWishAsync(request, CancellationToken.None);
     }
 }

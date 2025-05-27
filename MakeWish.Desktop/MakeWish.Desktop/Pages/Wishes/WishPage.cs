@@ -11,10 +11,15 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Wishes;
 
-public sealed partial class WishPage : Page
+internal sealed partial class WishPage(
+    IOverlayService overlayService,
+    IDialogService dialogService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IWishServiceClient wishServiceClient,
+    Guid id)
+    : PageBase
 {
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private Wish _wish = null!;
     
@@ -42,129 +47,9 @@ public sealed partial class WishPage : Page
     [ObservableProperty]
     private bool _showCompleteRejectButton;
     
-    public WishPage(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserContext userContext,
-        IWishServiceClient wishServiceClient,
-        Guid wishId)
-        : base(navigationService, requestExecutor, userContext)
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _wishServiceClient = wishServiceClient;
-
-        LoadData(wishId);
-    }
-    
-    [RelayCommand]
-    private void ReloadWish()
-    {
-        LoadData(Wish.Id);
-    }
-    
-    [RelayCommand]
-    private void ShowUserCard(Guid userId)
-    {
-        NavigationService.ShowOverlay<UserCard>(userId);
-    }
-
-    [RelayCommand]
-    private void Edit()
-    {
-        NavigationService.ShowOverlay<EditWishForm>(Wish.Id);
-    }
-    
-    [RelayCommand]
-    private void Delete()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите удалить желание?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await DeleteAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void Restore()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите восстановить желание?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await RestoreAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void Promise()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите обещать исполнение желания?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await PromiseAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void Complete()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите исполнили желание?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await CompleteAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void PromiseCancel()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите отказаться от исполнения желания?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await PromiseCancelAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void CompleteApprove()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите подтвердить исполнение желания?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await CompleteApproveAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void CompleteReject()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите отклонить исполнение желания?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await CompleteRejectAsync(Wish.Id));
-                LoadData(Wish.Id);
-            });
-    }
-
-    private void LoadData(Guid wishId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(wishId));
-    }
-
-    private async Task<Result> LoadDataAsync(Guid wishId)
-    {
-        var wishResult = await _wishServiceClient.GetWishAsync(wishId, CancellationToken.None);
+        var wishResult = await wishServiceClient.GetWishAsync(id, cancellationToken);
         if (wishResult.IsFailed)
         {
             return wishResult.ToResult();
@@ -177,8 +62,8 @@ public sealed partial class WishPage : Page
         var wishIsPromised = Wish.Status is WishStatus.Promised;
         var wishIsCompleted = Wish.Status is WishStatus.Completed;
         
-        var userIsOwner = Wish.Owner.Id == UserContext.UserId;
-        var userIsPromiser = Wish.Promiser?.Id == UserContext.UserId;
+        var userIsOwner = Wish.Owner.Id == userContext.UserId;
+        var userIsPromiser = Wish.Promiser?.Id == userContext.UserId;
         
         ShowEditButton = wishIsCreated && userIsOwner;
         ShowDeleteButton = wishIsCreated && userIsOwner;
@@ -191,46 +76,162 @@ public sealed partial class WishPage : Page
 
         return Result.Ok();
     }
-    
-    private async Task<Result> DeleteAsync(Guid wishId)
+
+    [RelayCommand]
+    private void ReloadWish()
     {
-        var result = await _wishServiceClient.DeleteWishAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        asyncExecutor.Execute(async cancellationToken => await LoadDataAsync(cancellationToken));
+    }
+    
+    [RelayCommand]
+    private void ShowUserCard(User user)
+    {
+        overlayService.Show<UserCard>(user.Id);
     }
 
-    private async Task<Result> RestoreAsync(Guid wishId)
+    [RelayCommand]
+    private void Edit()
     {
-        var result = await _wishServiceClient.RestoreWishAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        overlayService.Show<EditWishForm>(id);
     }
     
-    private async Task<Result> PromiseAsync(Guid wishId)
+    [RelayCommand]
+    private void Delete()
     {
-        var result = await _wishServiceClient.PromiseAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите удалить желание?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.DeleteWishAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
     
-    private async Task<Result> CompleteAsync(Guid wishId)
+    [RelayCommand]
+    private void Restore()
     {
-        var result = await _wishServiceClient.CompleteAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите восстановить желание?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.RestoreWishAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
     
-    private async Task<Result> PromiseCancelAsync(Guid wishId)
+    [RelayCommand]
+    private void Promise()
     {
-        var result = await _wishServiceClient.PromiseCancelAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите обещать исполнение желания?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.PromiseAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
     
-    private async Task<Result> CompleteApproveAsync(Guid wishId)
+    [RelayCommand]
+    private void Complete()
     {
-        var result = await _wishServiceClient.CompleteApproveAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите исполнили желание?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.CompleteAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
     
-    private async Task<Result> CompleteRejectAsync(Guid wishId)
+    [RelayCommand]
+    private void PromiseCancel()
     {
-        var result = await _wishServiceClient.CompleteRejectAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите отказаться от исполнения желания?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.PromiseCancelAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
+    }
+    
+    [RelayCommand]
+    private void CompleteApprove()
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите подтвердить исполнение желания?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.CompleteApproveAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
+    }
+    
+    [RelayCommand]
+    private void CompleteReject()
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите отклонить исполнение желания?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.CompleteRejectAsync(id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
 }

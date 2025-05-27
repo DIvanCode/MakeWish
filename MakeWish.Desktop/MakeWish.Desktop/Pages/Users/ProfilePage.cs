@@ -7,18 +7,23 @@ using MakeWish.Desktop.Clients.Common.UserContext;
 using MakeWish.Desktop.Clients.UserService;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Domain;
+using MakeWish.Desktop.Forms.Users;
 using MakeWish.Desktop.Pages.Wishes;
 using MakeWish.Desktop.Services;
-using LoginForm = MakeWish.Desktop.Forms.Users.LoginForm;
-using UserWishesPage = MakeWish.Desktop.Pages.Wishes.UserWishesPage;
 
 namespace MakeWish.Desktop.Pages.Users;
 
-public sealed partial class ProfilePage : Page
+internal sealed partial class ProfilePage(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IDialogService dialogService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IUserServiceClient userServiceClient,
+    IWishServiceClient wishServiceClient,
+    Guid id)
+    : PageBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private User _user = null!;
 
@@ -43,87 +48,11 @@ public sealed partial class ProfilePage : Page
     [ObservableProperty]
     private List<WishList> _wishLists = [];
 
-    public ProfilePage(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserContext userContext,
-        IUserServiceClient userServiceClient,
-        IWishServiceClient wishServiceClient,
-        Guid userId)
-        : base(navigationService, requestExecutor, userContext)
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-        _wishServiceClient = wishServiceClient;
+        ShowDeleteButton = id == userContext.UserId;
 
-        LoadData(userId);
-    }
-
-    [RelayCommand]
-    private void NavigateToProfile(Guid userId)
-    {
-        if (userId == User.Id)
-        {
-            LoadData(User.Id);   
-        }
-        else
-        {
-            NavigationService.NavigateTo<ProfilePage>(userId);
-        }
-    }
-
-    [RelayCommand]
-    private void DeleteUser()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите удалить свой аккаунт?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async() => await DeleteAsync(User.Id));
-                NavigationService.ClearHistory();
-                NavigationService.ShowOverlay<LoginForm>();
-            });
-    }
-
-    [RelayCommand]
-    private void NavigateToFriends()
-    {
-        NavigationService.NavigateTo<ConfirmedFriendsPage>(User.Id);
-    }
-
-    [RelayCommand]
-    private void NavigateToWishes()
-    {
-        NavigationService.NavigateTo<UserWishesPage>(User.Id);
-    }
-
-    [RelayCommand]
-    private void ShowWishCard(Guid wishId)
-    {
-        NavigationService.ShowOverlay<WishCard>(wishId);
-    }
-
-    [RelayCommand]
-    private void NavigateToWishLists()
-    {
-        NavigationService.NavigateTo<UserWishListsPage>(User.Id);
-    }
-
-    [RelayCommand]
-    private void ShowWishListCard(Guid wishListId)
-    {
-        NavigationService.ShowOverlay<WishListCard>(wishListId);
-    }
-
-    private void LoadData(Guid userId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(userId));
-    }
-    
-    private async Task<Result> LoadDataAsync(Guid userId)
-    {
-        ShowDeleteButton = userId == UserContext.UserId;
-
-        var userResult = await _userServiceClient.GetUserAsync(userId, CancellationToken.None);
+        var userResult = await userServiceClient.GetUserAsync(id, cancellationToken);
         if (userResult.IsFailed)
         {
             return userResult.ToResult();
@@ -131,7 +60,7 @@ public sealed partial class ProfilePage : Page
 
         User = userResult.Value;
 
-        var friendsResult = await _userServiceClient.GetConfirmedFriendshipsAsync(userId, CancellationToken.None);
+        var friendsResult = await userServiceClient.GetConfirmedFriendshipsAsync(id, cancellationToken);
         if (friendsResult.IsFailed)
         {
             return friendsResult.ToResult();
@@ -139,11 +68,11 @@ public sealed partial class ProfilePage : Page
 
         FriendsButtonDisplayText = $"Друзья ({friendsResult.Value.Count})";
         Friends = friendsResult.Value
-            .Select(f => f.FirstUser.Id == User.Id ? f.SecondUser : f.FirstUser)
+            .Select(f => f.FirstUser.Id == id ? f.SecondUser : f.FirstUser)
             .Take(5)
             .ToList();
 
-        var wishesResult = await _wishServiceClient.GetUserWishesAsync(userId, CancellationToken.None);
+        var wishesResult = await wishServiceClient.GetUserWishesAsync(id, cancellationToken);
         if (wishesResult.IsFailed)
         {
             return wishesResult.ToResult();
@@ -152,7 +81,7 @@ public sealed partial class ProfilePage : Page
         WishesButtonDisplayText = $"Желания ({wishesResult.Value.Count})";
         Wishes = wishesResult.Value.Take(10).ToList();
 
-        var wishListsResult = await _wishServiceClient.GetUserWishListsAsync(userId, CancellationToken.None);
+        var wishListsResult = await wishServiceClient.GetUserWishListsAsync(id, cancellationToken);
         if (wishListsResult.IsFailed)
         {
             return wishListsResult.ToResult();
@@ -162,9 +91,60 @@ public sealed partial class ProfilePage : Page
         WishLists = wishListsResult.Value.Take(3).ToList();
         return Result.Ok();
     }
-
-    private async Task<Result> DeleteAsync(Guid userId)
+    
+    [RelayCommand]
+    private void NavigateToProfile(User user)
     {
-        return await _userServiceClient.DeleteUserAsync(userId, CancellationToken.None);
+        if (user.Id == id)
+        {
+            asyncExecutor.Execute(async cancellationToken => await LoadDataAsync(cancellationToken));
+        }
+        else
+        {
+            navigationService.NavigateTo<ProfilePage>(user.Id);
+        }
+    }
+
+    [RelayCommand]
+    private void DeleteUser()
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите удалить свой аккаунт?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken => await userServiceClient.DeleteUserAsync(id, cancellationToken));
+                navigationService.ClearHistory();
+                overlayService.Show<LoginForm>();
+            });
+    }
+
+    [RelayCommand]
+    private void NavigateToFriends()
+    {
+        navigationService.NavigateTo<ConfirmedFriendsPage>(id);
+    }
+
+    [RelayCommand]
+    private void NavigateToWishes()
+    {
+        navigationService.NavigateTo<UserWishesPage>(id);
+    }
+
+    [RelayCommand]
+    private void ShowWishCard(Wish wish)
+    {
+        overlayService.Show<WishCard>(wish.Id);
+    }
+
+    [RelayCommand]
+    private void NavigateToWishLists()
+    {
+        navigationService.NavigateTo<UserWishListsPage>(id);
+    }
+
+    [RelayCommand]
+    private void ShowWishListCard(WishList wishList)
+    {
+        overlayService.Show<WishListCard>(wishList.Id);
     }
 }

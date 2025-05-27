@@ -12,10 +12,16 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Users;
 
-public sealed partial class PendingToUserFriendsPage : Page
+internal sealed partial class PendingToUserFriendsPage(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IDialogService dialogService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IUserServiceClient userServiceClient,
+    Guid userId)
+    : PageBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-
     [ObservableProperty]
     private User _user = null!;
 
@@ -40,97 +46,13 @@ public sealed partial class PendingToUserFriendsPage : Page
     [ObservableProperty]
     private List<User> _pendingFriendsToUser = [];
 
-    public PendingToUserFriendsPage(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserContext userContext,
-        IUserServiceClient userServiceClient,
-        Guid userId)
-        : base(navigationService, requestExecutor, userContext)
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-
-        LoadData(userId);
-    }
-
-    [RelayCommand]
-    private void NavigateToProfile(Guid userId)
-    {
-        NavigationService.NavigateTo<ProfilePage>(userId);
-    }
-    
-    [RelayCommand]
-    private void NavigateToConfirmedFriends()
-    {
-        NavigationService.NavigateTo<ConfirmedFriendsPage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void NavigateToPendingToUserFriends()
-    {
-        LoadData(User.Id);
-    }    
-    
-    [RelayCommand]
-    private void NavigateToPendingFromUserFriends()
-    {
-        NavigationService.NavigateTo<PendingFromUserFriendsPage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void ShowUserCard(Guid userId)
-    {
-        NavigationService.ShowOverlay<UserCard>(userId);
-    }
-
-    [RelayCommand]
-    private void ShowSearchUserForm()
-    {
-        NavigationService.ShowOverlay<SearchUserForm>();
-        ((SearchUserForm)NavigationService.CurrentOverlay!).OnPickUser += user =>
-        {
-            RequestExecutor.Execute(async () => await AddFriendAsync(User.Id, user.Id));
-            NavigationService.CloseLastOverlay();
-            LoadData(User.Id);
-        };
-    }
-    
-    [RelayCommand]
-    private void ConfirmFriend(Guid userId)
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно принять заявку в друзья?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await ConfirmFriendAsync(userId, User.Id));
-                LoadData(User.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void RejectFriend(Guid userId)
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите отклонить заявку в друзья?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await RemoveFriendAsync(User.Id, userId));
-                LoadData(User.Id);
-            });
-    }
-    
-    private void LoadData(Guid userId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(userId));
-    }
-
-    private async Task<Result> LoadDataAsync(Guid userId)
-    {
-        ShowUserDisplayName = userId != UserContext.UserId;
-        ShowPendingFriends = userId == UserContext.UserId;
-        ShowFriendsManageButtons = userId == UserContext.UserId;
+        ShowUserDisplayName = userId != userContext.UserId;
+        ShowPendingFriends = userId == userContext.UserId;
+        ShowFriendsManageButtons = userId == userContext.UserId;
         
-        var userResult = await _userServiceClient.GetUserAsync(userId, CancellationToken.None);
+        var userResult = await userServiceClient.GetUserAsync(userId, cancellationToken);
         if (userResult.IsFailed)
         {
             return userResult.ToResult();
@@ -139,7 +61,7 @@ public sealed partial class PendingToUserFriendsPage : Page
         User = userResult.Value;
 
         var confirmedFriendsResult =
-            await _userServiceClient.GetConfirmedFriendshipsAsync(userId, CancellationToken.None);
+            await userServiceClient.GetConfirmedFriendshipsAsync(userId, cancellationToken);
         if (confirmedFriendsResult.IsFailed)
         {
             return confirmedFriendsResult.ToResult();
@@ -148,7 +70,7 @@ public sealed partial class PendingToUserFriendsPage : Page
         ConfirmedFriendsButtonDisplayText = $"Список друзей ({confirmedFriendsResult.Value.Count})";
 
         var pendingFriendsToUserResult =
-            await _userServiceClient.GetPendingFriendshipsToUserAsync(userId, CancellationToken.None);
+            await userServiceClient.GetPendingFriendshipsToUserAsync(userId, cancellationToken);
         if (pendingFriendsToUserResult.IsFailed)
         {
             return pendingFriendsToUserResult.ToResult();
@@ -160,7 +82,7 @@ public sealed partial class PendingToUserFriendsPage : Page
             .ToList();
         
         var pendingFriendsFromUserResult =
-            await _userServiceClient.GetPendingFriendshipsFromUserAsync(userId, CancellationToken.None);
+            await userServiceClient.GetPendingFriendshipsFromUserAsync(userId, cancellationToken);
         if (pendingFriendsFromUserResult.IsFailed)
         {
             return pendingFriendsFromUserResult.ToResult();
@@ -170,38 +92,108 @@ public sealed partial class PendingToUserFriendsPage : Page
         return Result.Ok();
     }
 
-    private async Task<Result> AddFriendAsync(Guid firstUserId, Guid secondUserId)
+    [RelayCommand]
+    private void NavigateToProfile(User user)
     {
-        var request = new CreateFriendshipRequest
-        {
-            FirstUser = firstUserId,
-            SecondUser = secondUserId
-        };
-        
-        var result = await _userServiceClient.CreateFriendshipAsync(request, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        navigationService.NavigateTo<ProfilePage>(user.Id);
     }
     
-    private async Task<Result> ConfirmFriendAsync(Guid firstUserId, Guid secondUserId)
+    [RelayCommand]
+    private void NavigateToConfirmedFriends()
     {
-        var request = new ConfirmFriendshipRequest
-        {
-            FirstUser = firstUserId,
-            SecondUser = secondUserId
-        };
-        
-        var result = await _userServiceClient.ConfirmFriendshipAsync(request, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        navigationService.NavigateTo<ConfirmedFriendsPage>(userId);
+    }
+    
+    [RelayCommand]
+    private void NavigateToPendingToUserFriends()
+    {
+        asyncExecutor.Execute(async cancellationToken => await LoadDataAsync(cancellationToken));
+    }    
+    
+    [RelayCommand]
+    private void NavigateToPendingFromUserFriends()
+    {
+        navigationService.NavigateTo<PendingFromUserFriendsPage>(userId);
+    }
+    
+    [RelayCommand]
+    private void ShowUserCard(User user)
+    {
+        overlayService.Show<UserCard>(user.Id);
     }
 
-    private async Task<Result> RemoveFriendAsync(Guid firstUserId, Guid secondUserId)
+    [RelayCommand]
+    private void ShowSearchUserForm()
     {
-        var request = new RemoveFriendshipRequest
+        overlayService.Show<SearchUserForm>();
+        ((SearchUserForm)overlayService.Current!).OnPickUser += user =>
         {
-            FirstUser = firstUserId,
-            SecondUser = secondUserId
+            asyncExecutor.Execute(async cancellationToken =>
+            {
+                var request = new CreateFriendshipRequest
+                {
+                    FirstUser = userId,
+                    SecondUser = user.Id
+                };
+        
+                var result = await userServiceClient.CreateFriendshipAsync(request, cancellationToken);
+                return result.IsFailed ? result.ToResult() : Result.Ok();
+            });
+            
+            overlayService.Close();
+            navigationService.NavigateTo<PendingFromUserFriendsPage>(userId);
         };
+    }
+    
+    [RelayCommand]
+    private void ConfirmFriend(User user)
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно принять заявку в друзья?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var request = new ConfirmFriendshipRequest
+                    {
+                        FirstUser = user.Id,
+                        SecondUser = userId
+                    };
+        
+                    var result = await userServiceClient.ConfirmFriendshipAsync(request, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+                    
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
+    }
+    
+    [RelayCommand]
+    private void RejectFriend(User user)
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите отклонить заявку в друзья?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var request = new RemoveFriendshipRequest
+                    {
+                        FirstUser = user.Id,
+                        SecondUser = userId
+                    };
 
-        return await _userServiceClient.RemoveFriendshipAsync(request, CancellationToken.None);
+                    var result = await userServiceClient.RemoveFriendshipAsync(request, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result;
+                    }
+                    
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
 }

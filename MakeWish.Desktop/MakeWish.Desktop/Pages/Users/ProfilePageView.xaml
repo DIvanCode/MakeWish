@@ -24,7 +24,7 @@
                 <Button Grid.Column="0"
                         Content="{Binding User.DisplayName}"
                         Command="{Binding NavigateToProfileCommand}"
-                        CommandParameter="{Binding User.Id}"
+                        CommandParameter="{Binding User}"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         FontSize="30"
                         FontWeight="SemiBold"
@@ -71,7 +71,7 @@
                             <DataTemplate>
                                 <Button Command="{Binding DataContext.NavigateToProfileCommand,
                                                           RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Margin="8,0"
                                         Width="110"
@@ -116,7 +116,7 @@
                             <DataTemplate>
                                 <Button Command="{Binding DataContext.ShowWishCardCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Margin="0, 12, 0, 0"
                                         HorizontalAlignment="Left"
@@ -150,7 +150,7 @@
                             <DataTemplate>
                                 <Button Command="{Binding DataContext.ShowWishListCardCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Margin="0, 12, 0, 0"
                                         HorizontalAlignment="Left"

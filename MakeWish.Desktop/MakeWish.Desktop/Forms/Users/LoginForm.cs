@@ -11,37 +11,34 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Users;
 
-public sealed partial class LoginForm : Form
+internal sealed partial class LoginForm(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IUserServiceClient userServiceClient)
+    : OverlayBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-    private readonly IUserContext _userContext;
-    
     [ObservableProperty]
     private string _email = string.Empty;
 
-    public LoginForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserServiceClient userServiceClient,
-        IUserContext userContext)
-        : base(navigationService, requestExecutor)
+    public override Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-        _userContext = userContext;
+        return Task.FromResult(Result.Ok());
     }
 
     [RelayCommand]
     private void Login(PasswordBox passwordBox)
     {
-        RequestExecutor.Execute(async () =>
+        asyncExecutor.Execute(async token =>
         {
-            var result = await LoginAsync(Email, passwordBox.Password);
+            var result = await LoginAsync(Email, passwordBox.Password, token);
             if (result.IsFailed)
             {
                 return result;
             }
             
-            NavigationService.NavigateTo<ProfilePage>(_userContext.UserId!.Value);
+            navigationService.NavigateTo<ProfilePage>(userContext.UserId!.Value);
             return Result.Ok();
         });
     }
@@ -49,10 +46,10 @@ public sealed partial class LoginForm : Form
     [RelayCommand]
     private void Register()
     {
-        NavigationService.ShowOverlay<RegisterForm>();
+        overlayService.Show<RegisterForm>();
     }
 
-    private async Task<Result> LoginAsync(string email, string password)
+    private async Task<Result> LoginAsync(string email, string password, CancellationToken cancellationToken)
     {
         var registerRequest = new AuthenticateRequest
         {
@@ -60,22 +57,22 @@ public sealed partial class LoginForm : Form
             Password = password
         };
 
-        var authResult = await _userServiceClient.AuthenticateUserAsync(registerRequest, CancellationToken.None);
+        var authResult = await userServiceClient.AuthenticateUserAsync(registerRequest, cancellationToken);
         if (authResult.IsFailed)
         {
             return authResult.ToResult();
         }
 
-        _userContext.SetToken(authResult.Value);
+        userContext.SetToken(authResult.Value);
 
-        var userResult = await _userServiceClient.GetCurrentUserAsync(CancellationToken.None);
+        var userResult = await userServiceClient.GetCurrentUserAsync(cancellationToken);
         if (userResult.IsFailed)
         {
             return userResult.ToResult();
         }
 
         var userId = userResult.Value.Id;
-        _userContext.SetUserId(userId);
+        userContext.SetUserId(userId);
 
         return Result.Ok();
     }

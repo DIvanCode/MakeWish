@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Windows;
-using MakeWish.Desktop.Cards.Users;
-using MakeWish.Desktop.Cards.Wishes;
+using MakeWish.Desktop.Clients;
 using MakeWish.Desktop.Clients.Common.UserContext;
 using Microsoft.Extensions.DependencyInjection;
 using MakeWish.Desktop.Services;
@@ -10,10 +9,6 @@ using Microsoft.Extensions.Configuration;
 using MakeWish.Desktop.Clients.UserService.Configuration;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Clients.WishService.Configuration;
-using MakeWish.Desktop.Forms.Users;
-using MakeWish.Desktop.Pages.Users;
-using MakeWish.Desktop.Pages.Wishes;
-using MakeWish.Desktop.Windows;
 
 namespace MakeWish.Desktop;
 
@@ -36,16 +31,13 @@ public partial class App
             .Build();
 
         services.AddSingleton<INavigationService, NavigationService>();
-        services.AddTransient<IRequestExecutor, RequestExecutor>();
-        services.AddSingleton<IUserContext, UserContext>();
+        services.AddSingleton<IOverlayService, OverlayService>();
+        services.AddSingleton<IDialogService, DialogService>();
         
-        services.AddHttpClient();
-        
-        services.Configure<UserServiceOptions>(configuration.GetSection(UserServiceOptions.SectionName));
-        services.AddSingleton<IUserServiceClient, UserServiceClient>();
-        
-        services.Configure<WishServiceOptions>(configuration.GetSection(WishServiceOptions.SectionName));
-        services.AddSingleton<IWishServiceClient, WishServiceClient>();
+        services.AddSingleton<ILoadingService, LoadingService>();
+        services.AddTransient<IAsyncExecutor, AsyncExecutor>();
+
+        services.AddClients(configuration);
         
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowView>();

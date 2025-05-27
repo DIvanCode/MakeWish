@@ -52,7 +52,7 @@
                             <StackPanel Orientation="Horizontal" Margin="0, 5">
                                 <Button Command="{Binding DataContext.ShowWishCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
@@ -72,7 +72,7 @@
                                            Margin="5, 0"/>
                                 <Button Command="{Binding DataContext.ShowUserCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Owner.Id}"
+                                        CommandParameter="{Binding Owner}"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
@@ -91,7 +91,7 @@
                                         Command="{Binding DataContext.CompleteCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         Visibility="{Binding IsPromised, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         Margin="5, 0"
                                         HorizontalAlignment="Left"
@@ -100,7 +100,7 @@
                                         Command="{Binding DataContext.PromiseCancelCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         Visibility="{Binding IsPromised, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         Margin="5, 0"
                                         HorizontalAlignment="Left"

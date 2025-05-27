@@ -1,4 +1,4 @@
-namespace MakeWish.Desktop.Windows;
+namespace MakeWish.Desktop;
 
 public partial class MainWindowView
 {

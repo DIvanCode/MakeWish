@@ -14,11 +14,16 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Wishes;
 
-public sealed partial class UserWishListsPage : Page
+internal sealed partial class UserWishListsPage(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IUserServiceClient userServiceClient,
+    IWishServiceClient wishServiceClient,
+    Guid userId)
+    : PageBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private User _user = null!;
     
@@ -43,77 +48,15 @@ public sealed partial class UserWishListsPage : Page
     [ObservableProperty]
     private bool _showCreateWishListButton;
     
-    public UserWishListsPage(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserContext userContext,
-        IUserServiceClient userServiceClient,
-        IWishServiceClient wishServiceClient,
-        Guid userId)
-        : base(navigationService, requestExecutor, userContext)
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-        _wishServiceClient = wishServiceClient;
-        
-        LoadData(userId);
-    }
-    
-    [RelayCommand]
-    private void NavigateToProfile(Guid userId)
-    {
-        NavigationService.NavigateTo<ProfilePage>(userId);
-    }
-    
-    [RelayCommand]
-    private void NavigateToWishesPage()
-    {
-        NavigationService.NavigateTo<UserWishesPage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void NavigateToWishListsPage()
-    {
-        LoadData(User.Id);
-    }
-    
-    [RelayCommand]
-    private void NavigateToPromisedWishesPage()
-    {
-        NavigationService.NavigateTo<UserPromisedWishesPage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void ShowWishListCard(Guid wishListId)
-    {
-        NavigationService.ShowOverlay<WishListCard>(wishListId);
-    }
-    
-    [RelayCommand]
-    private void ShowUserCard(Guid userId)
-    {
-        NavigationService.ShowOverlay<UserCard>(userId);
-    }
-    
-    [RelayCommand]
-    private void CreateWishList()
-    {
-        NavigationService.ShowOverlay<CreateWishListForm>();
-    }
-    
-    private void LoadData(Guid userId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(userId));
-    }
-    
-    private async Task<Result> LoadDataAsync(Guid userId)
-    {
-        var isCurrentUser = userId == UserContext.UserId;
+        var isCurrentUser = userId == userContext.UserId;
         
         ShowUserDisplayName = !isCurrentUser;
         ShowPromisedWishesButton = isCurrentUser;
         ShowCreateWishListButton = isCurrentUser;
         
-        var userResult = await _userServiceClient.GetUserAsync(userId, CancellationToken.None);
+        var userResult = await userServiceClient.GetUserAsync(userId, cancellationToken);
         if (userResult.IsFailed)
         {
             return userResult.ToResult();
@@ -121,7 +64,7 @@ public sealed partial class UserWishListsPage : Page
 
         User = userResult.Value;
         
-        var wishesResult = await _wishServiceClient.GetUserWishesAsync(userId, CancellationToken.None);
+        var wishesResult = await wishServiceClient.GetUserWishesAsync(userId, cancellationToken);
         if (wishesResult.IsFailed)
         {
             return wishesResult.ToResult();
@@ -131,7 +74,7 @@ public sealed partial class UserWishListsPage : Page
             ? $"Мои желания ({wishesResult.Value.Count})"
             : $"Желания ({wishesResult.Value.Count})";
         
-        var wishListsResult = await _wishServiceClient.GetUserWishListsAsync(userId, CancellationToken.None);
+        var wishListsResult = await wishServiceClient.GetUserWishListsAsync(userId, cancellationToken);
         if (wishListsResult.IsFailed)
         {
             return wishListsResult.ToResult();
@@ -144,7 +87,7 @@ public sealed partial class UserWishListsPage : Page
 
         if (isCurrentUser)
         {
-            var promisedWishesResult = await _wishServiceClient.GetPromisedWishesAsync(CancellationToken.None);
+            var promisedWishesResult = await wishServiceClient.GetPromisedWishesAsync(cancellationToken);
             if (promisedWishesResult.IsFailed)
             {
                 return promisedWishesResult.ToResult();
@@ -154,5 +97,47 @@ public sealed partial class UserWishListsPage : Page
         }
 
         return Result.Ok();
+    }
+
+    [RelayCommand]
+    private void NavigateToProfile(User user)
+    {
+        navigationService.NavigateTo<ProfilePage>(user.Id);
+    }
+    
+    [RelayCommand]
+    private void NavigateToWishesPage()
+    {
+        navigationService.NavigateTo<UserWishesPage>(userId);
+    }
+    
+    [RelayCommand]
+    private void NavigateToWishListsPage()
+    {
+        asyncExecutor.Execute(async cancellationToken => await LoadDataAsync(cancellationToken));
+    }
+    
+    [RelayCommand]
+    private void NavigateToPromisedWishesPage()
+    {
+        navigationService.NavigateTo<UserPromisedWishesPage>(userId);
+    }
+    
+    [RelayCommand]
+    private void ShowWishListCard(WishList wishList)
+    {
+        overlayService.Show<WishListCard>(wishList.Id);
+    }
+    
+    [RelayCommand]
+    private void ShowUserCard(User user)
+    {
+        overlayService.Show<UserCard>(user.Id);
+    }
+    
+    [RelayCommand]
+    private void CreateWishList()
+    {
+        overlayService.Show<CreateWishListForm>();
     }
 }

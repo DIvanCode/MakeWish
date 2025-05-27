@@ -1,6 +1,6 @@
 ﻿namespace MakeWish.Desktop.Clients.WishService.Configuration;
 
-public sealed record WishServiceOptions
+internal sealed record WishServiceOptions
 {
     public const string SectionName = "WishService";
     

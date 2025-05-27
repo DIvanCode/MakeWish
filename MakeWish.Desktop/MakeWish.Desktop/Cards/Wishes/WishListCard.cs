@@ -9,57 +9,44 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Cards.Wishes;
 
-public sealed partial class WishListCard : Card
+internal sealed partial class WishListCard(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IWishServiceClient wishServiceClient,
+    Guid id)
+    : OverlayBase
 {
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private WishList _wishList = null!;
     
-    public WishListCard(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IWishServiceClient wishServiceClient,
-        Guid wishListId)
-        : base(navigationService, requestExecutor)
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _wishServiceClient = wishServiceClient;
-        
-        LoadData(wishListId);
+        var wishListResult = await wishServiceClient.GetWishListAsync(id, cancellationToken);
+        if (wishListResult.IsFailed)
+        {
+            return wishListResult.ToResult();
+        }
+
+        WishList = wishListResult.Value;
+        WishList.Wishes = wishListResult.Value.Wishes.Take(5).ToList();
+        return Result.Ok();
     }
     
     [RelayCommand]
     private void NavigateToWishList()
     {
-        NavigationService.NavigateTo<WishListPage>(WishList.Id);
+        navigationService.NavigateTo<WishListPage>(id);
     }
     
     [RelayCommand]
     private void Close()
     {
-        NavigationService.CloseLastOverlay();
+        overlayService.Close();
     }
     
     [RelayCommand]
-    private void ShowWishCard(Guid wishId)
+    private void ShowWishCard(Wish wish)
     {
-        NavigationService.ShowOverlay<WishCard>(wishId);
-    }
-    
-    private void LoadData(Guid wishListId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(wishListId));
-    }
-
-    private async Task<Result> LoadDataAsync(Guid wishListId)
-    {
-        var wishListResult = await _wishServiceClient.GetWishListAsync(wishListId, CancellationToken.None);
-        if (wishListResult.IsFailed)
-        {
-            return wishListResult.ToResult();
-        }
-            
-        WishList = wishListResult.Value with { Wishes = wishListResult.Value.Wishes.Take(5).ToList() };
-        return Result.Ok();
+        overlayService.Show<WishCard>(wish.Id);
     }
 }

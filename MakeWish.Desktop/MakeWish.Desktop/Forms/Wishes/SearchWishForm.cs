@@ -10,34 +10,30 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Wishes;
 
-public sealed partial class SearchWishForm : Form
+internal sealed partial class SearchWishForm(
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IWishServiceClient wishServiceClient,
+    IUserContext userContext)
+    : OverlayBase
 {
     public event Action<Wish>? OnPickWish;
-    
-    private readonly IWishServiceClient _wishServiceClient;
-    private readonly IUserContext _userContext;
     
     [ObservableProperty]
     private string _query = string.Empty;
 
     [ObservableProperty]
     private List<Wish> _wishes = [];
-
-    public SearchWishForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IWishServiceClient wishServiceClient,
-        IUserContext userContext)
-        : base(navigationService, requestExecutor)
-    {
-        _wishServiceClient = wishServiceClient;
-        _userContext = userContext;
-    }
     
-    [RelayCommand]
-    private void ShowWishCard(Guid wishId)
+    public override Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        NavigationService.ShowOverlay<WishCard>(wishId);
+        return Task.FromResult(Result.Ok());
+    }
+
+    [RelayCommand]
+    private void ShowWishCard(Wish wish)
+    {
+        overlayService.Show<WishCard>(wish.Id);
     }
     
     [RelayCommand]
@@ -49,24 +45,22 @@ public sealed partial class SearchWishForm : Form
     [RelayCommand]
     private void Close()
     {
-        NavigationService.CloseLastOverlay();
+        overlayService.Close();
     }
 
     [RelayCommand]
     private void SearchWish()
     {
-        RequestExecutor.Execute(async () => await SearchWishAsync(Query));
-    }
-
-    private async Task<Result> SearchWishAsync(string query)
-    {
-        var wishesResult = await _wishServiceClient.SearchWishAsync(_userContext.UserId!.Value, query, CancellationToken.None);
-        if (wishesResult.IsFailed)
+        asyncExecutor.Execute(async cancellationToken =>
         {
-            return wishesResult.ToResult();
-        }
+            var result = await wishServiceClient.SearchWishAsync(userContext.UserId!.Value, Query, cancellationToken);
+            if (result.IsFailed)
+            {
+                return result.ToResult();
+            }
             
-        Wishes = wishesResult.Value;
-        return Result.Ok();
+            Wishes = result.Value;
+            return Result.Ok();
+        });
     }
 }

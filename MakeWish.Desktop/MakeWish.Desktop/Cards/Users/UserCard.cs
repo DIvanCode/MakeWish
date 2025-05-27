@@ -9,45 +9,19 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Cards.Users;
 
-public sealed partial class UserCard : Card
+internal sealed partial class UserCard(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IUserServiceClient userServiceClient,
+    Guid id)
+    : OverlayBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-
     [ObservableProperty]
     private User _user = null!;
-
-    public UserCard(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserServiceClient userServiceClient,
-        Guid userId)
-        : base(navigationService, requestExecutor)
-    {
-        _userServiceClient = userServiceClient;
-        
-        LoadData(userId);
-    }
     
-    [RelayCommand]
-    private void NavigateToProfile()
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        NavigationService.NavigateTo<ProfilePage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void Close()
-    {
-        NavigationService.CloseLastOverlay();
-    }
-    
-    private void LoadData(Guid userId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(userId));
-    }
-
-    private async Task<Result> LoadDataAsync(Guid userId)
-    {
-        var userResult = await _userServiceClient.GetUserAsync(userId, CancellationToken.None);
+        var userResult = await userServiceClient.GetUserAsync(id, cancellationToken);
         if (userResult.IsFailed)
         {
             return userResult.ToResult();
@@ -55,5 +29,17 @@ public sealed partial class UserCard : Card
             
         User = userResult.Value;
         return Result.Ok();
+    }
+    
+    [RelayCommand]
+    private void NavigateToProfile()
+    {
+        navigationService.NavigateTo<ProfilePage>(id);
+    }
+    
+    [RelayCommand]
+    private void Close()
+    {
+        overlayService.Close();
     }
 }

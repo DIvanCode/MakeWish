@@ -9,37 +9,30 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Users;
 
-public sealed partial class SearchUserForm : Form
+internal sealed partial class SearchUserForm(
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IUserServiceClient userServiceClient,
+    bool onlyFriends = false)
+    : OverlayBase
 {
     public event Action<User>? OnPickUser;
     
-    private readonly IUserServiceClient _userServiceClient;
-    
     [ObservableProperty]
     private string _query = string.Empty;
-    
-    [ObservableProperty]
-    private bool _onlyFriends;
 
     [ObservableProperty]
     private List<User> _users = [];
 
-    public SearchUserForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserServiceClient userServiceClient,
-        bool onlyFriends = false)
-        : base(navigationService, requestExecutor)
+    public override Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-        
-        OnlyFriends = onlyFriends;
+        return Task.FromResult(Result.Ok());
     }
     
     [RelayCommand]
-    private void ShowUserCard(Guid userId)
+    private void ShowUserCard(User user)
     {
-        NavigationService.ShowOverlay<UserCard>(userId);
+        overlayService.Show<UserCard>(user.Id);
     }
     
     [RelayCommand]
@@ -51,24 +44,22 @@ public sealed partial class SearchUserForm : Form
     [RelayCommand]
     private void Close()
     {
-        NavigationService.CloseLastOverlay();
+        overlayService.Close();
     }
 
     [RelayCommand]
     private void SearchUser()
     {
-        RequestExecutor.Execute(async () => await SearchUserAsync(Query, OnlyFriends));
-    }
-
-    private async Task<Result> SearchUserAsync(string query, bool onlyFriends)
-    {
-        var usersResult = await _userServiceClient.SearchUserAsync(query, onlyFriends, CancellationToken.None);
-        if (usersResult.IsFailed)
+        asyncExecutor.Execute(async cancellationToken =>
         {
-            return usersResult.ToResult();
-        }
+            var usersResult = await userServiceClient.SearchUserAsync(Query, onlyFriends, cancellationToken);
+            if (usersResult.IsFailed)
+            {
+                return usersResult.ToResult();
+            }
             
-        Users = usersResult.Value;
-        return Result.Ok();
+            Users = usersResult.Value;
+            return Result.Ok();
+        });
     }
 }

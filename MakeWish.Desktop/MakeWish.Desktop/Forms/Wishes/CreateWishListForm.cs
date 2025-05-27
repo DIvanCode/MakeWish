@@ -11,89 +11,82 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Wishes;
 
-public sealed partial class CreateWishListForm : Form
+internal sealed partial class CreateWishListForm(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IWishServiceClient wishServiceClient)
+    : OverlayBase
 {
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private string _title = string.Empty;
 
     [ObservableProperty]
     private List<Wish> _wishes = [];
-    
-    public CreateWishListForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IWishServiceClient wishServiceClient)
-        : base(navigationService, requestExecutor)
+
+    public override Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _wishServiceClient = wishServiceClient;
+        return Task.FromResult(Result.Ok());
     }
     
     [RelayCommand]
     private void Close()
     {
-        NavigationService.CloseLastOverlay();
+        overlayService.Close();
     }
     
     [RelayCommand]
-    private void ShowWishCard(Guid wishId)
+    private void ShowWishCard(Wish wish)
     {
-        NavigationService.ShowOverlay<WishCard>(wishId);
+        overlayService.Show<WishCard>(wish.Id);
     }
     
     [RelayCommand]
     private void ShowSearchWishForm()
     {
-        NavigationService.ShowOverlay<SearchWishForm>();
-        ((SearchWishForm)NavigationService.CurrentOverlay!).OnPickWish += wish =>
+        overlayService.Show<SearchWishForm>();
+        ((SearchWishForm)overlayService.Current!).OnPickWish += wish =>
         {
             Wishes.Add(wish);
-            NavigationService.CloseLastOverlay();
+            overlayService.Close();
         };
     }
 
     [RelayCommand]
     private void Create()
     {
-        RequestExecutor.Execute(async () =>
+        asyncExecutor.Execute(async cancellationToken =>
         {
-            var result = await CreateAsync(Title, Wishes);
-            if (result.IsFailed)
+            var createRequest = new CreateWishListRequest
             {
-                return result.ToResult();
+                Title = Title
+            };
+        
+            var createResult = await wishServiceClient.CreateWishListAsync(createRequest, cancellationToken);
+            if (createResult.IsFailed)
+            {
+                return createResult.ToResult();
             }
 
-            NavigationService.NavigateTo<WishListPage>(result.Value);
+            var wishListId = createResult.Value.Id;
+
+            var errors = new List<IError>();
+            foreach (var wish in Wishes)
+            {
+                var addResult = await wishServiceClient.AddWishToWishListAsync(wishListId, wish.Id, cancellationToken);
+                if (addResult.IsFailed)
+                {
+                    errors.AddRange(addResult.Errors);
+                }
+            }
+
+            if (errors.Count != 0)
+            {
+                return Result.Fail(errors);
+            }
+
+            navigationService.NavigateTo<WishListPage>(createResult.Value);
             return Result.Ok();
         });
-    }
-
-    private async Task<Result<Guid>> CreateAsync(string title, List<Wish> wishes)
-    {
-        var createRequest = new CreateWishListRequest
-        {
-            Title = title
-        };
-        
-        var createResult = await _wishServiceClient.CreateWishListAsync(createRequest, CancellationToken.None);
-        if (createResult.IsFailed)
-        {
-            return createResult.ToResult();
-        }
-
-        var wishListId = createResult.Value.Id;
-
-        var errors = new List<IError>();
-        foreach (var wish in wishes)
-        {
-            var addResult = await _wishServiceClient.AddWishToWishListAsync(wishListId, wish.Id, CancellationToken.None);
-            if (addResult.IsFailed)
-            {
-                errors.AddRange(addResult.Errors);
-            }
-        }
-
-        return errors.Count != 0 ? Result.Fail(errors) : Result.Ok(wishListId);
     }
 }
