@@ -48,7 +48,7 @@
                             <DataTemplate>
                                 <Button Command="{Binding DataContext.ShowWishCardCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Margin="0, 5, 0, 0"
                                         HorizontalAlignment="Left"

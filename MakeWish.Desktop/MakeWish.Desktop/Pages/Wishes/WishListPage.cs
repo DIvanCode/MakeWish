@@ -12,10 +12,16 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Wishes;
 
-public sealed partial class WishListPage : Page
+internal sealed partial class WishListPage(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IDialogService dialogService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IWishServiceClient wishServiceClient,
+    Guid id)
+    : PageBase
 {
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private WishList _wishList = null!;
     
@@ -30,64 +36,10 @@ public sealed partial class WishListPage : Page
 
     [ObservableProperty]
     private bool _showUsersWithAccess;
-    
-    public WishListPage(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserContext userContext,
-        IWishServiceClient wishServiceClient,
-        Guid wishListId)
-        : base(navigationService, requestExecutor, userContext)
-    {
-        _wishServiceClient = wishServiceClient;
-        
-        LoadData(wishListId);
-    }
-    
-    [RelayCommand]
-    private void ReloadWishList()
-    {
-        LoadData(WishList.Id);
-    }
-    
-    [RelayCommand]
-    private void ShowUserCard(Guid userId)
-    {
-        NavigationService.ShowOverlay<UserCard>(userId);
-    }
-    
-    [RelayCommand]
-    private void ShowWishCard(Guid wishId)
-    {
-        NavigationService.ShowOverlay<WishCard>(wishId);
-    }
 
-    [RelayCommand]
-    private void Edit()
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        NavigationService.ShowOverlay<EditWishListForm>(WishList.Id);
-    }
-    
-    [RelayCommand]
-    private void Delete()
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите удалить список желаний?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await DeleteAsync(WishList.Id));
-                NavigationService.GoBack();
-            });
-    }
-    
-    private void LoadData(Guid wishId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(wishId));
-    }
-
-    private async Task<Result> LoadDataAsync(Guid wishListId)
-    {
-        var wishListResult = await _wishServiceClient.GetWishListAsync(wishListId, CancellationToken.None);
+        var wishListResult = await wishServiceClient.GetWishListAsync(id, cancellationToken);
         if (wishListResult.IsFailed)
         {
             return wishListResult.ToResult();
@@ -96,7 +48,7 @@ public sealed partial class WishListPage : Page
         WishList = wishListResult.Value;
 
         var usersWithAccessResult =
-            await _wishServiceClient.GetUsersWithAccessToWishListAsync(wishListId, CancellationToken.None);
+            await wishServiceClient.GetUsersWithAccessToWishListAsync(id, cancellationToken);
         if (usersWithAccessResult.IsFailed)
         {
             return usersWithAccessResult.ToResult();
@@ -104,15 +56,48 @@ public sealed partial class WishListPage : Page
         
         UsersWithAccess = usersWithAccessResult.Value;
         
-        ShowEditButton = WishList.Owner.Id == UserContext.UserId;
-        ShowDeleteButton = WishList.Owner.Id == UserContext.UserId;
-        ShowUsersWithAccess = WishList.Owner.Id == UserContext.UserId;
+        ShowEditButton = WishList.Owner.Id == userContext.UserId;
+        ShowDeleteButton = WishList.Owner.Id == userContext.UserId;
+        ShowUsersWithAccess = WishList.Owner.Id == userContext.UserId;
 
         return Result.Ok();
     }
 
-    private async Task<Result> DeleteAsync(Guid wishListId)
+    [RelayCommand]
+    private void ReloadWishList()
     {
-        return await _wishServiceClient.DeleteWishListAsync(wishListId, CancellationToken.None);
+        asyncExecutor.Execute(async cancellationToken => await LoadDataAsync(cancellationToken));
+    }
+    
+    [RelayCommand]
+    private void ShowUserCard(User user)
+    {
+        overlayService.Show<UserCard>(user.Id);
+    }
+    
+    [RelayCommand]
+    private void ShowWishCard(Wish wish)
+    {
+        overlayService.Show<WishCard>(wish.Id);
+    }
+
+    [RelayCommand]
+    private void Edit()
+    {
+        overlayService.Show<EditWishListForm>(id);
+    }
+    
+    [RelayCommand]
+    private void Delete()
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите удалить список желаний?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken
+                    => await wishServiceClient.DeleteWishListAsync(id, cancellationToken));
+                
+                navigationService.GoBack();
+            });
     }
 }

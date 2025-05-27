@@ -11,11 +11,14 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Users;
 
-public sealed partial class RegisterForm : Form
+internal sealed partial class RegisterForm(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IUserContext userContext,
+    IUserServiceClient userServiceClient)
+    : OverlayBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-    private readonly IUserContext _userContext;
-    
     [ObservableProperty]
     private string _email = string.Empty;
     
@@ -25,29 +28,23 @@ public sealed partial class RegisterForm : Form
     [ObservableProperty]
     private string _surname = string.Empty;
 
-    public RegisterForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserServiceClient userServiceClient,
-        IUserContext userContext)
-        : base(navigationService, requestExecutor)
+    public override Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-        _userContext = userContext;
+        return Task.FromResult(Result.Ok());
     }
 
     [RelayCommand]
     private void Register(PasswordBox passwordBox)
     {
-        RequestExecutor.Execute(async () =>
+        asyncExecutor.Execute(async token =>
         {
-            var result = await RegisterAsync(Email, passwordBox.Password, Name, Surname);
+            var result = await RegisterAsync(Email, passwordBox.Password, Name, Surname, token);
             if (result.IsFailed)
             {
                 return result;
             }
             
-            NavigationService.NavigateTo<ProfilePage>(_userContext.UserId!.Value);
+            navigationService.NavigateTo<ProfilePage>(userContext.UserId!.Value);
             return Result.Ok();
         });
         
@@ -56,10 +53,10 @@ public sealed partial class RegisterForm : Form
     [RelayCommand]
     private void Login()
     {
-        NavigationService.ShowOverlay<LoginForm>();
+        overlayService.Show<LoginForm>();
     }
 
-    private async Task<Result> RegisterAsync(string email, string password, string name, string surname)
+    private async Task<Result> RegisterAsync(string email, string password, string name, string surname, CancellationToken cancellationToken)
     {
         var registerRequest = new RegisterRequest
         {
@@ -69,14 +66,14 @@ public sealed partial class RegisterForm : Form
             Surname = surname
         };
 
-        var registerResult = await _userServiceClient.RegisterUserAsync(registerRequest, CancellationToken.None);
+        var registerResult = await userServiceClient.RegisterUserAsync(registerRequest, cancellationToken);
         if (registerResult.IsFailed)
         {
             return registerResult.ToResult();
         }
 
         var userId = registerResult.Value.Id;
-        _userContext.SetUserId(userId);
+        userContext.SetUserId(userId);
 
         var authRequest = new AuthenticateRequest
         {
@@ -84,13 +81,13 @@ public sealed partial class RegisterForm : Form
             Password = password
         };
 
-        var authResult = await _userServiceClient.AuthenticateUserAsync(authRequest, CancellationToken.None);
+        var authResult = await userServiceClient.AuthenticateUserAsync(authRequest, cancellationToken);
         if (authResult.IsFailed)
         {
             return authResult.ToResult();
         }
 
-        _userContext.SetToken(authResult.Value);
+        userContext.SetToken(authResult.Value);
         return Result.Ok();
     }
 }

@@ -14,22 +14,16 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Forms.Wishes;
 
-public sealed partial class EditWishListForm : Form
+internal sealed partial class EditWishListForm(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IAsyncExecutor asyncExecutor,
+    IWishServiceClient wishServiceClient,
+    Guid id)
+    : OverlayBase
 {
-    private enum WishListEventType
-    {
-        AddWish = 0,
-        RemoveWish = 1,
-        AllowAccess = 2,
-        DenyAccess = 3
-    }
-    
-    private readonly IWishServiceClient _wishServiceClient;
     private readonly List<(WishListEventType, Wish)> _wishListWishesEvents = [];
     private readonly List<(WishListEventType, User)> _wishListUsersAccessEvents = [];
-    
-    [ObservableProperty]
-    private Guid _id = Guid.Empty;
     
     [ObservableProperty]
     private string _title = string.Empty;
@@ -39,105 +33,19 @@ public sealed partial class EditWishListForm : Form
     
     [ObservableProperty]
     private ObservableCollection<User> _usersWithAccess = [];
-    
-    public EditWishListForm(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IWishServiceClient wishServiceClient,
-        Guid wishListId)
-        : base(navigationService, requestExecutor)
-    {
-        _wishServiceClient = wishServiceClient;
 
-        LoadData(wishListId);
-    }
-
-    [RelayCommand]
-    private void Close()
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        NavigationService.CloseLastOverlay();
-    }
-    
-    [RelayCommand]
-    private void ShowWishCard(Guid wishId)
-    {
-        NavigationService.ShowOverlay<WishCard>(wishId);
-    }
-
-    [RelayCommand]
-    private void RemoveWish(Guid wishId)
-    {
-        var wish = Wishes.Single(wish => wish.Id == wishId);
-        Wishes.Remove(wish);
-        _wishListWishesEvents.Add((WishListEventType.RemoveWish, wish));
-    }
-    
-    [RelayCommand]
-    private void ShowSearchWishForm()
-    {
-        NavigationService.ShowOverlay<SearchWishForm>();
-        ((SearchWishForm)NavigationService.CurrentOverlay!).OnPickWish += wish =>
+        var result = await wishServiceClient.GetWishListAsync(id, cancellationToken);
+        if (result.IsFailed)
         {
-            if (Wishes.All(w => w.Id != wish.Id))
-            {
-                Wishes.Add(wish);
-                _wishListWishesEvents.Add((WishListEventType.AddWish, wish));
-            }
-            
-            NavigationService.CloseLastOverlay();
-        };
-    }
-    
-    [RelayCommand]
-    private void ShowUserCard(Guid userId)
-    {
-        NavigationService.ShowOverlay<UserCard>(userId);
-    }
-    
-    [RelayCommand]
-    private void DenyUserAccess(Guid userId)
-    {
-        var user = UsersWithAccess.Single(user => user.Id == userId);
-        UsersWithAccess.Remove(user);
-        _wishListUsersAccessEvents.Add((WishListEventType.DenyAccess, user));
-    }
-    
-    [RelayCommand]
-    private void ShowSearchUserForm()
-    {
-        const bool onlyFriends = true;
-        NavigationService.ShowOverlay<SearchUserForm>(onlyFriends);
-        ((SearchUserForm)NavigationService.CurrentOverlay!).OnPickUser += user =>
-        {
-            if (UsersWithAccess.All(u => u.Id != user.Id))
-            {
-                UsersWithAccess.Add(user);
-                _wishListUsersAccessEvents.Add((WishListEventType.AllowAccess, user));   
-            }
-            
-            NavigationService.CloseLastOverlay();
-        };
-    }
-
-    private void LoadData(Guid wishListId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(wishListId));
-    }
-    
-    private async Task<Result> LoadDataAsync(Guid wishListId)
-    {
-        var wishListResult = await _wishServiceClient.GetWishListAsync(wishListId, CancellationToken.None);
-        if (wishListResult.IsFailed)
-        {
-            return wishListResult.ToResult();
+            return result.ToResult();
         }
 
-        Id = wishListResult.Value.Id;
-        Title = wishListResult.Value.Title;
-        Wishes = new ObservableCollection<Wish>(wishListResult.Value.Wishes);
+        Title = result.Value.Title;
+        Wishes = new ObservableCollection<Wish>(result.Value.Wishes);
 
-        var usersWithAccessResult =
-            await _wishServiceClient.GetUsersWithAccessToWishListAsync(wishListId, CancellationToken.None);
+        var usersWithAccessResult = await wishServiceClient.GetUsersWithAccessToWishListAsync(id, cancellationToken);
         if (usersWithAccessResult.IsFailed)
         {
             return usersWithAccessResult.ToResult();
@@ -147,82 +55,145 @@ public sealed partial class EditWishListForm : Form
         
         return Result.Ok();
     }
+    
+    [RelayCommand]
+    private void Close()
+    {
+        overlayService.Close();
+    }
+    
+    [RelayCommand]
+    private void ShowWishCard(Wish wish)
+    {
+        overlayService.Show<WishCard>(wish.Id);
+    }
 
+    [RelayCommand]
+    private void RemoveWish(Wish wish)
+    {
+        Wishes.Remove(wish);
+        _wishListWishesEvents.Add((WishListEventType.RemoveWish, wish));
+    }
+    
+    [RelayCommand]
+    private void ShowSearchWishForm()
+    {
+        overlayService.Show<SearchWishForm>();
+        ((SearchWishForm)overlayService.Current!).OnPickWish += wish =>
+        {
+            if (Wishes.All(w => w.Id != wish.Id))
+            {
+                Wishes.Add(wish);
+                _wishListWishesEvents.Add((WishListEventType.AddWish, wish));
+            }
+            
+            overlayService.Close();
+        };
+    }
+    
+    [RelayCommand]
+    private void ShowUserCard(User user)
+    {
+        overlayService.Show<UserCard>(user.Id);
+    }
+    
+    [RelayCommand]
+    private void DenyUserAccess(User user)
+    {
+        UsersWithAccess.Remove(user);
+        _wishListUsersAccessEvents.Add((WishListEventType.DenyAccess, user));
+    }
+    
+    [RelayCommand]
+    private void ShowSearchUserForm()
+    {
+        const bool onlyFriends = true;
+        overlayService.Show<SearchUserForm>(onlyFriends);
+        ((SearchUserForm)overlayService.Current!).OnPickUser += user =>
+        {
+            if (UsersWithAccess.All(u => u.Id != user.Id))
+            {
+                UsersWithAccess.Add(user);
+                _wishListUsersAccessEvents.Add((WishListEventType.AllowAccess, user));   
+            }
+            
+            overlayService.Close();
+        };
+    }
+    
     [RelayCommand]
     private void Save()
     {
-        RequestExecutor.Execute(async () =>
+        asyncExecutor.Execute(async cancellationToken =>
         {
-            var result = await SaveAsync(Id, Title, _wishListWishesEvents, _wishListUsersAccessEvents);
-            if (result.IsFailed)
+            var updateRequest = new UpdateWishListRequest
             {
-                return result;
+                Id = id,
+                Title = Title
+            };
+
+            var updateResult = await wishServiceClient.UpdateWishListAsync(updateRequest, cancellationToken);
+            if (updateResult.IsFailed)
+            {
+                return updateResult.ToResult();
             }
 
-            NavigationService.NavigateTo<WishListPage>(Id);
+            var errors = new List<IError>();
+            foreach (var (eventType, wish) in _wishListWishesEvents)
+            {
+                if (eventType is WishListEventType.AddWish)
+                {
+                    var addResult = await wishServiceClient.AddWishToWishListAsync(id, wish.Id, cancellationToken);
+                    if (addResult.IsFailed)
+                    {
+                        errors.AddRange(addResult.Errors);
+                    }
+                }
+                else
+                {
+                    var removeResult = await wishServiceClient.RemoveWishFromWishListAsync(id, wish.Id, cancellationToken);
+                    if (removeResult.IsFailed)
+                    {
+                        errors.AddRange(removeResult.Errors);
+                    }
+                }
+            }
+
+            foreach (var (eventType, user) in _wishListUsersAccessEvents)
+            {
+                if (eventType is WishListEventType.AllowAccess)
+                {
+                    var allowAccessResult = await wishServiceClient.AllowUserAccessToWishListAsync(id, user.Id, cancellationToken);
+                    if (allowAccessResult.IsFailed)
+                    {
+                        errors.AddRange(allowAccessResult.Errors);
+                    }
+                }
+                else
+                {
+                    var denyAccessResult = await wishServiceClient.DenyUserAccessToWishListAsync(id, user.Id, cancellationToken);
+                    if (denyAccessResult.IsFailed)
+                    {
+                        errors.AddRange(denyAccessResult.Errors);
+                    }
+                }
+            }
+
+            if (errors.Count != 0)
+            {
+                return Result.Fail(errors);
+            }
+
+            navigationService.NavigateTo<WishListPage>(id);
             return Result.Ok();
         });
     }
     
-    private async Task<Result> SaveAsync(
-        Guid id,
-        string title,
-        List<(WishListEventType, Wish)> wishListWishesEvents,
-        List<(WishListEventType, User)> wishListUserAccessEvents)
+    private enum WishListEventType
     {
-        var updateRequest = new UpdateWishListRequest
-        {
-            Id = id,
-            Title = title
-        };
-
-        var updateResult = await _wishServiceClient.UpdateWishListAsync(updateRequest, CancellationToken.None);
-        if (updateResult.IsFailed)
-        {
-            return updateResult.ToResult();
-        }
-
-        var errors = new List<IError>();
-        foreach (var (eventType, wish) in wishListWishesEvents)
-        {
-            if (eventType is WishListEventType.AddWish)
-            {
-                var addResult = await _wishServiceClient.AddWishToWishListAsync(id, wish.Id, CancellationToken.None);
-                if (addResult.IsFailed)
-                {
-                    errors.AddRange(addResult.Errors);
-                }
-            }
-            else
-            {
-                var removeResult = await _wishServiceClient.RemoveWishFromWishListAsync(id, wish.Id, CancellationToken.None);
-                if (removeResult.IsFailed)
-                {
-                    errors.AddRange(removeResult.Errors);
-                }
-            }
-        }
-
-        foreach (var (eventType, user) in wishListUserAccessEvents)
-        {
-            if (eventType is WishListEventType.AllowAccess)
-            {
-                var allowAccessResult = await _wishServiceClient.AllowUserAccessToWishListAsync(id, user.Id, CancellationToken.None);
-                if (allowAccessResult.IsFailed)
-                {
-                    errors.AddRange(allowAccessResult.Errors);
-                }
-            }
-            else
-            {
-                var denyAccessResult = await _wishServiceClient.DenyUserAccessToWishListAsync(id, user.Id, CancellationToken.None);
-                if (denyAccessResult.IsFailed)
-                {
-                    errors.AddRange(denyAccessResult.Errors);
-                }
-            }
-        }
-
-        return errors.Count != 0 ? Result.Fail(errors) : Result.Ok();
+        AddWish = 0,
+        RemoveWish = 1,
+        AllowAccess = 2,
+        DenyAccess = 3
     }
 }

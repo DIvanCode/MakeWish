@@ -4,7 +4,6 @@ using FluentResults;
 using MakeWish.Desktop.Abstract;
 using MakeWish.Desktop.Cards.Users;
 using MakeWish.Desktop.Cards.Wishes;
-using MakeWish.Desktop.Clients.Common.UserContext;
 using MakeWish.Desktop.Clients.UserService;
 using MakeWish.Desktop.Clients.WishService;
 using MakeWish.Desktop.Domain;
@@ -12,11 +11,16 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Pages.Wishes;
 
-public sealed partial class UserPromisedWishesPage : Page
+internal sealed partial class UserPromisedWishesPage(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IDialogService dialogService,
+    IAsyncExecutor asyncExecutor,
+    IUserServiceClient userServiceClient,
+    IWishServiceClient wishServiceClient,
+    Guid userId)
+    : PageBase
 {
-    private readonly IUserServiceClient _userServiceClient;
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private User _user = null!;
     
@@ -31,83 +35,10 @@ public sealed partial class UserPromisedWishesPage : Page
     
     [ObservableProperty]
     private List<Wish> _promisedWishes = [];
-    
-    public UserPromisedWishesPage(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IUserContext userContext,
-        IUserServiceClient userServiceClient,
-        IWishServiceClient wishServiceClient,
-        Guid userId)
-        : base(navigationService, requestExecutor, userContext)
+
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _userServiceClient = userServiceClient;
-        _wishServiceClient = wishServiceClient;
-        
-        LoadData(userId);
-    }
-    
-    [RelayCommand]
-    private void NavigateToWishesPage()
-    {
-        NavigationService.NavigateTo<UserWishesPage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void NavigateToWishListsPage()
-    {
-        NavigationService.NavigateTo<UserWishListsPage>(User.Id);
-    }
-    
-    [RelayCommand]
-    private void NavigateToPromisedWishesPage()
-    {
-        LoadData(User.Id);
-    }
-    
-    [RelayCommand]
-    private void ShowWishCard(Guid wishId)
-    {
-        NavigationService.ShowOverlay<WishCard>(wishId);
-    }
-    
-    [RelayCommand]
-    private void ShowUserCard(Guid userId)
-    {
-        NavigationService.ShowOverlay<UserCard>(userId);
-    }
-    
-    [RelayCommand]
-    private void Complete(Guid wishId)
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно исполнили желание?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await CompleteAsync(wishId));
-                LoadData(User.Id);
-            });
-    }
-    
-    [RelayCommand]
-    private void PromiseCancel(Guid wishId)
-    {
-        NavigationService.ShowYesNoDialog(
-            message: "Вы действительно хотите отказаться от исполнения желания?",
-            onYesCommand: () =>
-            {
-                RequestExecutor.Execute(async () => await PromiseCancelAsync(wishId));
-                LoadData(User.Id);
-            });
-    }
-    private void LoadData(Guid userId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(userId));
-    }
-    
-    private async Task<Result> LoadDataAsync(Guid userId)
-    {
-        var userResult = await _userServiceClient.GetUserAsync(userId, CancellationToken.None);
+        var userResult = await userServiceClient.GetUserAsync(userId, cancellationToken);
         if (userResult.IsFailed)
         {
             return userResult.ToResult();
@@ -115,7 +46,7 @@ public sealed partial class UserPromisedWishesPage : Page
 
         User = userResult.Value;
         
-        var wishesResult = await _wishServiceClient.GetUserWishesAsync(userId, CancellationToken.None);
+        var wishesResult = await wishServiceClient.GetUserWishesAsync(userId, cancellationToken);
         if (wishesResult.IsFailed)
         {
             return wishesResult.ToResult();
@@ -123,7 +54,7 @@ public sealed partial class UserPromisedWishesPage : Page
 
         WishesButtonDisplayText = $"Мои желания ({wishesResult.Value.Count})";
         
-        var wishListsResult = await _wishServiceClient.GetUserWishListsAsync(userId, CancellationToken.None);
+        var wishListsResult = await wishServiceClient.GetUserWishListsAsync(userId, cancellationToken);
         if (wishListsResult.IsFailed)
         {
             return wishListsResult.ToResult();
@@ -131,7 +62,7 @@ public sealed partial class UserPromisedWishesPage : Page
 
         WishListsButtonDisplayText =  $"Мои списки желаний ({wishListsResult.Value.Count})";
         
-        var promisedWishesResult = await _wishServiceClient.GetPromisedWishesAsync(CancellationToken.None);
+        var promisedWishesResult = await wishServiceClient.GetPromisedWishesAsync(cancellationToken);
         if (promisedWishesResult.IsFailed)
         {
             return promisedWishesResult.ToResult();
@@ -160,15 +91,73 @@ public sealed partial class UserPromisedWishesPage : Page
         return Result.Ok();
     }
     
-    private async Task<Result> CompleteAsync(Guid wishId)
+    [RelayCommand]
+    private void NavigateToWishesPage()
     {
-        var result = await _wishServiceClient.CompleteAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        navigationService.NavigateTo<UserWishesPage>(userId);
     }
     
-    private async Task<Result> PromiseCancelAsync(Guid wishId)
+    [RelayCommand]
+    private void NavigateToWishListsPage()
     {
-        var result = await _wishServiceClient.PromiseCancelAsync(wishId, CancellationToken.None);
-        return result.IsFailed ? result.ToResult() : Result.Ok();
+        navigationService.NavigateTo<UserWishListsPage>(userId);
+    }
+    
+    [RelayCommand]
+    private void NavigateToPromisedWishesPage()
+    {
+        asyncExecutor.Execute(async cancellationToken => await LoadDataAsync(cancellationToken));
+    }
+    
+    [RelayCommand]
+    private void ShowWishCard(Wish wish)
+    {
+        overlayService.Show<WishCard>(wish.Id);
+    }
+    
+    [RelayCommand]
+    private void ShowUserCard(User user)
+    {
+        overlayService.Show<UserCard>(user.Id);
+    }
+    
+    [RelayCommand]
+    private void Complete(Wish wish)
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно исполнили желание?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.CompleteAsync(wish.Id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
+    }
+    
+    [RelayCommand]
+    private void PromiseCancel(Wish wish)
+    {
+        dialogService.ShowYesNoDialog(
+            message: "Вы действительно хотите отказаться от исполнения желания?",
+            onYesCommand: () =>
+            {
+                asyncExecutor.Execute(async cancellationToken =>
+                {
+                    var result = await wishServiceClient.PromiseCancelAsync(wish.Id, cancellationToken);
+                    if (result.IsFailed)
+                    {
+                        return result.ToResult();
+                    }
+
+                    return await LoadDataAsync(cancellationToken);
+                });
+            });
     }
 }

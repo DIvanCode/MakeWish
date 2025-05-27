@@ -3,17 +3,17 @@ using System.Text.Json.Serialization;
 
 namespace MakeWish.Desktop.Domain;
 
-public sealed record WishList
+public sealed class WishList
 {
     [JsonPropertyName("id"), Required]
-    public required Guid Id { get; init; }
+    public required Guid Id { get; set; }
 
     [JsonPropertyName("title")]
-    public string Title { get; init; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     [JsonPropertyName("owner"), Required]
-    public required User Owner { get; init; }
+    public required User Owner { get; set; }
 
     [JsonPropertyName("wishes")]
-    public List<Wish> Wishes { get; init; } = [];
+    public List<Wish> Wishes { get; set; } = [];
 }

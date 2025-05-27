@@ -10,18 +10,16 @@ using Microsoft.Extensions.Options;
 
 namespace MakeWish.Desktop.Clients.WishService;
 
-public sealed class WishServiceClient : ServiceClient, IWishServiceClient
+internal sealed class WishServiceClient(
+    IHttpClientFactory httpClientFactory,
+    IUserContext userContext,
+    IOptions<WishServiceOptions> options)
+    : ServiceClient(httpClientFactory, userContext, options.Value.BaseUrl), IWishServiceClient
 {
-    public WishServiceClient(
-        IHttpClientFactory httpClientFactory,
-        IUserContext userContext,
-        IOptions<WishServiceOptions> options): base(httpClientFactory, userContext, options.Value.BaseUrl)
-    {
-    }
-
     public async Task<Result<Wish>> GetWishAsync(Guid id, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();
+        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         var response = await HttpClient.GetAsync($"/api/Wishes/{id}", cancellationToken);
         return await ParseResponse<Wish>(response, cancellationToken);
     }

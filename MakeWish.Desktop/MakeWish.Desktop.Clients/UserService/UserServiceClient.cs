@@ -10,15 +10,12 @@ using Microsoft.Extensions.Options;
 
 namespace MakeWish.Desktop.Clients.UserService;
 
-public class UserServiceClient : ServiceClient, IUserServiceClient
+internal class UserServiceClient(
+    IHttpClientFactory httpClientFactory,
+    IUserContext userContext,
+    IOptions<UserServiceOptions> options)
+    : ServiceClient(httpClientFactory, userContext, options.Value.BaseUrl), IUserServiceClient
 {
-    public UserServiceClient(
-        IHttpClientFactory httpClientFactory,
-        IUserContext userContext, 
-        IOptions<UserServiceOptions> options): base(httpClientFactory, userContext, options.Value.BaseUrl)
-    {
-    }
-
     public async Task<Result<User>> GetUserAsync(Guid id, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();

@@ -6,28 +6,28 @@ namespace MakeWish.Desktop.Domain;
 public sealed class Wish
 {
     [JsonPropertyName("id"), Required]
-    public required Guid Id { get; init; }
+    public required Guid Id { get; set; }
 
     [JsonPropertyName("title")]
-    public string Title { get; init; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     [JsonPropertyName("description")]
-    public string Description { get; init; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 
     [JsonPropertyName("status"), Required, JsonConverter(typeof(JsonStringEnumConverter))]
-    public required WishStatus Status { get; init; }
+    public required WishStatus Status { get; set; }
 
     [JsonPropertyName("owner"), Required]
-    public required User Owner { get; init; }
+    public required User Owner { get; set; }
 
     [JsonPropertyName("promiser")]
-    public User? Promiser { get; init; }
+    public User? Promiser { get; set; }
 
     [JsonPropertyName("completer")]
-    public User? Completer { get; init; }
+    public User? Completer { get; set; }
     
     [JsonPropertyName("isPublic")]
-    public bool IsPublic { get; init; }
+    public bool IsPublic { get; set; }
     
     public bool HasDescription => !string.IsNullOrEmpty(Description);
     

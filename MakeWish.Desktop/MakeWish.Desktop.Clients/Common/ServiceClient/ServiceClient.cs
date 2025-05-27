@@ -7,7 +7,7 @@ using MakeWish.Desktop.Clients.Common.UserContext;
 
 namespace MakeWish.Desktop.Clients.Common.ServiceClient;
 
-public abstract class ServiceClient
+internal abstract class ServiceClient
 {
     private readonly IUserContext _userContext;
     

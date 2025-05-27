@@ -6,16 +6,16 @@ namespace MakeWish.Desktop.Domain;
 public sealed class User
 {
     [JsonPropertyName("id"), Required]
-    public required Guid Id { get; init; }
+    public required Guid Id { get; set; }
 
     [JsonPropertyName("email")]
-    public string Email { get; init; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     
     [JsonPropertyName("name")]
-    public string Name { get; init; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     
     [JsonPropertyName("surname")]
-    public string Surname { get; init; } = string.Empty;
+    public string Surname { get; set; } = string.Empty;
     
     public string DisplayName => $"{Name} {Surname}";
 }

@@ -19,7 +19,7 @@
                     Content="{Binding User.DisplayName}"
                     Visibility="{Binding ShowUserDisplayName, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Command="{Binding NavigateToProfileCommand}"
-                    CommandParameter="{Binding User.Id}"
+                    CommandParameter="{Binding User}"
                     Style="{StaticResource MaterialDesignFlatButton}"
                     FontSize="30"
                     FontWeight="SemiBold"
@@ -80,7 +80,7 @@
                             <StackPanel Orientation="Horizontal" Margin="0, 5">
                                 <Button Command="{Binding DataContext.ShowWishCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
@@ -100,7 +100,7 @@
                                            Style="{StaticResource MaterialDesignBody1TextBlock}"/>
                                 <Button Command="{Binding DataContext.ShowUserCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
@@ -118,7 +118,7 @@
                                 <Button Content="Подтвердить"
                                         Command="{Binding DataContext.CompleteApproveCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
@@ -126,7 +126,7 @@
                                 <Button Content="Отклонить"
                                         Command="{Binding DataContext.CompleteRejectCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
@@ -141,7 +141,7 @@
                             <StackPanel Orientation="Horizontal" Margin="0, 5">
                                 <Button Command="{Binding DataContext.ShowWishCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding Id}"
+                                        CommandParameter="{Binding }"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"

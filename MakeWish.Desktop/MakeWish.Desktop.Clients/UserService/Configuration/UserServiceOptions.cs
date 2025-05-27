@@ -1,6 +1,6 @@
 namespace MakeWish.Desktop.Clients.UserService.Configuration;
 
-public sealed record UserServiceOptions
+internal sealed record UserServiceOptions
 {
     public const string SectionName = "UserService";
     

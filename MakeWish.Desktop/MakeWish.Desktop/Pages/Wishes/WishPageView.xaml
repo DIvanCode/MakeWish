@@ -44,7 +44,7 @@
                                Foreground="Gray"
                                VerticalAlignment="Bottom"/>
                     <Button Command="{Binding ShowUserCardCommand}"
-                            CommandParameter="{Binding Wish.Owner.Id}"
+                            CommandParameter="{Binding Wish.Owner}"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             HorizontalAlignment="Left"
                             Margin="30, 0">
@@ -68,7 +68,7 @@
                                Foreground="Gray"
                                VerticalAlignment="Bottom"/>
                     <Button Command="{Binding ShowUserCardCommand}"
-                            CommandParameter="{Binding Wish.Promiser.Id}"
+                            CommandParameter="{Binding Wish.Promiser}"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             HorizontalAlignment="Left"
                             Margin="30, 0">
@@ -92,7 +92,7 @@
                                Foreground="Gray"
                                VerticalAlignment="Bottom"/>
                     <Button Command="{Binding ShowUserCardCommand}"
-                            CommandParameter="{Binding Wish.Completer.Id}"
+                            CommandParameter="{Binding Wish.Completer}"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             HorizontalAlignment="Left"
                             Margin="30, 0">

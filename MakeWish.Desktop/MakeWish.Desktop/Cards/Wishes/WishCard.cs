@@ -9,45 +9,19 @@ using MakeWish.Desktop.Services;
 
 namespace MakeWish.Desktop.Cards.Wishes;
 
-public sealed partial class WishCard : Card
+internal sealed partial class WishCard(
+    INavigationService navigationService,
+    IOverlayService overlayService,
+    IWishServiceClient wishServiceClient,
+    Guid id)
+    : OverlayBase
 {
-    private readonly IWishServiceClient _wishServiceClient;
-    
     [ObservableProperty]
     private Wish _wish = null!;
     
-    public WishCard(
-        INavigationService navigationService,
-        IRequestExecutor requestExecutor,
-        IWishServiceClient wishServiceClient,
-        Guid wishId)
-        : base(navigationService, requestExecutor)
+    public override async Task<Result> LoadDataAsync(CancellationToken cancellationToken)
     {
-        _wishServiceClient = wishServiceClient;
-        
-        LoadData(wishId);
-    }
-    
-    [RelayCommand]
-    private void NavigateToWish()
-    {
-        NavigationService.NavigateTo<WishPage>(Wish.Id);
-    }
-    
-    [RelayCommand]
-    private void Close()
-    {
-        NavigationService.CloseLastOverlay();
-    }
-    
-    private void LoadData(Guid wishId)
-    {
-        RequestExecutor.Execute(async () => await LoadDataAsync(wishId));
-    }
-
-    private async Task<Result> LoadDataAsync(Guid wishId)
-    {
-        var wishResult = await _wishServiceClient.GetWishAsync(wishId, CancellationToken.None);
+        var wishResult = await wishServiceClient.GetWishAsync(id, cancellationToken);
         if (wishResult.IsFailed)
         {
             return wishResult.ToResult();
@@ -55,5 +29,17 @@ public sealed partial class WishCard : Card
             
         Wish = wishResult.Value;
         return Result.Ok();
+    }
+    
+    [RelayCommand]
+    private void NavigateToWish()
+    {
+        navigationService.NavigateTo<WishPage>(id);
+    }
+    
+    [RelayCommand]
+    private void Close()
+    {
+        overlayService.Close();
     }
 }
