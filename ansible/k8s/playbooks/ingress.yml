@@ -1,9 +1,6 @@
 - name: Deploy Ingress to k8s
   hosts: Local
   connection: local
-  vars_files:
-    - ../../vars.yml
-    - ../credentials.yml
   tasks:
     - name: Apply ingress service
       kubernetes.core.k8s:

@@ -4,6 +4,7 @@ internal interface ILoadingService
 {
     event Action? OnBeginLoading;
     event Action? OnEndLoading;
+    event Action? OnCancelLoading;
 
     CancellationToken BeginLoading();
     void EndLoading(CancellationToken token);
@@ -16,6 +17,7 @@ internal sealed class LoadingService : ILoadingService
 
     public event Action? OnBeginLoading;
     public event Action? OnEndLoading;
+    public event Action? OnCancelLoading;
     
     public CancellationToken BeginLoading()
     {
@@ -41,5 +43,7 @@ internal sealed class LoadingService : ILoadingService
     public void CancelLoading()
     {
         _loadingContentTokenSource?.Cancel();
+
+        OnCancelLoading?.Invoke();
     }
 }
