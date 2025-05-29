@@ -19,7 +19,6 @@ internal sealed class WishServiceClient(
     public async Task<Result<Wish>> GetWishAsync(Guid id, CancellationToken cancellationToken)
     {
         AddAuthorizationHeader();
-        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         var response = await HttpClient.GetAsync($"/api/Wishes/{id}", cancellationToken);
         return await ParseResponse<Wish>(response, cancellationToken);
     }
