@@ -36,8 +36,15 @@ internal abstract class ServiceClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken);
-            return Result.Fail(problem?.Detail ?? "Request failed");
+            try
+            {
+                var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken);
+                return Result.Fail(problem?.Detail ?? "Request failed");
+            }
+            catch (Exception)
+            {
+                return Result.Fail(await response.Content.ReadAsStringAsync(cancellationToken));
+            }
         }
         
         var value = await response.Content.ReadFromJsonAsync<T>(cancellationToken);

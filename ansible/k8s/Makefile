@@ -15,9 +15,3 @@ users:
 
 wishes:
 	ansible-playbook -i inventory playbooks/wish-service.yml --ask-vault-pass
-
-users-ports:
-	kubectl port-forward -n makewish svc/user-service 5001:5001 --kubeconfig twc-witty-cetus-config.yml
-
-wishes-ports:
-	kubectl port-forward -n makewish svc/wish-service 5002:5002 --kubeconfig twc-witty-cetus-config.yml

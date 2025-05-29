@@ -25,9 +25,10 @@ public partial class App
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true)
             .Build();
 
         services.AddSingleton<INavigationService, NavigationService>();

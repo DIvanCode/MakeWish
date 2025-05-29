@@ -5,13 +5,23 @@ metadata:
   namespace: makewish
 spec:
   rules:
-    - host: makewish.local
+    - host: users.makewish.local
       http:
         paths:
-          - path: /api/Users
+          - path: /api
             pathType: Prefix
             backend:
               service:
                 name: user-service
                 port:
                   number: 5001
+    - host: wishes.makewish.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: wish-service
+                port:
+                  number: 5002

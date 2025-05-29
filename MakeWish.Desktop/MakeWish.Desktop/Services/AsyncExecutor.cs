@@ -37,6 +37,8 @@ internal sealed class AsyncExecutor(ILoadingService loadingService, IDialogServi
             var result = await action.Invoke(token);
             if (result.IsFailed)
             {
+                loadingService.CancelLoading();
+                loadingService.EndLoading(token);
                 dialogService.ShowErrors(result.Errors);
             }
         }
@@ -44,8 +46,10 @@ internal sealed class AsyncExecutor(ILoadingService loadingService, IDialogServi
         {
             if (ex is not OperationCanceledException)
             {
-                dialogService.ShowMessage(ex.Message);   
+                dialogService.ShowMessage(ex.Message);
             }
+            
+            loadingService.CancelLoading();
         }
         finally
         {
