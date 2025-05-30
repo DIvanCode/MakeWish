@@ -1,9 +1,8 @@
 ﻿using MakeWish.WishService.Interfaces.DataAccess;
+using MakeWish.WishService.UseCases.Abstractions.Events;
 using MediatR;
 
 namespace MakeWish.WishService.UseCases.Events;
-
-public sealed record UserDeletedNotification(Guid Id) : INotification;
 
 public sealed class UserDeletedHandler(IUnitOfWork unitOfWork) : INotificationHandler<UserDeletedNotification>
 {

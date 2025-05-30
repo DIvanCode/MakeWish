@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using MakeWish.WishService.UseCases.Features.WishLists.Create;
+using MakeWish.WishService.UseCases.Abstractions.Features.WishLists;
 
 namespace MakeWish.WishService.Web.Controllers.Requests.WishLists;
 

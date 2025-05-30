@@ -1,21 +1,28 @@
 ﻿using FluentResults;
 using MakeWish.WishService.Interfaces.Client;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.UseCases.Events;
+using MakeWish.WishService.UseCases.Abstractions.Events;
+using MakeWish.WishService.UseCases.Abstractions.Reconciliation;
+using MakeWish.WishService.UseCases.Abstractions.Services;
+using MakeWish.WishService.Utils.Errors;
 using MediatR;
 
 namespace MakeWish.WishService.UseCases.Reconciliation;
 
-public sealed record ReconcileUsersCommand : IRequest<Result>;
-
 public sealed class ReconcileUsersHandler(
     IUnitOfWork unitOfWork,
+    IUserContext userContext,
     IUserServiceClient userServiceClient,
     IMediator mediator)
     : IRequestHandler<ReconcileUsersCommand, Result>
 {
     public async Task<Result> Handle(ReconcileUsersCommand request, CancellationToken cancellationToken)
     {
+        if (!userContext.IsAdmin)
+        {
+            return new ForbiddenError("Cannot reconcile users");
+        }
+        
         var usersResult = await userServiceClient.GetAllUsersAsync(cancellationToken);
         if (usersResult.IsFailed)
         {
