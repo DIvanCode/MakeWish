@@ -1,11 +1,5 @@
-using MakeWish.WishService.UseCases.Dto;
-using MakeWish.WishService.UseCases.Features.WishLists.AddWish;
-using MakeWish.WishService.UseCases.Features.WishLists.AllowAccess;
-using MakeWish.WishService.UseCases.Features.WishLists.DenyAccess;
-using MakeWish.WishService.UseCases.Features.WishLists.Get;
-using MakeWish.WishService.UseCases.Features.WishLists.GetUsersWithAccess;
-using MakeWish.WishService.UseCases.Features.WishLists.GetUserWishLists;
-using MakeWish.WishService.UseCases.Features.WishLists.RemoveWish;
+using MakeWish.WishService.UseCases.Abstractions.Dto;
+using MakeWish.WishService.UseCases.Abstractions.Features.WishLists;
 using MakeWish.WishService.Web.Controllers.Requests.WishLists;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

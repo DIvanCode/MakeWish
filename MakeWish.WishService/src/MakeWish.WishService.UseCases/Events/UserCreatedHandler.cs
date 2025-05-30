@@ -1,10 +1,9 @@
 ﻿using MakeWish.WishService.Interfaces.DataAccess;
 using MakeWish.WishService.Models;
+using MakeWish.WishService.UseCases.Abstractions.Events;
 using MediatR;
 
 namespace MakeWish.WishService.UseCases.Events;
-
-public sealed record UserCreatedNotification(Guid Id, string Name, string Surname) : INotification;
 
 public sealed class UserCreatedHandler(IUnitOfWork unitOfWork) : INotificationHandler<UserCreatedNotification>
 {

@@ -1,4 +1,4 @@
-﻿using MakeWish.WishService.UseCases.Reconciliation;
+﻿using MakeWish.WishService.UseCases.Abstractions.Reconciliation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

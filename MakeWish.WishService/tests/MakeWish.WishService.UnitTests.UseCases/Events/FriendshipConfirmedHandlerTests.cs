@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.Models;
 using MakeWish.WishService.UnitTests.Common.DataAccess;
 using MakeWish.WishService.UnitTests.Common.Models;
+using MakeWish.WishService.UseCases.Abstractions.Events;
 using MakeWish.WishService.UseCases.Events;
 
 namespace MakeWish.WishService.UnitTests.UseCases.Events;

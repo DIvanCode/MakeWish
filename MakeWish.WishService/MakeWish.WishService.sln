@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Adapte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Interfaces.Client", "src\MakeWish.WishService.Interfaces.Client\MakeWish.WishService.Interfaces.Client.csproj", "{759DDA33-C2CA-470F-A267-16C9027A338E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.UseCases.Abstractions", "src\MakeWish.WishService.UseCases.Abstractions\MakeWish.WishService.UseCases.Abstractions.csproj", "{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,5 +80,9 @@ Global
 		{759DDA33-C2CA-470F-A267-16C9027A338E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{759DDA33-C2CA-470F-A267-16C9027A338E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{759DDA33-C2CA-470F-A267-16C9027A338E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MakeWish.WishService.Interfaces.Client\MakeWish.WishService.Interfaces.Client.csproj" />
+      <ProjectReference Include="..\MakeWish.WishService.UseCases.Abstractions\MakeWish.WishService.UseCases.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>
