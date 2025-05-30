@@ -21,5 +21,7 @@ public sealed class HttpUserContext : IUserContext
     
     public bool IsAuthenticated => _userClaims.Any(claim => claim.Type == _options.IdClaimType);
     
-    public Guid UserId => Guid.Parse(_userClaims.First(claim => claim.Type == _options.IdClaimType).Value);
+    public bool IsAdmin => _userClaims.Any(claim => claim.Type == _options.IsAdminClaimType && claim.Value == true.ToString());
+    
+    public Guid UserId => Guid.Parse(_userClaims.Single(claim => claim.Type == _options.IdClaimType).Value);
 }
