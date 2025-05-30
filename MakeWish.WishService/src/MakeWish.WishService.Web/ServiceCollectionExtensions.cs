@@ -38,7 +38,6 @@ public static class ServiceCollectionExtensions
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenOptions.SecretKey))
                     };
-                    configureOptions.RefreshInterval = TimeSpan.FromHours(jwtTokenOptions.RefreshIntervalHours);
                 });
 
         services.AddAuthorization();
