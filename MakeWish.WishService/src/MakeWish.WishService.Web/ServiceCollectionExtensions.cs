@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using EnsureThat;
-using MakeWish.WishService.UseCases.Services;
+using MakeWish.WishService.UseCases.Abstractions.Services;
 using MakeWish.WishService.Web.Options;
 using MakeWish.WishService.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

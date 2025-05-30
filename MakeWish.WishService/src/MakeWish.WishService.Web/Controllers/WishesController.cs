@@ -1,15 +1,5 @@
-using MakeWish.WishService.UseCases.Dto;
-using MakeWish.WishService.UseCases.Features.Wishes.Get;
-using MakeWish.WishService.UseCases.Features.Wishes.Delete;
-using MakeWish.WishService.UseCases.Features.Wishes.Complete;
-using MakeWish.WishService.UseCases.Features.Wishes.CompleteApprove;
-using MakeWish.WishService.UseCases.Features.Wishes.CompleteReject;
-using MakeWish.WishService.UseCases.Features.Wishes.Promise;
-using MakeWish.WishService.UseCases.Features.Wishes.PromiseCancel;
-using MakeWish.WishService.UseCases.Features.Wishes.Restore;
-using MakeWish.WishService.UseCases.Features.Wishes.GetPromisedWishes;
-using MakeWish.WishService.UseCases.Features.Wishes.GetUserWishes;
-using MakeWish.WishService.UseCases.Features.Wishes.GetWaitingApproveWishes;
+using MakeWish.WishService.UseCases.Abstractions.Dto;
+using MakeWish.WishService.UseCases.Abstractions.Features.Wishes;
 using MakeWish.WishService.Web.Controllers.Requests.Wishes;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

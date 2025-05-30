@@ -1,12 +1,11 @@
 ﻿using FluentResults;
 using MakeWish.WishService.Interfaces.Client;
 using MakeWish.WishService.Interfaces.DataAccess;
-using MakeWish.WishService.UseCases.Events;
+using MakeWish.WishService.UseCases.Abstractions.Events;
+using MakeWish.WishService.UseCases.Abstractions.Reconciliation;
 using MediatR;
 
 namespace MakeWish.WishService.UseCases.Reconciliation;
-
-public sealed record ReconcileUsersCommand : IRequest<Result>;
 
 public sealed class ReconcileUsersHandler(
     IUnitOfWork unitOfWork,

@@ -1,9 +1,8 @@
 ﻿using MakeWish.WishService.Interfaces.DataAccess;
+using MakeWish.WishService.UseCases.Abstractions.Events;
 using MediatR;
 
 namespace MakeWish.WishService.UseCases.Events;
-
-public sealed record FriendshipConfirmedNotification(Guid FirstUserId, Guid SecondUserId) : INotification;
 
 public sealed class FriendshipConfirmedHandler(IUnitOfWork unitOfWork)
     : INotificationHandler<FriendshipConfirmedNotification>
