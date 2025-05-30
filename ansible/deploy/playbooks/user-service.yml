@@ -27,5 +27,6 @@
           JwtToken__SecretKey: "{{ jwt_token_secret_key }}"
           DbConnection__ConnectionString: "{{ postgres_connection }}"
           RabbitConnection__Password: "{{ rabbit_password }}"
+          HttpUserContext__AdminId: "{{ admin_id }}"
         networks:
           - name: dev
