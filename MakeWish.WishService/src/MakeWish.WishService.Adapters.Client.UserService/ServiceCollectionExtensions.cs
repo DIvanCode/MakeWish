@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
     public static void SetupClientUserService(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<UserServiceOptions>(configuration.GetSection(UserServiceOptions.SectionName));
-        services.AddSingleton<IUserServiceClient, UserServiceClient>();
+        services.AddScoped<IUserServiceClient, UserServiceClient>();
         services.AddHttpClient();
     }
 }
