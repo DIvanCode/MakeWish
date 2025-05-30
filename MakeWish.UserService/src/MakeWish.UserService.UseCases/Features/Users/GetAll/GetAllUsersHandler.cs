@@ -10,19 +10,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MakeWish.UserService.UseCases.Features.Users.GetAll;
 
-public sealed class GetAllUsersHandler(IUnitOfWork unitOfWork, IServiceProvider services)
+public sealed class GetAllUsersHandler(IUnitOfWork unitOfWork, IUserContext userContext)
     : IRequestHandler<GetAllUsersCommand, Result<List<UserDto>>>
 {
     public async Task<Result<List<UserDto>>> Handle(GetAllUsersCommand request, CancellationToken cancellationToken)
     {
+        if (!userContext.IsAuthenticated)
+        {
+            return new AuthenticationError();
+        }
+        
         if (request.OnlyFriends ?? false)
         {
-            var userContext = services.GetRequiredService<IUserContext>();
-            if (!userContext.IsAuthenticated)
-            {
-                return new AuthenticationError();
-            }
-            
             var user = await unitOfWork.Users.GetByIdAsync(userContext.UserId, cancellationToken);
             if (user is null)
             {
@@ -49,6 +48,11 @@ public sealed class GetAllUsersHandler(IUnitOfWork unitOfWork, IServiceProvider 
             }
             else
             {
+                if (!userContext.IsAdmin)
+                {
+                    return new ForbiddenError("Cannot get all users");
+                }
+                
                 users = await unitOfWork.Users.GetAllAsync(cancellationToken);
             }
             

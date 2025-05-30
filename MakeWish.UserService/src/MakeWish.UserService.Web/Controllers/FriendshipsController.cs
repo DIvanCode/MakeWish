@@ -15,11 +15,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace MakeWish.UserService.Web.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("/api/[controller]")]
 public sealed class Friendships(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -42,7 +42,6 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
     }
     
     [HttpPost(":confirm")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -56,7 +55,6 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -69,7 +67,6 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
     }
     
     [HttpGet("confirmed/{userId:guid}")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -82,7 +79,6 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
     }
     
     [HttpGet("pending-from/{userId:guid}")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -95,7 +91,6 @@ public sealed class Friendships(IMediator mediator) : ControllerBase
     }
     
     [HttpGet("pending-to/{userId:guid}")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

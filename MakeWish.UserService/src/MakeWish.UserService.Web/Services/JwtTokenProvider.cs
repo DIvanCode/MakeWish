@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using MakeWish.UserService.Models;
 using MakeWish.UserService.Models.Entities;
 using MakeWish.UserService.UseCases.Services;
 using MakeWish.UserService.Web.Options;
@@ -12,7 +11,8 @@ namespace MakeWish.UserService.Web.Services;
 
 public sealed class JwtTokenProvider(
     IOptions<JwtTokenOptions> jwtTokenOptions,
-    IOptions<HttpUserContextOptions> httpUserContextOptions) : IAuthTokenProvider
+    IOptions<HttpUserContextOptions> httpUserContextOptions)
+    : IAuthTokenProvider
 {
     private readonly JwtTokenOptions _jwtTokenOptions = jwtTokenOptions.Value;
     private readonly HttpUserContextOptions _httpUserContextOptions = httpUserContextOptions.Value;
@@ -25,7 +25,8 @@ public sealed class JwtTokenProvider(
 
         var claims = new Claim[]
         {
-            new(_httpUserContextOptions.IdClaimType, user.Id.ToString())
+            new(_httpUserContextOptions.IdClaimType, user.Id.ToString()),
+            new(_httpUserContextOptions.IsAdminClaimType, (user.Id == _httpUserContextOptions.AdminId).ToString())
         };
         
         var token = new JwtSecurityToken(

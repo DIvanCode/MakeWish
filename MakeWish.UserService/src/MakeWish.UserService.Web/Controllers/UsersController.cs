@@ -60,6 +60,7 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     }
     
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetAllAsync(
         [FromQuery] string? query,

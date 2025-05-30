@@ -11,21 +11,17 @@ namespace MakeWish.UserService.UnitTests.UseCases.Features.Users.GetAll;
 public class GetAllUsersHandlerTests
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly Mock<IServiceProvider> _serviceProviderMock = new();
     private readonly Mock<IUserContext> _userContextMock = new();
     private readonly GetAllUsersHandler _sut;
 
     public GetAllUsersHandlerTests()
     {
         _unitOfWork = new UnitOfWorkStub();
-        _serviceProviderMock
-            .Setup(x => x.GetService(typeof(IUserContext)))
-            .Returns(_userContextMock.Object);
-        _sut = new GetAllUsersHandler(_unitOfWork, _serviceProviderMock.Object);
+        _sut = new GetAllUsersHandler(_unitOfWork, _userContextMock.Object);
     }
 
     [Fact]
-    public async Task Handle_WhenSearchParametersNotSet_ReturnsUserDtos()
+    public async Task Handle_WhenSearchParametersNotSet_IsAdmin_ReturnsUserDtos()
     {
         // Arrange
         var firstUser = new UserBuilder().Build();
@@ -33,6 +29,9 @@ public class GetAllUsersHandlerTests
 
         _unitOfWork.Users.Add(firstUser);
         _unitOfWork.Users.Add(secondUser);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.IsAdmin).Returns(true);
 
         var command = new GetAllUsersCommand(null, null);
 
@@ -50,6 +49,28 @@ public class GetAllUsersHandlerTests
     }
     
     [Fact]
+    public async Task Handle_WhenSearchParametersNotSet_IsNotAdmin_Fails()
+    {
+        // Arrange
+        var firstUser = new UserBuilder().Build();
+        var secondUser = new UserBuilder().Build();
+
+        _unitOfWork.Users.Add(firstUser);
+        _unitOfWork.Users.Add(secondUser);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.IsAdmin).Returns(false);
+
+        var command = new GetAllUsersCommand(null, null);
+
+        // Act
+        var result = await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsFailed);
+    }
+    
+    [Fact]
     public async Task Handle_WhenQuerySet_OnlyFriendsNotSet_ReturnsUserDtos()
     {
         // Arrange
@@ -60,6 +81,9 @@ public class GetAllUsersHandlerTests
         _unitOfWork.Users.Add(user1);
         _unitOfWork.Users.Add(user2);
         _unitOfWork.Users.Add(user3);
+        
+        _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.IsAdmin).Returns(false);
 
         var command1 = new GetAllUsersCommand("Иван Добрынин", null);
         var command2 = new GetAllUsersCommand("Добрынин Иван", null);
@@ -100,6 +124,7 @@ public class GetAllUsersHandlerTests
         _unitOfWork.Users.Add(user3);
 
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.IsAdmin).Returns(false);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
 
         var friendship1 = new FriendshipBuilder().WithFirstUser(user).WithSecondUser(user1).Build();
@@ -172,6 +197,7 @@ public class GetAllUsersHandlerTests
         _unitOfWork.Users.Add(user3);
 
         _userContextMock.Setup(uc => uc.IsAuthenticated).Returns(true);
+        _userContextMock.Setup(uc => uc.IsAdmin).Returns(false);
         _userContextMock.Setup(uc => uc.UserId).Returns(user.Id);
 
         var friendship1 = new FriendshipBuilder().WithFirstUser(user).WithSecondUser(user1).Build();
