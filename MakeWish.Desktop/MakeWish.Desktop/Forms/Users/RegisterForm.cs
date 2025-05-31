@@ -43,8 +43,8 @@ internal sealed partial class RegisterForm(
             {
                 return result;
             }
-            
-            navigationService.NavigateTo<ProfilePage>(userContext.UserId!.Value);
+
+            overlayService.Show<LoginForm>();
             return Result.Ok();
         });
         

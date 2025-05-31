@@ -81,7 +81,8 @@
                     </ItemsControl>
                 </StackPanel>
                 
-                <StackPanel Orientation="Vertical"
+                <StackPanel Visibility="{Binding ShowUsersWithAccess, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Orientation="Vertical"
                             Margin="0, 10">
                     <TextBlock Text="Пользователи, имеющие доступ" 
                                FontSize="14"

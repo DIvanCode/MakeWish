@@ -69,24 +69,19 @@ internal sealed partial class UserPromisedWishesPage(
         }
 
         PromisedWishesButtonDisplayText = $"Мои обещания ({promisedWishesResult.Value.Count})";
-        PromisedWishes = promisedWishesResult.Value;
+        var promisedWishes = promisedWishesResult.Value;
         
-        PromisedWishes.Sort((wish1, wish2) =>
+        promisedWishes.Sort((wish1, wish2) =>
         {
-            if (wish1.Status == wish2.Status)
+            if (wish1.StatusOrder != wish2.StatusOrder)
             {
-                return string.Compare(wish1.Title, wish2.Title, StringComparison.Ordinal);
+                return wish1.StatusOrder < wish2.StatusOrder ? -1 : 1;
             }
-
-            if (wish1.Status is WishStatus.Promised) return -1;
-            if (wish2.Status is WishStatus.Promised) return 1;
-
-            if (wish1.Status is WishStatus.Completed) return -1;
-            if (wish2.Status is WishStatus.Completed) return 1;
-
-            if (wish1.Status is WishStatus.Approved) return -1;
-            return 1;
+            
+            return string.Compare(wish1.Title, wish2.Title, StringComparison.Ordinal);
         });
+
+        PromisedWishes = promisedWishes;
         
         return Result.Ok();
     }

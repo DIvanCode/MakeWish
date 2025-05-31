@@ -46,20 +46,23 @@ internal sealed partial class WishListPage(
         }
 
         WishList = wishListResult.Value;
-
-        var usersWithAccessResult =
-            await wishServiceClient.GetUsersWithAccessToWishListAsync(id, cancellationToken);
-        if (usersWithAccessResult.IsFailed)
-        {
-            return usersWithAccessResult.ToResult();
-        }
-        
-        UsersWithAccess = usersWithAccessResult.Value;
         
         ShowEditButton = WishList.Owner.Id == userContext.UserId;
         ShowDeleteButton = WishList.Owner.Id == userContext.UserId;
         ShowUsersWithAccess = WishList.Owner.Id == userContext.UserId;
 
+        if (ShowUsersWithAccess)
+        {
+            var usersWithAccessResult =
+                await wishServiceClient.GetUsersWithAccessToWishListAsync(id, cancellationToken);
+            if (usersWithAccessResult.IsFailed)
+            {
+                return usersWithAccessResult.ToResult();
+            }
+        
+            UsersWithAccess = usersWithAccessResult.Value;    
+        }
+        
         return Result.Ok();
     }
 

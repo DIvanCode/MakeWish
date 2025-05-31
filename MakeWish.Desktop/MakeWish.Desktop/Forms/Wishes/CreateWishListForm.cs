@@ -85,7 +85,7 @@ internal sealed partial class CreateWishListForm(
                 return Result.Fail(errors);
             }
 
-            navigationService.NavigateTo<WishListPage>(createResult.Value);
+            navigationService.NavigateTo<WishListPage>(createResult.Value.Id);
             return Result.Ok();
         });
     }

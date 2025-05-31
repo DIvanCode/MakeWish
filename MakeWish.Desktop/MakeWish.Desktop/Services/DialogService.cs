@@ -39,8 +39,8 @@ internal sealed class DialogService : IDialogService
     public void ShowYesNoDialog(string message, Action onYesCommand, Action? onNoCommand = null)
     {
         var dialog = new YesNoDialog(message);
-        dialog.OnYesCommand += Close;
         dialog.OnYesCommand += onYesCommand;
+        dialog.OnYesCommand += Close;
         dialog.OnNoCommand += onNoCommand ?? Close;
         
         OnChangeDialog?.Invoke(dialog);

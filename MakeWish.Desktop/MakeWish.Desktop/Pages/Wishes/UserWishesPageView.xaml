@@ -100,7 +100,7 @@
                                            Style="{StaticResource MaterialDesignBody1TextBlock}"/>
                                 <Button Command="{Binding DataContext.ShowUserCardCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding }"
+                                        CommandParameter="{Binding Completer}"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalAlignment="Left"
                                         Padding="8,4"
