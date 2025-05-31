@@ -30,6 +30,26 @@ public sealed class Wish
     public bool IsPublic { get; set; }
     
     public bool HasDescription => !string.IsNullOrEmpty(Description);
+
+    public string DisplayStatus => Status switch
+    {
+        WishStatus.Created => "Создано",
+        WishStatus.Promised => "Обещано",
+        WishStatus.Completed => "Выполнено",
+        WishStatus.Approved => "Подтверждено",
+        WishStatus.Deleted => "Удалено",
+        _ => "Unknown"
+    };
+
+    public int StatusOrder => Status switch
+    {
+        WishStatus.Created => 0,
+        WishStatus.Promised => 1,
+        WishStatus.Completed => 2,
+        WishStatus.Approved => 3,
+        WishStatus.Deleted => 4,
+        _ => 55
+    };
     
     public bool IsPromised => Status is WishStatus.Promised;
     public bool IsCompleted => Status is WishStatus.Completed;

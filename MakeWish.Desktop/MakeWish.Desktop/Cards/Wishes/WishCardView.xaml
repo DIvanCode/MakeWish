@@ -45,7 +45,7 @@
                                Style="{StaticResource MaterialDesignBody1TextBlock}"
                                Foreground="Gray"
                                VerticalAlignment="Bottom"/>
-                    <TextBlock Text="{Binding Wish.Status}" 
+                    <TextBlock Text="{Binding Wish.DisplayStatus}" 
                                Margin="30,0"
                                FontSize="20"
                                Style="{StaticResource MaterialDesignBody1TextBlock}"/>

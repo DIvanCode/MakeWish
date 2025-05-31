@@ -17,7 +17,7 @@ internal partial class MainWindow : ObservableObject
     private readonly IDialogService _dialogService;
     private readonly IUserContext _userContext;
     private bool _prevShowHeader;
-    private Action? OpenContent;
+    private Action? _openContent;
 
     [ObservableProperty]
     private bool _showHeader;
@@ -67,11 +67,7 @@ internal partial class MainWindow : ObservableObject
             IsContentLoading = true;
         };
         _loadingService.OnEndLoading += () => IsContentLoading = false;
-        _loadingService.OnCancelLoading += () =>
-        {
-            
-            ShowHeader = _prevShowHeader;
-        };
+        _loadingService.OnCancelLoading += () => ShowHeader = _prevShowHeader;
 
         _overlayService.Show<LoginForm>();
     }
@@ -126,7 +122,7 @@ internal partial class MainWindow : ObservableObject
     
     private void ChangePage(PageBase? page)
     {
-        OpenContent = () =>
+        _openContent = () =>
         {
             CurrentPage = page;
             ShowPage = page is not null;
@@ -147,12 +143,12 @@ internal partial class MainWindow : ObservableObject
             _overlayService.Clear();
         };
 
-        OpenContent.Invoke();
+        _openContent.Invoke();
     }
     
     private void ChangeOverlay(OverlayBase? overlay)
     {
-        OpenContent = () =>
+        _openContent = () =>
         {
             CurrentOverlay = overlay;
             ShowOverlay = overlay is not null;
@@ -172,7 +168,7 @@ internal partial class MainWindow : ObservableObject
             ShowDialog = false;
         };
 
-        OpenContent.Invoke();
+        _openContent.Invoke();
     }
     
     private void ChangeDialog(DialogBase? dialog)
@@ -182,7 +178,7 @@ internal partial class MainWindow : ObservableObject
 
         if (dialog is null)
         {
-            OpenContent?.Invoke();
+            _openContent?.Invoke();
             return;
         }
             

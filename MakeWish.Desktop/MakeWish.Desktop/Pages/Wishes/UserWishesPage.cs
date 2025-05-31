@@ -78,9 +78,10 @@ internal sealed partial class UserWishesPage(
             ? $"Мои желания ({wishesResult.Value.Count})"
             : $"Желания ({wishesResult.Value.Count})";
 
+        List<Wish> wishes;
         if (isCurrentUser)
         {
-            Wishes = wishesResult.Value
+            wishes = wishesResult.Value
                 .Where(wish => wish.Status is not WishStatus.Completed)
                 .ToList();
             WaitingApproveWishes = wishesResult.Value
@@ -89,31 +90,20 @@ internal sealed partial class UserWishesPage(
         }
         else
         {
-            Wishes = wishesResult.Value;
+            wishes = wishesResult.Value;
         }
         
-        Wishes.Sort((wish1, wish2) =>
+        wishes.Sort((wish1, wish2) =>
         {
-            if (wish1.Status == wish2.Status)
+            if (wish1.StatusOrder != wish2.StatusOrder)
             {
-                return string.Compare(wish1.Title, wish2.Title, StringComparison.Ordinal);
+                return wish1.StatusOrder < wish2.StatusOrder ? -1 : 1;
             }
-
-            if (wish1.Status is WishStatus.Created) return -1;
-            if (wish2.Status is WishStatus.Created) return 1;
-
-            if (wish1.Status is WishStatus.Promised) return -1;
-            if (wish2.Status is WishStatus.Promised) return 1;
             
-            if (wish1.Status is WishStatus.Completed) return -1;
-            if (wish2.Status is WishStatus.Completed) return 1;
-            
-            if (wish1.Status is WishStatus.Approved) return -1;
-            if (wish2.Status is WishStatus.Approved) return 1;
-
-            if (wish1.Status is WishStatus.Deleted) return -1;
-            return 1;
+            return string.Compare(wish1.Title, wish2.Title, StringComparison.Ordinal);
         });
+
+        Wishes = wishes;
 
         var wishListsResult = await wishServiceClient.GetUserWishListsAsync(userId, cancellationToken);
         if (wishListsResult.IsFailed)
