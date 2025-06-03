@@ -71,7 +71,7 @@ jobs:
       - name: Run Ansible playbook (Deploy UserService)
         run: |
           cd ansible/deploy
-          ansible-playbook -i inventory playbooks/user-service.yml \
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory playbooks/user-service.yml \
             --extra-vars="version=${{ github.sha }} ansible_user=root ansible_password=${{ secrets.SSH_PASSWORD }}" \
             --vault-password-file ~/vault_pass.txt
 
