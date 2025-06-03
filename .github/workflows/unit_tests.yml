@@ -9,7 +9,7 @@ on:
         required: true
 
 jobs:
-  tests:
+  unit_tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

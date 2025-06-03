@@ -1,0 +1,30 @@
+name: Build and Push with Ansible
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: Service to build
+        type: string
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python and Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip3 install ansible docker
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Run Ansible playbook
+        run: |
+          cd ansible/build
+          make ${{ inputs.service }} -e version=${{ github.sha }}

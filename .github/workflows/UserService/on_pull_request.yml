@@ -1,4 +1,4 @@
-name: users
+name: UserService pull request
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - .github/**
 
 jobs:
-  dotnet:
-    uses: ./.github/workflows/dotnet.yml
+  unit_tests:
+    uses: ./.github/workflows/unit_tests.yml
     with:
       solution: MakeWish.UserService/MakeWish.UserService.sln

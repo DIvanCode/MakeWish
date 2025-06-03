@@ -11,7 +11,7 @@ rabbit:
 	ansible-playbook -i inventory playbooks/rabbit.yml --ask-vault-pass
 
 users:
-	ansible-playbook -i inventory playbooks/user-service.yml --ask-vault-pass
+	ansible-playbook -i inventory playbooks/user-service.yml --ask-vault-pass --extra-vars="version=$(version)"
 
 wishes:
-	ansible-playbook -i inventory playbooks/wish-service.yml --ask-vault-pass
+	ansible-playbook -i inventory playbooks/wish-service.yml --ask-vault-pass --extra-vars="version=$(version)"
