@@ -1,0 +1,19 @@
+name: UserService pull request
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - MakeWish.UserService/**
+      - .github/**
+
+jobs:
+  unit_tests:
+    uses: ./.github/workflows/unit_tests.yml
+    with:
+      solution: MakeWish.UserService/MakeWish.UserService.sln
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      service: users
