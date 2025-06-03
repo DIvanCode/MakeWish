@@ -10,9 +10,24 @@ on:
 
 jobs:
   unit_tests:
-    uses: ./.github/workflows/unit_tests.yml
-    with:
-      solution: MakeWish.UserService/MakeWish.UserService.sln
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore MakeWish.UserService/MakeWish.UserService.sln
+
+      - name: Build solution
+        run: dotnet build MakeWish.UserService/MakeWish.UserService.sln --no-restore
+      
+      - name: Run tests 
+        run: dotnet test MakeWish.UserService/MakeWish.UserService.sln
   build:
     runs-on: ubuntu-latest
     steps:
@@ -31,4 +46,24 @@ jobs:
       - name: Run Ansible playbook
         run: |
           cd ansible/build
-          make users -e version=${{ github.sha }}
+          ansible-playbook -i inventory playbooks/user-service.yml \
+            --extra-vars="version=${{ github.sha }}"
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 185.197.75.130 >> ~/.ssh/known_hosts
+      - name: Create Ansible Vault password file
+        run: echo "${{ secrets.VAULT_PASSWORD_DEPLOY }}" > vault_pass.txt
+      - name: Run Ansible playbook (Deploy UserService)
+        run: |
+          cd ansible/deploy
+          ansible-playbook -i inventory playbooks/user-service.yml \
+            --extra-vars="version=${{ github.sha }}" \
+            --vault-password-file vault_pass.txt
+      - name: Clean up
+        run: rm -f ~/.ssh/id_rsa vault_pass.txt
