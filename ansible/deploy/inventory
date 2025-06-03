@@ -1,2 +1,2 @@
 [FriendlyCrane]
-185.197.75.130 ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
+185.197.75.130
