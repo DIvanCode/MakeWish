@@ -1,11 +1,11 @@
-name: UserService pull request
+name: WishService pull request
 
 on:
   pull_request:
     branches:
       - master
     paths:
-      - MakeWish.UserService/**
+      - MakeWish.WishService/**
       - .github/**
 
 jobs:
@@ -21,13 +21,13 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore dependencies
-        run: dotnet restore MakeWish.UserService/MakeWish.UserService.sln
+        run: dotnet restore MakeWish.WishService/MakeWish.WishService.sln
 
       - name: Build solution
-        run: dotnet build MakeWish.UserService/MakeWish.UserService.sln --no-restore
+        run: dotnet build MakeWish.WishService/MakeWish.WishService.sln --no-restore
       
       - name: Run tests 
-        run: dotnet test MakeWish.UserService/MakeWish.UserService.sln
+        run: dotnet test MakeWish.WishService/MakeWish.WishService.sln
   build:
     needs: unit_tests
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
       - name: Run Ansible playbook
         run: |
           cd ansible/build
-          ansible-playbook -i inventory playbooks/user-service.yml \
+          ansible-playbook -i inventory playbooks/wish-service.yml \
             --extra-vars="version=${{ github.sha }}"
   deploy:
     needs: build
@@ -68,10 +68,10 @@ jobs:
       - name: Create Ansible Vault password file
         run: echo "${{ secrets.VAULT_PASSWORD_DEPLOY }}" > ~/vault_pass.txt
 
-      - name: Run Ansible playbook (Deploy UserService)
+      - name: Run Ansible playbook (Deploy WishService)
         run: |
           cd ansible/deploy
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory playbooks/user-service.yml \
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory playbooks/wish-service.yml \
             --extra-vars="version=${{ github.sha }} ansible_user=root ansible_password=${{ secrets.SSH_PASSWORD }}" \
             --vault-password-file ~/vault_pass.txt
 
