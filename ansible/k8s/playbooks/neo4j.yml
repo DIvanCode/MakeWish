@@ -2,7 +2,6 @@
   hosts: Local
   connection: local
   vars_files:
-    - ../../vars.yml
     - ../credentials.yml
   tasks:
     - name: Apply neo4j persistent volume

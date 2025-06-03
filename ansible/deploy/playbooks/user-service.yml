@@ -1,7 +1,6 @@
 - name: Deploy UserService
   hosts: FriendlyCrane
   vars_files:
-    - ../../vars.yml
     - ../credentials.yml
   remote_user: root
   tasks:
@@ -12,14 +11,15 @@
     - name: Pull docker image
       docker_image:
         name: divancode74/makewish-user-service
-        tag: "{{ user_service_tag }}"
+        tag: "{{ version }}"
         source: pull
         force_source: true
     - name: Deploy container
       docker_container:
         name: user-service
-        image: "divancode74/makewish-user-service:{{ user_service_tag }}"
-        recreate: true
+        image: "divancode74/makewish-user-service:{{ version }}"
+        recreate: yes
+        restart: yes
         ports:
           - "5001:5001"
         env:

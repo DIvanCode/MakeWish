@@ -9,9 +9,3 @@ neo4j:
 
 rabbit:
 	ansible-playbook -i inventory playbooks/rabbit.yml --ask-vault-pass
-
-users:
-	ansible-playbook -i inventory playbooks/user-service.yml --ask-vault-pass
-
-wishes:
-	ansible-playbook -i inventory playbooks/wish-service.yml --ask-vault-pass

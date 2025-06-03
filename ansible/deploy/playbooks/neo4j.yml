@@ -12,7 +12,14 @@
       docker_container:
         name: neo4j
         image: neo4j
-        recreate: true
+        recreate: yes
+        restart: yes
+        healthcheck:
+          test: [ "CMD-SHELL", "wget http://neo4j:7474 || exit 1" ]
+          interval: 10s
+          retries: 10
+          start_period: 10s
+          timeout: 10s
         ports:
           - "7474:7474"
           - "7687:7687"
