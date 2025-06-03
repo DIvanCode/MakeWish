@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - master
-    paths:
-      - MakeWish.UserService/**
-      - .github/**
 
 jobs:
   unit_tests:
