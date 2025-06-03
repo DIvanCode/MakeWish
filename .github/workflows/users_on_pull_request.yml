@@ -14,6 +14,21 @@ jobs:
     with:
       solution: MakeWish.UserService/MakeWish.UserService.sln
   build:
-    uses: ./.github/workflows/build.yml
-    with:
-      service: users
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python and Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip3 install ansible docker
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Run Ansible playbook
+        run: |
+          cd ansible/build
+          make users -e version=${{ github.sha }}
