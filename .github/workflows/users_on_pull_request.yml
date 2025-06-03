@@ -73,14 +73,14 @@ jobs:
           ssh-keyscan -H 185.197.75.130 >> ~/.ssh/known_hosts
 
       - name: Create Ansible Vault password file
-        run: echo "${{ secrets.VAULT_PASSWORD_DEPLOY }}" > vault_pass.txt
+        run: echo "${{ secrets.VAULT_PASSWORD_DEPLOY }}" > ~/vault_pass.txt
 
       - name: Run Ansible playbook (Deploy UserService)
         run: |
           cd ansible/deploy
           ansible-playbook -i inventory playbooks/user-service.yml \
             --extra-vars="version=${{ github.sha }}" \
-            --vault-password-file vault_pass.txt
+            --vault-password-file ~/vault_pass.txt
 
       - name: Clean up
-        run: rm -f ~/.ssh/id_rsa vault_pass.txt
+        run: rm -f ~/.ssh/id_rsa ~/vault_pass.txt
