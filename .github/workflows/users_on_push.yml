@@ -1,0 +1,39 @@
+name: UserService push
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - MakeWish.UserService/**
+      - .github/**
+
+jobs:
+  k8s:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python and Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip3 install ansible docker
+      
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Create Ansible Vault password file
+        run: echo "${{ secrets.VAULT_PASSWORD_K8S }}" > ~/vault_pass.txt
+
+      - name: Run Ansible playbook (Deploy UserService to k8s)
+        run: |
+          cd ansible/k8s
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory playbooks/user-service.yml \
+            --extra-vars="version=${{ github.sha }}" \
+            --vault-password-file ~/vault_pass.txt
+
+      - name: Clean up
+        if: always()
+        run: rm -f ~/vault_pass.txt
