@@ -6,7 +6,7 @@ metadata:
   labels:
     app: wish-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: wish-service
@@ -21,6 +21,13 @@ spec:
           image: "divancode74/makewish-wish-service:{{ version }}"
           ports:
             - containerPort: 5002
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "400m"
+              memory: "256Mi"
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "{{ aspnet_environment }}"

@@ -10,6 +10,12 @@
         namespace: makewish
         state: present
         src: ../services/user-service/service.yml
+    - name: Apply user-service hpa
+      kubernetes.core.k8s:
+        kubeconfig: ../twc-witty-cetus-config.yml
+        namespace: makewish
+        state: present
+        src: ../services/user-service/hpa.yml
     - name: Apply user-service deployment
       kubernetes.core.k8s:
         kubeconfig: ../twc-witty-cetus-config.yml
