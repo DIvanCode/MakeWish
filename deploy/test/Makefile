@@ -4,7 +4,7 @@ neo4j:
 	ansible-playbook -i inventory playbooks/neo4j.yml --ask-pass --ask-vault-pass
 
 prometheus:
-	ansible-playbook -i inventory playbooks/prometheus.yml -vvvv --ask-pass
+	ansible-playbook -i inventory playbooks/prometheus.yml --ask-pass
 
 node_exporter:
 	ansible-playbook -i inventory playbooks/node_exporter.yml --ask-pass
