@@ -4,7 +4,11 @@
   vars_files:
     - ../credentials.yml
   tasks:
-    - name: Ensure Docker network dev exists
+    - name: Ensure volume exists
+      docker_volume:
+        name: neo4j
+        state: present
+    - name: Ensure network exists
       docker_network:
         name: dev
         state: present
@@ -14,6 +18,7 @@
         image: neo4j
         recreate: yes
         restart: yes
+        restart_policy: unless-stopped
         healthcheck:
           test: [ "CMD-SHELL", "wget http://neo4j:7474 || exit 1" ]
           interval: 10s
@@ -25,5 +30,7 @@
           - "7687:7687"
         env:
           NEO4J_AUTH: "{{ neo4j_username }}/{{ neo4j_password }}"
+        volumes:
+          - neo4j:/data
         networks:
           - name: dev

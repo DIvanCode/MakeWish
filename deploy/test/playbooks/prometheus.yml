@@ -1,0 +1,36 @@
+﻿- name: Deploy Prometheus
+  hosts: FriendlyCrane
+  remote_user: root
+  tasks:
+    - name: Copy prometheus config
+      ansible.builtin.copy:
+        src: "{{ playbook_dir  }}/../prometheus/config.yml"
+        dest: /root/prometheus.yml
+        owner: root
+        group: root
+        mode: "0644"
+    - name: Ensure volume exists
+      docker_volume:
+        name: prometheus
+        state: present
+    - name: Ensure network exists
+      docker_network:
+        name: dev
+        state: present
+    - name: Deploy container
+      docker_container:
+        name: prometheus
+        image: prom/prometheus:latest
+        command: --config.file=/etc/prometheus/config.yml
+        recreate: yes
+        restart: yes
+        restart_policy: unless-stopped
+        volumes:
+          - prometheus:/prometheus
+        mounts:
+          - source: /root/prometheus.yml
+            target: /etc/prometheus/config.yml
+            type: bind
+            read_only: yes
+        networks:
+          - name: dev

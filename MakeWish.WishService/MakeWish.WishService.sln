@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Interf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.UseCases.Abstractions", "src\MakeWish.WishService.UseCases.Abstractions\MakeWish.WishService.UseCases.Abstractions.csproj", "{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeWish.WishService.Telemetry", "src\MakeWish.WishService.Telemetry\MakeWish.WishService.Telemetry.csproj", "{96457645-AA21-40DC-A80A-6A02EEB70F84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,5 +86,9 @@ Global
 		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E6C63B2-E942-43DD-9DCE-66CA15AFB642}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96457645-AA21-40DC-A80A-6A02EEB70F84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96457645-AA21-40DC-A80A-6A02EEB70F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96457645-AA21-40DC-A80A-6A02EEB70F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96457645-AA21-40DC-A80A-6A02EEB70F84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

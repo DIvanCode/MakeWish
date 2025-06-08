@@ -7,7 +7,7 @@ on:
     paths:
       - MakeWish.UserService/**
       - .github/**
-      - ansible/**
+      - deploy/**
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          cd ansible/build
+          cd deploy/build
           ansible-playbook -i inventory playbooks/user-service.yml \
             --extra-vars="version=${{ github.sha }}"
   k8s:
@@ -51,7 +51,7 @@ jobs:
 
       - name: Run Ansible playbook (Deploy UserService to k8s)
         run: |
-          cd ansible/k8s
+          cd deploy/k8s
           ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory playbooks/user-service.yml \
             --extra-vars="version=${{ github.sha }}" \
             --vault-password-file ~/vault_pass.txt
