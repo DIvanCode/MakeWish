@@ -18,6 +18,7 @@
       <ProjectReference Include="..\MakeWish.WishService.Adapters.Client.UserService\MakeWish.WishService.Adapters.Client.UserService.csproj" />
       <ProjectReference Include="..\MakeWish.WishService.Adapters.DataAccess.Neo4j\MakeWish.WishService.Adapters.DataAccess.Neo4j.csproj" />
       <ProjectReference Include="..\MakeWish.WishService.Adapters.MessageBus.RabbitMQ\MakeWish.WishService.Adapters.MessageBus.RabbitMQ.csproj" />
+      <ProjectReference Include="..\MakeWish.WishService.Telemetry\MakeWish.WishService.Telemetry.csproj" />
       <ProjectReference Include="..\MakeWish.WishService.UseCases\MakeWish.WishService.UseCases.csproj" />
     </ItemGroup>
 

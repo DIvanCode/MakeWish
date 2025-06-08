@@ -11,9 +11,9 @@ services:
     image: postgres
     ports:
       - "5432:5432"
-    container_name: makewish.user.service.postgres
-    hostname: makewish.user.service.postgres
-    restart: always
+    container_name: makewish.postgres
+    hostname: makewish.postgres
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
@@ -35,7 +35,7 @@ services:
       - "5672:5672"
     container_name: makewish.rabbitmq
     hostname: makewish.rabbitmq
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
       interval: 10s
@@ -54,11 +54,11 @@ services:
     ports:
       - "7474:7474"
       - "7687:7687"
-    container_name: makewish.wish.service.neo4j
-    hostname: makewish.wish.service.neo4j
-    restart: always
+    container_name: makewish.neo4j
+    hostname: makewish.neo4j
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget http://makewish.wish.service.neo4j:7474 || exit 1"]
+      test: ["CMD-SHELL", "wget http://makewish.neo4j:7474 || exit 1"]
       interval: 10s
       retries: 10
       start_period: 10s
@@ -72,9 +72,9 @@ services:
   user-service:
     build:
       context: MakeWish.UserService
-    container_name: makewish.user.service
-    hostname: makewish.user.service
-    restart: always
+    container_name: makewish.user-service
+    hostname: makewish.user-service
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,16 +84,16 @@ services:
       - "5001:5001"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      DbConnection__ConnectionString: Server=makewish.user.service.postgres:5432;Database=postgres;Username=postgres;Password=postgres
+      DbConnection__ConnectionString: Server=makewish.postgres:5432;Database=postgres;Username=postgres;Password=postgres
       RabbitConnection__Host: makewish.rabbitmq
     networks:
       - dev
   wish-service:
     build:
       context: MakeWish.WishService
-    container_name: makewish.wish.service
-    hostname: makewish.wish.service
-    restart: always
+    container_name: makewish.wish-service
+    hostname: makewish.wish-service
+    restart: unless-stopped
     depends_on:
       neo4j:
         condition: service_healthy
@@ -103,8 +103,8 @@ services:
       - "5002:5002"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      DbConnection__Uri: neo4j://makewish.wish.service.neo4j:7687
+      DbConnection__Uri: neo4j://makewish.neo4j:7687
       RabbitConnection__Host: makewish.rabbitmq
-      UserService__Host: makewish.user.service
+      UserService__Host: makewish.user-service
     networks:
       - dev

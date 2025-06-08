@@ -1,3 +1,5 @@
+.PHONY: ingress postgres neo4j rabbit 
+
 ingress:
 	ansible-playbook -i inventory playbooks/ingress.yml
 

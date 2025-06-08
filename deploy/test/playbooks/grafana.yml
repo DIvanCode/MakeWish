@@ -1,0 +1,24 @@
+﻿- name: Deploy Grafana
+  hosts: FriendlyCrane
+  remote_user: root
+  tasks:
+    - name: Ensure volume exists
+      docker_volume:
+        name: grafana
+        state: present
+    - name: Ensure network exists
+      docker_network:
+        name: dev
+        state: present
+    - name: Deploy container
+      docker_container:
+        name: grafana
+        image: grafana/grafana-oss:latest
+        recreate: yes
+        restart: yes
+        ports:
+          - "3000:3000"
+        volumes:
+          - grafana:/var/lib/grafana
+        networks:
+          - name: dev

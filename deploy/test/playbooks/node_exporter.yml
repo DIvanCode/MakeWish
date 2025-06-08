@@ -1,0 +1,23 @@
+﻿- name: Deploy NodeExporter
+  hosts: FriendlyCrane
+  remote_user: root
+  tasks:
+    - name: Ensure network exists
+      docker_network:
+        name: dev
+        state: present
+    - name: Deploy container
+      docker_container:
+        name: node_exporter
+        image: quay.io/prometheus/node-exporter:v1.5.0
+        command: --path.rootfs=/host
+        pid_mode: host
+        recreate: yes
+        restart: yes
+        restart_policy: unless-stopped
+        volumes:
+          - /proc:/host/proc:ro
+          - /sys:/host/sys:ro
+          - /:/rootfs:ro
+        networks:
+          - name: dev

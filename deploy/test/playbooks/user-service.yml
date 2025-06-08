@@ -4,7 +4,7 @@
     - ../credentials.yml
   remote_user: root
   tasks:
-    - name: Ensure Docker network dev exists
+    - name: Ensure network exists
       docker_network:
         name: dev
         state: present
@@ -20,6 +20,7 @@
         image: "divancode74/makewish-user-service:{{ version }}"
         recreate: yes
         restart: yes
+        restart_policy: unless-stopped
         ports:
           - "5001:5001"
         env:

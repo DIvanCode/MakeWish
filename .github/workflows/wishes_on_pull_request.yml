@@ -7,7 +7,7 @@ on:
     paths:
       - MakeWish.WishService/**
       - .github/**
-      - ansible/**
+      - deploy/**
 
 jobs:
   unit_tests:
@@ -47,7 +47,7 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          cd ansible/build
+          cd deploy/build
           ansible-playbook -i inventory playbooks/wish-service.yml \
             --extra-vars="version=${{ github.sha }}"
   deploy:
@@ -71,7 +71,7 @@ jobs:
 
       - name: Run Ansible playbook (Deploy WishService)
         run: |
-          cd ansible/deploy
+          cd deploy/test
           ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory playbooks/wish-service.yml \
             --extra-vars="version=${{ github.sha }} ansible_user=root ansible_password=${{ secrets.SSH_PASSWORD }}" \
             --vault-password-file ~/vault_pass.txt
