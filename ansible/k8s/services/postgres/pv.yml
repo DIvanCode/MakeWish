@@ -5,7 +5,7 @@ metadata:
   namespace: makewish
 spec:
   capacity:
-    storage: 100Mi
+    storage: 1024Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
